@@ -55,7 +55,7 @@ qs -c noctalia-shell ipc call plugin:battery-threshold set <value>
 
 ## Troubleshooting
 
-- **Read-only mode**: Ensure udev rule is installed and you're in the correct
+- **Read-only mode**: Ensure udev rule is installed, and you're in the correct
   group
 - **Not available**: Your laptop may not support charge threshold control, or
   select the correct battery in the settings menu
