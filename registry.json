@@ -883,7 +883,7 @@
     {
       "id": "translator",
       "name": "Translator",
-      "version": "1.2.3",
+      "version": "1.2.4",
       "official": false,
       "author": "Cleboost",
       "description": "Quick translate in launcher",
@@ -893,7 +893,7 @@
       "tags": [
         "Launcher"
       ],
-      "lastUpdated": "2026-02-10T10:12:36-05:00"
+      "lastUpdated": "2026-03-08T21:08:15+07:00"
     },
     {
       "id": "unicode-picker",
