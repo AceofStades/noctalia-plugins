@@ -13,18 +13,18 @@ ColumnLayout {
   spacing: Style.marginM
 
   // Local state for editing
-  property real valueSensitivity: widgetSettings?.data?.sensitivity ?? 1.5
-  property real valueRotationSpeed: widgetSettings?.data?.rotationSpeed ?? 0.5
-  property real valueBarWidth: widgetSettings?.data?.barWidth ?? 0.6
-  property real valueRingOpacity: widgetSettings?.data?.ringOpacity ?? 0.8
-  property real valueBloomIntensity: widgetSettings?.data?.bloomIntensity ?? 0.5
-  property int valueVisualizationMode: widgetSettings?.data?.visualizationMode ?? 3
-  property real valueWaveThickness: widgetSettings?.data?.waveThickness ?? 1.0
-  property real valueInnerDiameter: widgetSettings?.data?.innerDiameter ?? 0.7
-  property bool valueFadeWhenIdle: widgetSettings?.data?.fadeWhenIdle ?? true
-  property bool valueUseCustomColors: widgetSettings?.data?.useCustomColors ?? false
-  property color valueCustomPrimaryColor: widgetSettings?.data?.customPrimaryColor ?? "#6750A4"
-  property color valueCustomSecondaryColor: widgetSettings?.data?.customSecondaryColor ?? "#625B71"
+  property real valueSensitivity: widgetSettings?.data?.sensitivity ?? pluginApi?.pluginSettings?.sensitivity ?? 1.5
+  property real valueRotationSpeed: widgetSettings?.data?.rotationSpeed ?? pluginApi?.pluginSettings?.rotationSpeed ?? 0.5
+  property real valueBarWidth: widgetSettings?.data?.barWidth ?? pluginApi?.pluginSettings?.barWidth ?? 0.6
+  property real valueRingOpacity: widgetSettings?.data?.ringOpacity ?? pluginApi?.pluginSettings?.ringOpacity ?? 0.8
+  property real valueBloomIntensity: widgetSettings?.data?.bloomIntensity ?? pluginApi?.pluginSettings?.bloomIntensity ?? 0.5
+  property int valueVisualizationMode: widgetSettings?.data?.visualizationMode ?? pluginApi?.pluginSettings?.visualizationMode ?? 3
+  property real valueWaveThickness: widgetSettings?.data?.waveThickness ?? pluginApi?.pluginSettings?.waveThickness ?? 1.0
+  property real valueInnerDiameter: widgetSettings?.data?.innerDiameter ?? pluginApi?.pluginSettings?.innerDiameter ?? 0.7
+  property bool valueFadeWhenIdle: widgetSettings?.data?.fadeWhenIdle ?? pluginApi?.pluginSettings?.fadeWhenIdle ?? true
+  property bool valueUseCustomColors: widgetSettings?.data?.useCustomColors ?? pluginApi?.pluginSettings?.useCustomColors ?? false
+  property color valueCustomPrimaryColor: widgetSettings?.data?.customPrimaryColor ?? pluginApi?.pluginSettings?.customPrimaryColor ?? "#6750A4"
+  property color valueCustomSecondaryColor: widgetSettings?.data?.customSecondaryColor ?? pluginApi?.pluginSettings?.customSecondaryColor ?? "#625B71"
 
   // Mode helpers
   readonly property bool modeHasBars: valueVisualizationMode === 0 || valueVisualizationMode === 3 || valueVisualizationMode === 5
