@@ -172,13 +172,13 @@
       "author": "Spyridon Siarapis",
       "description": "Custom stickers (images) that you can put on the desktop as desktop widgets.",
       "repository": "https://github.com/noctalia-dev/noctalia-plugins",
-      "minNoctaliaVersion": "4.6.5",
+      "minNoctaliaVersion": "4.6.6",
       "license": "MIT",
       "tags": [
         "Desktop",
         "Fun"
       ],
-      "lastUpdated": "2026-03-07T20:50:36+01:00"
+      "lastUpdated": "2026-03-10T23:16:33+01:00"
     },
     {
       "id": "dns-switcher",
