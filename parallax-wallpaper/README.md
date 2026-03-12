@@ -11,7 +11,7 @@ A [Noctalia Shell](https://github.com/noctalia/noctalia-shell) plugin that adds 
 - **Customizable easing curves** — 13 easing options
 - **Adjustable zoom** — controls how much the wallpaper should be zoomed in to create room for parallax
 - **Real-time preview** — settings update the wallpaper instantly
-- **Auto zoom** — auto-increases zoom to prevent wallpaper edges from showing on distant workspaces (optional)
+- **Auto zoom** — optionally auto-increases zoom to prevent wallpaper edges from showing on distant workspaces
 - **Full wallpaper engine** — supports all of Noctalia's wallpaper transitions
 - **Wallpaper selector stays functional** — change wallpapers normally while the plugin is active
 
@@ -51,4 +51,6 @@ The plugin doesn't disable Noctalia's built-in wallpaper engine, they co-exist. 
 **Since Noctalia's built-in wallpaper engine isn't disabled, if you set a low amount of zoom with a high amount of parallax amount, you might see the background layer of wallpaper while using parallax. It's not harmful, but just ugly.**
 
 **Due to the bigger real estate that horizontal workspaces offer, vertical parallax is bound to be more limiting. You should set a lower parallax amount if you're using vertical workspaces with vertical parallax. Otherwise, you'll see the background layer more often.**
+
+**Default settings allow you to have parallax for 10 workspaces without seeing the background layer.**
 

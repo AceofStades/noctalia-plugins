@@ -25,18 +25,22 @@ ColumnLayout {
   readonly property bool showHorizontal: parallaxDirection === "horizontal" || parallaxDirection === "both"
   readonly property bool showVertical: parallaxDirection === "vertical" || parallaxDirection === "both"
 
+  function tr(key) { return pluginApi?.tr(key) || key; }
+
   spacing: Style.marginL
 
   // ── Wallpaper Zoom ──
 
   NValueSlider {
-    label: "Wallpaper Zoom"
-    description: "Scale of the wallpaper to provide room for parallax movement"
+    label: root.tr("settings.zoom.label")
+    description: root.tr("settings.zoom.desc")
     text: root.zoomAmount.toFixed(2) + "x"
-    from: 1.01
-    to: 1.5
+    from: 1.00
+    to: 2.00
     stepSize: 0.01
     value: root.zoomAmount
+    defaultValue: root.defaults.zoomAmount
+    showReset: true
     onMoved: val => {
       root.zoomAmount = val;
       root.saveSettings();
@@ -49,13 +53,14 @@ ColumnLayout {
 
   NComboBox {
     Layout.fillWidth: true
-    label: "Parallax Direction"
-    description: "Which direction the wallpaper shifts when changing workspaces"
+    label: root.tr("settings.direction.label")
+    description: root.tr("settings.direction.desc")
+    defaultValue: root.defaults.parallaxDirection
     model: [
-      { "key": "none", "name": "None" },
-      { "key": "horizontal", "name": "Horizontal" },
-      { "key": "vertical", "name": "Vertical" },
-      { "key": "both", "name": "Horizontal + Vertical" }
+      { "key": "none", "name": root.tr("settings.direction.none") },
+      { "key": "horizontal", "name": root.tr("settings.direction.horizontal") },
+      { "key": "vertical", "name": root.tr("settings.direction.vertical") },
+      { "key": "both", "name": root.tr("settings.direction.both") }
     ]
     currentKey: root.parallaxDirection
     onSelected: function(key) {
@@ -70,17 +75,19 @@ ColumnLayout {
 
   NLabel {
     visible: root.showHorizontal
-    label: "Horizontal Parallax"
+    label: root.tr("settings.horizontal.title")
   }
 
   NValueSlider {
     visible: root.showHorizontal
-    label: "Parallax Amount"
+    label: root.tr("settings.horizontal.amount")
     text: Math.round(root.hParallaxAmount) + "px"
     from: 1
     to: 200
     stepSize: 1
     value: root.hParallaxAmount
+    defaultValue: root.defaults.hParallaxAmount
+    showReset: true
     onMoved: val => {
       root.hParallaxAmount = val;
       root.saveSettings();
@@ -89,12 +96,14 @@ ColumnLayout {
 
   NValueSlider {
     visible: root.showHorizontal
-    label: "Animation Duration"
+    label: root.tr("settings.horizontal.duration")
     text: Math.round(root.hParallaxDuration) + "ms"
     from: 50
     to: 2000
     stepSize: 50
     value: root.hParallaxDuration
+    defaultValue: root.defaults.hParallaxDuration
+    showReset: true
     onMoved: val => {
       root.hParallaxDuration = val;
       root.saveSettings();
@@ -107,17 +116,19 @@ ColumnLayout {
 
   NLabel {
     visible: root.showVertical
-    label: "Vertical Parallax"
+    label: root.tr("settings.vertical.title")
   }
 
   NValueSlider {
     visible: root.showVertical
-    label: "Parallax Amount"
+    label: root.tr("settings.vertical.amount")
     text: Math.round(root.vParallaxAmount) + "px"
     from: 1
     to: 200
     stepSize: 1
     value: root.vParallaxAmount
+    defaultValue: root.defaults.vParallaxAmount
+    showReset: true
     onMoved: val => {
       root.vParallaxAmount = val;
       root.saveSettings();
@@ -126,12 +137,14 @@ ColumnLayout {
 
   NValueSlider {
     visible: root.showVertical
-    label: "Animation Duration"
+    label: root.tr("settings.vertical.duration")
     text: Math.round(root.vParallaxDuration) + "ms"
     from: 50
     to: 2000
     stepSize: 50
     value: root.vParallaxDuration
+    defaultValue: root.defaults.vParallaxDuration
+    showReset: true
     onMoved: val => {
       root.vParallaxDuration = val;
       root.saveSettings();
@@ -143,8 +156,9 @@ ColumnLayout {
   NDivider { Layout.fillWidth: true }
 
   NToggle {
-    label: "Invert Direction"
-    description: "Move the wallpaper in the same direction as workspace changes"
+    label: root.tr("settings.invert.label")
+    description: root.tr("settings.invert.desc")
+    defaultValue: root.defaults.invertDirection
     checked: root.invertDirection
     onToggled: checked => {
       root.invertDirection = checked;
@@ -157,8 +171,9 @@ ColumnLayout {
   NDivider { Layout.fillWidth: true }
 
   NToggle {
-    label: "Auto Zoom"
-    description: "Automatically increase zoom to prevent wallpaper edges from showing"
+    label: root.tr("settings.autoZoom.label")
+    description: root.tr("settings.autoZoom.desc")
+    defaultValue: root.defaults.autoZoom
     checked: root.autoZoom
     onToggled: checked => {
       root.autoZoom = checked;
@@ -172,22 +187,23 @@ ColumnLayout {
 
   NComboBox {
     Layout.fillWidth: true
-    label: "Easing Curve"
-    description: "The mathematical curve used for parallax animations"
+    label: root.tr("settings.easing.label")
+    description: root.tr("settings.easing.desc")
+    defaultValue: root.defaults.parallaxEasing
     model: [
-      { "key": "Linear", "name": "Linear" },
-      { "key": "InQuad", "name": "Ease In Quad" },
-      { "key": "OutQuad", "name": "Ease Out Quad" },
-      { "key": "InOutQuad", "name": "Ease In Out Quad" },
-      { "key": "InCubic", "name": "Ease In Cubic" },
-      { "key": "OutCubic", "name": "Ease Out Cubic (Recommended)" },
-      { "key": "InOutCubic", "name": "Ease In Out Cubic" },
-      { "key": "InQuart", "name": "Ease In Quart" },
-      { "key": "OutQuart", "name": "Ease Out Quart" },
-      { "key": "InOutQuart", "name": "Ease In Out Quart" },
-      { "key": "InExpo", "name": "Ease In Exponential" },
-      { "key": "OutExpo", "name": "Ease Out Exponential" },
-      { "key": "InOutExpo", "name": "Ease In Out Exponential" }
+      { "key": "Linear", "name": root.tr("settings.easing.linear") },
+      { "key": "InQuad", "name": root.tr("settings.easing.inQuad") },
+      { "key": "OutQuad", "name": root.tr("settings.easing.outQuad") },
+      { "key": "InOutQuad", "name": root.tr("settings.easing.inOutQuad") },
+      { "key": "InCubic", "name": root.tr("settings.easing.inCubic") },
+      { "key": "OutCubic", "name": root.tr("settings.easing.outCubic") },
+      { "key": "InOutCubic", "name": root.tr("settings.easing.inOutCubic") },
+      { "key": "InQuart", "name": root.tr("settings.easing.inQuart") },
+      { "key": "OutQuart", "name": root.tr("settings.easing.outQuart") },
+      { "key": "InOutQuart", "name": root.tr("settings.easing.inOutQuart") },
+      { "key": "InExpo", "name": root.tr("settings.easing.inExpo") },
+      { "key": "OutExpo", "name": root.tr("settings.easing.outExpo") },
+      { "key": "InOutExpo", "name": root.tr("settings.easing.inOutExpo") }
     ]
     currentKey: root.parallaxEasing
     onSelected: function(key) {
@@ -198,7 +214,7 @@ ColumnLayout {
 
   function saveSettings() {
     if (!pluginApi) {
-      Logger.e("ParallaxWallpaper", "Cannot save settings: pluginApi is null");
+      Logger.e("Parallax Wallpaper", "Cannot save settings: pluginApi is null");
       return;
     }
 

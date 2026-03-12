@@ -139,10 +139,7 @@ Variants {
         for (var i = 0; i < CompositorService.workspaces.count; i++) {
           var ws = CompositorService.workspaces.get(i);
           if (ws.isActive) {
-            if (ws.monitor === modelData.name || ws.monitorName === modelData.name) {
-              wsId = ws.id;
-              break;
-            } else if (ws.monitor === undefined && ws.monitorName === undefined) {
+            if (ws.output === modelData.name || !ws.output) {
               wsId = ws.id;
               break;
             }
@@ -161,6 +158,28 @@ Variants {
         target: CompositorService
         function onWorkspaceChanged() {
           root.updateParallax();
+        }
+        function onDisplayScalesChanged() {
+          if (!WallpaperService.isInitialized) {
+            return;
+          }
+
+          const currentPath = WallpaperService.getWallpaper(modelData.name);
+          if (!currentPath || WallpaperService.isSolidColorPath(currentPath)) {
+            return;
+          }
+
+          if (isStartupTransition) {
+            const compositorScale = CompositorService.getDisplayScale(modelData.name);
+            const targetWidth = Math.round(modelData.width * compositorScale);
+            const targetHeight = Math.round(modelData.height * compositorScale);
+            ImageCacheService.getLarge(currentPath, targetWidth, targetHeight, function (cachedPath, success) {
+              WallpaperService.wallpaperProcessingComplete(modelData.name, currentPath, success ? cachedPath : "");
+            });
+            return;
+          }
+
+          requestPreprocessedWallpaper(currentPath);
         }
       }
 
@@ -186,32 +205,6 @@ Variants {
           if (screenName === modelData.name) {
             requestPreprocessedWallpaper(path);
           }
-        }
-      }
-
-      Connections {
-        target: CompositorService
-        function onDisplayScalesChanged() {
-          if (!WallpaperService.isInitialized) {
-            return;
-          }
-
-          const currentPath = WallpaperService.getWallpaper(modelData.name);
-          if (!currentPath || WallpaperService.isSolidColorPath(currentPath)) {
-            return;
-          }
-
-          if (isStartupTransition) {
-            const compositorScale = CompositorService.getDisplayScale(modelData.name);
-            const targetWidth = Math.round(modelData.width * compositorScale);
-            const targetHeight = Math.round(modelData.height * compositorScale);
-            ImageCacheService.getLarge(currentPath, targetWidth, targetHeight, function (cachedPath, success) {
-              WallpaperService.wallpaperProcessingComplete(modelData.name, currentPath, success ? cachedPath : "");
-            });
-            return;
-          }
-
-          requestPreprocessedWallpaper(currentPath);
         }
       }
 
@@ -256,7 +249,7 @@ Variants {
         asynchronous: true
         onStatusChanged: {
           if (status === Image.Error) {
-            Logger.w("Current wallpaper failed to load:", source);
+            Logger.w("Parallax Wallpaper", "Current wallpaper failed to load:", source);
           } else if (status === Image.Ready && !wallpaperReady) {
             wallpaperReady = true;
           }
@@ -276,7 +269,7 @@ Variants {
         asynchronous: true
         onStatusChanged: {
           if (status === Image.Error) {
-            Logger.w("Next wallpaper failed to load:", source);
+            Logger.w("Parallax Wallpaper", "Next wallpaper failed to load:", source);
             pendingTransition = false;
           } else if (status === Image.Ready) {
             if (!wallpaperReady) {
