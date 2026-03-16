@@ -63,6 +63,50 @@ Item {
     return Color.mPrimary
   }
 
+  // ── Daily Hadith ──────────────────────────────────────────────────────
+  readonly property var hadithPool: [
+    { text: "إنما الأعمال بالنيات",                                                      src: "البخاري" },
+    { text: "المسلم من سلم المسلمون من لسانه ويده",                                      src: "البخاري" },
+    { text: "لا يؤمن أحدكم حتى يحب لأخيه ما يحب لنفسه",                                src: "البخاري" },
+    { text: "الطهور شطر الإيمان",                                                         src: "مسلم"    },
+    { text: "خيركم من تعلم القرآن وعلمه",                                                src: "البخاري" },
+    { text: "الدين النصيحة",                                                              src: "مسلم"    },
+    { text: "من كان يؤمن بالله واليوم الآخر فليقل خيراً أو ليصمت",                      src: "البخاري" },
+    { text: "البر حسن الخلق",                                                             src: "مسلم"    },
+    { text: "إن الله رفيق يحب الرفق في الأمر كله",                                       src: "البخاري" },
+    { text: "الكلمة الطيبة صدقة",                                                         src: "البخاري" },
+    { text: "خير الناس أنفعهم للناس",                                                    src: "الطبراني" },
+    { text: "إن الله جميل يحب الجمال",                                                   src: "مسلم"    },
+    { text: "أحب الأعمال إلى الله أدومها وإن قل",                                        src: "البخاري" },
+    { text: "اتق الله حيثما كنت",                                                         src: "الترمذي" },
+    { text: "إن من أحبكم إليّ وأقربكم مني مجلساً يوم القيامة أحاسنكم أخلاقاً",          src: "الترمذي" },
+    { text: "من صام رمضان إيماناً واحتساباً غُفر له ما تقدم من ذنبه",                   src: "البخاري" },
+    { text: "أفضل الصيام بعد رمضان شهر الله المحرم",                                    src: "مسلم"    },
+    { text: "ابتغوا ليلة القدر في الوتر من العشر الأواخر من رمضان",                      src: "البخاري" },
+    { text: "تبسمك في وجه أخيك صدقة",                                                    src: "الترمذي" },
+    { text: "الصلوات الخمس كفارة لما بينهن ما اجتنبت الكبائر",                           src: "مسلم"    },
+
+    // ── Hisn al-Muslim ────────────────────────────────────────────────
+    { text: "أعوذُ بكلماتِ اللهِ التّامّاتِ مِن شرِّ ما خَلَق",                          src: "حصن المسلم" },
+    { text: "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ", src: "حصن المسلم" },
+    { text: "سُبْحَانَ اللهِ وَبِحَمْدِهِ",                                               src: "حصن المسلم" },
+    { text: "حَسْبِيَ اللَّهُ لاَ إِلَهَ إِلاَّ هُوَ عَلَيهِ تَوَكَّلتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ", src: "حصن المسلم" },
+    { text: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْكُفْرِ وَالفَقْرِ وَأَعُوذُ بِكَ مِنْ عَذَابِ القَبْرِ لاَ إِلَهَ إِلاَّ أَنْتَ", src: "حصن المسلم" },
+    { text: "الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ", src: "حصن المسلم" },
+    { text: "بِسْمِ اللهِ تَوَكَّلْتُ عَلَى اللهِ وَلاَ حَوْلَ وَلاَ قُوَّةَ إِلاَّ بِاللهِ", src: "حصن المسلم" },
+    { text: "بِسْمِ اللهِ وَالصَّلاَةُ وَالسَّلاَمُ عَلَى رَسُولِ اللهِ اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ", src: "حصن المسلم" },
+    { text: "لاَ إِلَهَ إِلاَّ اللهُ العَظِيمُ الحَلِيمُ لاَ إِلَهَ إِلاَّ اللهُ رَبُّ العَرْشِ العَظِيمِ لاَ إِلَهَ إِلاَّ اللهُ رَبُّ السَّمَاوَاتِ وَرَبُّ الأَرْضِ وَرَبُّ العَرْشِ الكَرِيمِ", src: "حصن المسلم" },
+    { text: "اللَّهُمَّ لاَ سَهْلَ إِلاَّ مَا جَعَلْتَهُ سَهْلاً وَأَنْتَ تَجْعَلُ الْحَزْنَ إِذَا شِئْتَ سَهْلاً", src: "حصن المسلم" }
+  ]
+
+  readonly property var dailyHadith: {
+    if (!hadithPool || hadithPool.length === 0) return null
+    const now = new Date()
+    const start = new Date(now.getFullYear(), 0, 0)
+    const dayOfYear = Math.floor((now - start) / 86400000)
+    return hadithPool[dayOfYear % hadithPool.length]
+  }
+
   // ── Last 10 nights of Ramadan ─────────────────────────────────────────
   readonly property bool showLast10Nights: {
     if (!isRamadan || prayerTimings === null || hijriDay < 20) return false
@@ -812,12 +856,39 @@ Item {
                   left: parent.left; right: parent.right; verticalCenter: parent.verticalCenter
                   leftMargin: Style.marginM; rightMargin: Style.marginM
                 }
-                text: "العشر الأواخر\nأفضل ليالي رمضان، فيها ليلة القدر خير من ألف شهر."
+                text: "العشر الأواخر\nأفضل ليالي رمضان، فيها ليلة القدر خير من ألف شهر"
                 font.family: decoFontReady ? decoFont.name : ""
                 font.pointSize: Style.fontSizeM
                 color: Color.mPrimary
                 horizontalAlignment: Text.AlignHCenter
                 wrapMode: Text.WordWrap
+              }
+            }
+
+            // Daily Hadith
+            ColumnLayout {
+              visible: root.dailyHadith !== null && !root.showLast10Nights
+              Layout.fillWidth: true
+              spacing: 2
+
+              NDivider { Layout.fillWidth: true; opacity: 0.4 }
+
+              Text {
+                Layout.fillWidth: true
+                text: root.dailyHadith?.text ?? ""
+                font.family: decoFontReady ? decoFont.name : ""
+                font.pointSize: Style.fontSizeS
+                color: Color.mOnSurface
+                horizontalAlignment: Text.AlignHCenter
+                wrapMode: Text.WordWrap
+                opacity: 0.85
+              }
+              NText {
+                Layout.alignment: Qt.AlignHCenter
+                text: root.dailyHadith?.src ? ("― " + root.dailyHadith.src) : ""
+                pointSize: Style.fontSizeXS
+                color: Color.mSecondary
+                opacity: 0.6
               }
             }
 
