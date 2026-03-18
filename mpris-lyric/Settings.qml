@@ -41,8 +41,8 @@ ColumnLayout {
   // Player name
   NTextInput {
     Layout.fillWidth: true
-    label: pluginApi?.tr("settings.player-name") || "Player Name"
-    description: pluginApi?.tr("settings.player-name-desc") || "MPRIS player name (e.g., musicfox, spotify, firefox)"
+    label: pluginApi?.tr("settings.player-name")
+    description: pluginApi?.tr("settings.player-name-desc")
     text: root.editPlayerName
     placeholderText: "musicfox"
     onTextChanged: root.editPlayerName = text
@@ -55,8 +55,8 @@ ColumnLayout {
   }
 
   NToggle {
-    label: pluginApi?.tr("settings.hide-when-inactive") || "Hide When Inactive"
-    description: pluginApi?.tr("settings.hide-when-inactive-desc") || "Hide the widget when playback is paused or stopped"
+    label: pluginApi?.tr("settings.hide-when-inactive")
+    description: pluginApi?.tr("settings.hide-when-inactive-desc")
     checked: root.editHideWhenInactive
     onToggled: checked => root.editHideWhenInactive = checked
   }
@@ -67,8 +67,8 @@ ColumnLayout {
     spacing: Style.marginS
 
     NLabel {
-      label: (pluginApi?.tr("settings.update-interval") || "Update Interval") + ": " + root.editUpdateInterval + "ms"
-      description: pluginApi?.tr("settings.update-interval-desc") || "How often to update lyrics (in milliseconds)"
+      label: pluginApi?.tr("settings.update-interval") + ": " + root.editUpdateInterval + "ms"
+      description: pluginApi?.tr("settings.update-interval-desc")
     }
 
     NSlider {
@@ -87,8 +87,8 @@ ColumnLayout {
     spacing: Style.marginS
 
     NLabel {
-      label: (pluginApi?.tr("settings.width") || "Width") + ": " + root.editWidth + "px"
-      description: pluginApi?.tr("settings.width-desc") || "Width of the lyric widget in pixels"
+      label: pluginApi?.tr("settings.width") + ": " + root.editWidth + "px"
+      description: pluginApi?.tr("settings.width-desc")
     }
 
     NSlider {

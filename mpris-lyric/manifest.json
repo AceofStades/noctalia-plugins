@@ -1,7 +1,7 @@
 {
   "id": "mpris-lyric",
   "name": "MPRIS Lyric",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "minNoctaliaVersion": "3.8.0",
   "repository": "https://github.com/noctalia-dev/noctalia-plugins",
   "author": "DBeidachazi",
@@ -9,8 +9,7 @@
   "description": "Display synchronized lyrics from MPRIS-compatible music players (e.g., go-musicfox) in the bar.",
   "tags": [
     "Bar",
-    "Music",
-    "Lyric"
+    "Music"
   ],
   "entryPoints": {
     "main": "Main.qml",
