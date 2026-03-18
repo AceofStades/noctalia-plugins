@@ -119,7 +119,7 @@
     {
       "id": "clipper",
       "name": "Clipper",
-      "version": "2.1.0",
+      "version": "2.2.3",
       "official": false,
       "author": "blackbartblues",
       "description": "Advanced clipboard manager with history, search, keyboard navigation, ToDo integration, pinned items, notecards/sticky notes, and selection-to-notecard feature. Fully translated with comprehensive i18n support.",
@@ -131,7 +131,7 @@
         "Bar",
         "Panel"
       ],
-      "lastUpdated": "2026-02-23T20:48:07-05:00"
+      "lastUpdated": "2026-03-16T14:00:58+07:00"
     },
     {
       "id": "coin-flip",
@@ -449,17 +449,17 @@
     {
       "id": "mawaqit",
       "name": "Mawaqit",
-      "version": "1.2.1",
+      "version": "1.3.0",
       "official": false,
       "author": "User",
-      "description": "Shows prayer times and a countdown to the next prayer. Plays azan at prayer time.",
+      "description": "Shows prayer times with a live countdown and a Hijri calendar with Islamic events.",
       "minNoctaliaVersion": "4.1.0",
       "license": "MIT",
       "tags": [
         "Bar",
         "Panel"
       ],
-      "lastUpdated": "2026-02-27T21:53:04+01:00"
+      "lastUpdated": "2026-03-12T23:02:48+01:00"
     },
     {
       "id": "mini-docker",
@@ -515,7 +515,7 @@
     {
       "id": "mpris-lyric",
       "name": "MPRIS Lyric",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "official": false,
       "author": "DBeidachazi",
       "description": "Display synchronized lyrics from MPRIS-compatible music players (e.g., go-musicfox) in the bar.",
@@ -526,7 +526,7 @@
         "Bar",
         "Music"
       ],
-      "lastUpdated": "2026-02-23T20:48:07-05:00"
+      "lastUpdated": "2026-03-18T09:37:17+08:00"
     },
     {
       "id": "mpvpaper",
@@ -717,7 +717,7 @@
     {
       "id": "polkit-agent",
       "name": "Polkit Agent",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "official": true,
       "author": "Noctalia Team <team@noctalia.dev>",
       "description": "Provides a Polkit authentication agent.",
@@ -728,7 +728,7 @@
         "System",
         "Security"
       ],
-      "lastUpdated": "2026-03-06T15:31:13+01:00"
+      "lastUpdated": "2026-03-18T10:22:05+01:00"
     },
     {
       "id": "pomodoro",
@@ -794,7 +794,7 @@
     {
       "id": "screen-recorder",
       "name": "Screen Recorder",
-      "version": "1.2.0",
+      "version": "1.3.1",
       "official": true,
       "author": "Noctalia Team",
       "description": "Hardware-accelerated screen recording using gpu-screen-recorder with customizable video and audio settings",
@@ -805,7 +805,7 @@
         "Bar",
         "Utility"
       ],
-      "lastUpdated": "2026-03-07T11:53:21+01:00"
+      "lastUpdated": "2026-03-16T14:14:58+01:00"
     },
     {
       "id": "screen-shot-and-record",
@@ -941,7 +941,7 @@
     {
       "id": "timer",
       "name": "Timer",
-      "version": "1.1.1",
+      "version": "1.1.2",
       "official": true,
       "author": "Noctalia Team",
       "description": "A timer and stopwatch plugin for the bar & control center.",
@@ -952,7 +952,7 @@
         "Bar",
         "Utility"
       ],
-      "lastUpdated": "2026-03-09T13:28:20+01:00"
+      "lastUpdated": "2026-03-15T21:18:27+01:00"
     },
     {
       "id": "todo",
@@ -1006,7 +1006,7 @@
     {
       "id": "update-count",
       "name": "Update Count",
-      "version": "1.0.12",
+      "version": "1.0.13",
       "official": false,
       "author": "BukoMoon",
       "description": "Checks for system updates and shows the update count. Click to run update command in a terminal.",
@@ -1017,7 +1017,7 @@
         "Bar",
         "System"
       ],
-      "lastUpdated": "2026-02-05T21:01:51-05:00"
+      "lastUpdated": "2026-03-15T14:47:53+01:00"
     },
     {
       "id": "video-wallpaper",
@@ -1067,6 +1067,22 @@
         "Bar"
       ],
       "lastUpdated": "2026-03-15T10:09:13-04:00"
+    },
+    {
+      "id": "web-search",
+      "name": "Web Search",
+      "version": "1.0.0",
+      "official": false,
+      "author": "Rigelyon",
+      "description": "Search the Internet from the Launcher.",
+      "repository": "https://github.com/noctalia-dev/noctalia-plugins",
+      "minNoctaliaVersion": "3.9.0",
+      "license": "MIT",
+      "tags": [
+        "Launcher",
+        "Utility"
+      ],
+      "lastUpdated": "2026-03-17T09:56:15+07:00"
     },
     {
       "id": "weekly-calendar",
