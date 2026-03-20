@@ -112,7 +112,8 @@
     "recentWithTime": "Recent • {time}",
     "top": "Top",
     "topWithPlays": "Top • {plays}",
-    "artist": "Artist"
+    "artist": "Artist",
+    "artistWithTime": "Artist • {time}"
   },
   "queue": {
     "title": "Queue",

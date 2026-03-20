@@ -1133,7 +1133,7 @@ Item {
         ];
     for (var i = 0; i < artistEntries.length; i++) {
       var artistPrefix = mainInstance?.showPlayStatsMetadata !== false && (artistEntries[i].lastPlayedAt || "").length > 0
-          ? ((pluginApi?.tr("home.artist")) + " • " + MusicUtils.formatRelativeTime(artistEntries[i].lastPlayedAt))
+          ? (pluginApi?.tr("home.artistWithTime", {"time": MusicUtils.formatRelativeTime(artistEntries[i].lastPlayedAt)}))
           : (pluginApi?.tr("home.artist"));
       items.push(buildLibraryResultItem(artistEntries[i], {
                                           "prefix": artistPrefix,
