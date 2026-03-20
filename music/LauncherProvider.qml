@@ -171,16 +171,16 @@ Item {
   }
 
   function normalizeToken(value) {
-    return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    return (value || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
   }
 
   function looksLikeUrl(value) {
-    var trimmed = String(value || "").trim();
+    var trimmed = (value || "").trim();
     return /^[a-z][a-z0-9+.-]*:\/\//i.test(trimmed) || /^www\./i.test(trimmed);
   }
 
   function parseSearchProviderQuery(query) {
-    var raw = String(query || "");
+    var raw = (query || "");
     var match = raw.match(/^(yt|youtube|sc|soundcloud|local):\s*(.*)$/i);
     if (!match) {
       return {
@@ -190,7 +190,7 @@ Item {
       };
     }
 
-    var prefix = String(match[1] || "").toLowerCase();
+    var prefix = (match[1] || "").toLowerCase();
     var provider = "youtube";
     if (prefix === "sc" || prefix === "soundcloud") {
       provider = "soundcloud";
@@ -200,7 +200,7 @@ Item {
 
     return {
       "provider": provider,
-      "query": String(match[2] || "").trim(),
+      "query": (match[2] || "").trim(),
       "explicit": true
     };
   }
@@ -249,7 +249,7 @@ Item {
 
   function buildSectionItem(name, description, icon) {
     return {
-      "id": "section:" + String(name || "").toLowerCase(),
+      "id": "section:" + (name || "").toLowerCase(),
       "name": name,
       "description": description || "",
       "icon": icon || "music",
@@ -302,7 +302,7 @@ Item {
   function parseTagTerms(tagQuery) {
     var seen = ({});
     var terms = [];
-    var rawTerms = String(tagQuery || "").split(/\s+/);
+    var rawTerms = (tagQuery || "").split(/\s+/);
 
     for (var i = 0; i < rawTerms.length; i++) {
       var normalized = normalizeTagValue(rawTerms[i]);
@@ -318,7 +318,7 @@ Item {
   }
 
   function parseNumericComparison(value) {
-    var trimmed = String(value || "").trim();
+    var trimmed = (value || "").trim();
     var match = trimmed.match(/^(<=|>=|=|<|>)?\s*(-?\d+(?:\.\d+)?)$/);
     if (!match) {
       return null;
@@ -354,7 +354,7 @@ Item {
   }
 
   function parseRecentWindow(value) {
-    var trimmed = String(value || "").trim().toLowerCase();
+    var trimmed = (value || "").trim().toLowerCase();
     var match = trimmed.match(/^(\d+)([smhdwy])?$/);
     if (!match) {
       return 0;
@@ -372,7 +372,7 @@ Item {
   }
 
   function isStructuredLibraryFilterToken(token) {
-    var lower = String(token || "").toLowerCase();
+    var lower = (token || "").toLowerCase();
     return lower.startsWith("rating:")
         || lower.startsWith("plays:")
         || lower.startsWith("playcount:")
@@ -385,7 +385,7 @@ Item {
   }
 
   function parseSavedFilterValue(value) {
-    var normalized = String(value || "").trim().toLowerCase();
+    var normalized = (value || "").trim().toLowerCase();
     if (["true", "yes", "1", "saved"].indexOf(normalized) >= 0) {
       return true;
     }
@@ -399,8 +399,8 @@ Item {
   }
 
   function parseLibraryFilterQuery(query) {
-    var rawTerms = String(query || "").trim().split(/\s+/).filter(function (term) {
-      return String(term || "").trim().length > 0;
+    var rawTerms = (query || "").trim().split(/\s+/).filter(function (term) {
+      return (term || "").trim().length > 0;
     });
     var parsed = {
       "hasStructuredFilters": false,
@@ -417,7 +417,7 @@ Item {
     };
 
     for (var i = 0; i < rawTerms.length; i++) {
-      var token = String(rawTerms[i] || "");
+      var token = (rawTerms[i] || "");
       var lower = token.toLowerCase();
 
       if (token.startsWith("#")) {
@@ -439,12 +439,12 @@ Item {
       }
 
       if (lower.startsWith("album:")) {
-        var albumValue = String(token.substring(6) || "").trim();
+        var albumValue = (token.substring(6) || "").trim();
         while (i + 1 < rawTerms.length && !isStructuredLibraryFilterToken(rawTerms[i + 1])) {
-          albumValue += (albumValue.length > 0 ? " " : "") + String(rawTerms[i + 1] || "").trim();
+          albumValue += (albumValue.length > 0 ? " " : "") + (rawTerms[i + 1] || "").trim();
           i += 1;
         }
-        albumValue = String(albumValue || "").trim();
+        albumValue = (albumValue || "").trim();
         if (albumValue.length > 0) {
           parsed.albumTerms.push(albumValue);
           parsed.hasStructuredFilters = true;
@@ -453,7 +453,7 @@ Item {
       }
 
       if (lower.startsWith("provider:")) {
-        var providerValue = String(token.substring(9) || "").trim().toLowerCase();
+        var providerValue = (token.substring(9) || "").trim().toLowerCase();
         if (["youtube", "soundcloud", "local"].indexOf(providerValue) >= 0) {
           parsed.provider = providerValue;
           parsed.hasStructuredFilters = true;
@@ -519,7 +519,7 @@ Item {
   }
 
   function entryActivityTimestamp(entry) {
-    var activity = String(entry?.lastPlayedAt || entry?.savedAt || "").trim();
+    var activity = (entry?.lastPlayedAt || entry?.savedAt || "").trim();
     if (activity.length === 0) {
       return 0;
     }
@@ -539,7 +539,7 @@ Item {
       return false;
     }
 
-    if (filters.provider.length > 0 && String(entry.provider || "").trim().toLowerCase() !== filters.provider) {
+    if (filters.provider.length > 0 && (entry.provider || "").trim().toLowerCase() !== filters.provider) {
       return false;
     }
 
@@ -563,9 +563,9 @@ Item {
     }
 
     if (filters.albumTerms.length > 0) {
-      var albumText = String(entry.album || "").toLowerCase();
+      var albumText = (entry.album || "").toLowerCase();
       for (var i = 0; i < filters.albumTerms.length; i++) {
-        if (albumText.indexOf(String(filters.albumTerms[i] || "").toLowerCase()) === -1) {
+        if (albumText.indexOf((filters.albumTerms[i] || "").toLowerCase()) === -1) {
           return false;
         }
       }
@@ -649,7 +649,7 @@ Item {
     var library = mainInstance?.visibleLibraryEntries() || [];
 
     for (var i = 0; i < library.length; i++) {
-      var artist = String(library[i].uploader || "").trim();
+      var artist = (library[i].uploader || "").trim();
       var key = artist.toLowerCase();
       if (key.length === 0) {
         continue;
@@ -665,7 +665,7 @@ Item {
       }
       seen[key].count += 1;
       seen[key].playCount += Number(library[i].playCount || 0);
-      var playedAt = String(library[i].lastPlayedAt || "");
+      var playedAt = (library[i].lastPlayedAt || "");
       if (playedAt.length > 0 && playedAt > seen[key].lastPlayedAt) {
         seen[key].lastPlayedAt = playedAt;
       }
@@ -685,11 +685,11 @@ Item {
 
   function recentPlayedEntries(limit) {
     var library = (mainInstance?.visibleLibraryEntries() || []).filter(function (entry) {
-      return String(entry.lastPlayedAt || "").trim().length > 0;
+      return (entry.lastPlayedAt || "").trim().length > 0;
     }).slice();
 
     library.sort(function (a, b) {
-      return String(b.lastPlayedAt || "").localeCompare(String(a.lastPlayedAt || ""));
+      return (b.lastPlayedAt || "").localeCompare((a.lastPlayedAt || ""));
     });
 
     return limit > 0 ? library.slice(0, limit) : library;
@@ -704,14 +704,14 @@ Item {
       if (Number(b.playCount || 0) !== Number(a.playCount || 0)) {
         return Number(b.playCount || 0) - Number(a.playCount || 0);
       }
-      return String(b.lastPlayedAt || "").localeCompare(String(a.lastPlayedAt || ""));
+      return (b.lastPlayedAt || "").localeCompare((a.lastPlayedAt || ""));
     });
 
     return limit > 0 ? library.slice(0, limit) : library;
   }
 
   function buildTagBrowseItem(tagStat) {
-    var tagName = String(tagStat?.tag || "").trim();
+    var tagName = (tagStat?.tag || "").trim();
     var count = Number(tagStat?.count || 0);
     return {
       "id": "tag-browse:" + tagName.toLowerCase(),
@@ -731,7 +731,7 @@ Item {
   }
 
   function buildArtistBrowseItem(artistStat) {
-    var artistName = String(artistStat?.name || "").trim();
+    var artistName = (artistStat?.name || "").trim();
     var count = Number(artistStat?.count || 0);
     var parts = [count === 1 ? (pluginApi?.tr("library.oneTrack")) : (pluginApi?.tr("library.trackCount", {"count": count}))];
     var playCountLabel = formatPlayCount(artistStat?.playCount || 0);
@@ -793,7 +793,7 @@ Item {
   }
 
   function buildImportFolderItem(folderPath) {
-    var targetFolder = String(folderPath || "").trim();
+    var targetFolder = (folderPath || "").trim();
     var segments = targetFolder.split("/").filter(function (part) { return part.length > 0; });
     var playlistName = segments.length > 0 ? segments[segments.length - 1] : targetFolder;
     return {
@@ -817,7 +817,7 @@ Item {
 
   function buildSpeedItem(value) {
     var target = Number(value);
-    var speedLabel = isFinite(target) ? target.toFixed(2) + "x" : String(value || "");
+    var speedLabel = isFinite(target) ? target.toFixed(2) + "x" : (value || "");
     return {
       "id": "speed:" + speedLabel,
       "name": pluginApi?.tr("speed.setTo", {"speed": speedLabel}),
@@ -841,7 +841,7 @@ Item {
     }
 
     var currentSpeed = Number(mainInstance?.currentSpeed || 1);
-    var queryText = String(speedQuery || "").trim();
+    var queryText = (speedQuery || "").trim();
     var items = [
           buildSectionItem(pluginApi?.tr("speed.title"), pluginApi?.tr("speed.current", {"speed": currentSpeed.toFixed(2) + "x"}), "gauge")
         ];
@@ -867,7 +867,7 @@ Item {
 
   function buildQueueActionItem(name, description, icon, score, activate) {
     return {
-      "id": "queue-action:" + String(name || "").toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+      "id": "queue-action:" + (name || "").toLowerCase().replace(/[^a-z0-9]+/g, "-"),
       "name": name,
       "description": description,
       "icon": icon,
@@ -907,7 +907,7 @@ Item {
   }
 
   function buildQueueItems(queueQuery) {
-    var queryText = String(queueQuery || "").trim().toLowerCase();
+    var queryText = (queueQuery || "").trim().toLowerCase();
     var queueEntries = mainInstance?.queueEntries || [];
     var queuedCount = queueEntries.length;
     var items = [
@@ -1073,7 +1073,7 @@ Item {
   }
 
   function buildArtistItems(artistQuery) {
-    var queryText = String(artistQuery || "").trim();
+    var queryText = (artistQuery || "").trim();
     var queryLower = queryText.toLowerCase();
     var artistStats = collectArtistStats();
 
@@ -1090,7 +1090,7 @@ Item {
     }
 
     var matchedArtists = artistStats.filter(function (artistStat) {
-      return String(artistStat.name || "").toLowerCase().indexOf(queryLower) >= 0;
+      return (artistStat.name || "").toLowerCase().indexOf(queryLower) >= 0;
     });
 
     if (matchedArtists.length === 0) {
@@ -1102,7 +1102,7 @@ Item {
     var targetArtist = matchedArtists.length === 1
         ? matchedArtists[0]
         : matchedArtists.find(function (artistStat) {
-            return String(artistStat.name || "").toLowerCase() === queryLower;
+            return (artistStat.name || "").toLowerCase() === queryLower;
           });
 
     if (!targetArtist) {
@@ -1112,14 +1112,14 @@ Item {
     }
 
     var artistEntries = (mainInstance?.visibleLibraryEntries() || []).filter(function (entry) {
-      return String(entry.uploader || "").trim().toLowerCase() === String(targetArtist.name || "").trim().toLowerCase();
+      return (entry.uploader || "").trim().toLowerCase() === (targetArtist.name || "").trim().toLowerCase();
     }).slice();
 
     artistEntries.sort(function (a, b) {
-      if (String(b.lastPlayedAt || "") !== String(a.lastPlayedAt || "")) {
-        return String(b.lastPlayedAt || "").localeCompare(String(a.lastPlayedAt || ""));
+      if ((b.lastPlayedAt || "") !== (a.lastPlayedAt || "")) {
+        return (b.lastPlayedAt || "").localeCompare((a.lastPlayedAt || ""));
       }
-      return String(b.savedAt || "").localeCompare(String(a.savedAt || ""));
+      return (b.savedAt || "").localeCompare((a.savedAt || ""));
     });
 
     var items = [
@@ -1130,7 +1130,7 @@ Item {
                            "microphone-2")
         ];
     for (var i = 0; i < artistEntries.length; i++) {
-      var artistPrefix = mainInstance?.showPlayStatsMetadata !== false && String(artistEntries[i].lastPlayedAt || "").length > 0
+      var artistPrefix = mainInstance?.showPlayStatsMetadata !== false && (artistEntries[i].lastPlayedAt || "").length > 0
           ? ((pluginApi?.tr("home.artist")) + " • " + MusicUtils.formatRelativeTime(artistEntries[i].lastPlayedAt))
           : (pluginApi?.tr("home.artist"));
       items.push(buildLibraryResultItem(artistEntries[i], {
@@ -1142,20 +1142,20 @@ Item {
   }
 
   function itemProviderKey(item) {
-    var explicitProvider = String(item?.providerName || "").trim().toLowerCase();
+    var explicitProvider = (item?.providerName || "").trim().toLowerCase();
     if (explicitProvider === "youtube" || explicitProvider === "soundcloud" || explicitProvider === "local") {
       return explicitProvider;
     }
 
     var rawProvider = item?.provider;
     if (typeof rawProvider === "string") {
-      var normalizedProvider = String(rawProvider || "").trim().toLowerCase();
+      var normalizedProvider = (rawProvider || "").trim().toLowerCase();
       if (normalizedProvider === "youtube" || normalizedProvider === "soundcloud" || normalizedProvider === "local") {
         return normalizedProvider;
       }
     }
 
-    return String(mainInstance?.currentProvider || "youtube");
+    return (mainInstance?.currentProvider || "youtube");
   }
 
   function getPreviewData(item) {
@@ -1194,7 +1194,7 @@ Item {
 
     var query = searchText.substring(commandName.length).trim();
     var commandQuery = normalizeToken(query);
-    var rawQueryLower = String(query || "").toLowerCase();
+    var rawQueryLower = (query || "").toLowerCase();
     var results = [];
 
     if (root.playlistPickerEntryId.length > 0 && !rawQueryLower.startsWith("playlist:")) {
@@ -1319,8 +1319,8 @@ Item {
     }
 
     var searchContext = parseSearchProviderQuery(query);
-    var searchQuery = String(searchContext.query || "").trim();
-    var searchProvider = String(searchContext.provider || mainInstance?.currentProvider || "youtube");
+    var searchQuery = (searchContext.query || "").trim();
+    var searchProvider = (searchContext.provider || mainInstance?.currentProvider || "youtube");
     var searchProviderLabel = mainInstance?.providerLabel(searchProvider) || "YouTube";
 
     if (searchContext.explicit && searchQuery.length === 0) {
@@ -1380,7 +1380,7 @@ Item {
 
     var searchContext = parseSearchProviderQuery(query);
     var provider = searchContext.provider;
-    var resolvedQuery = String(searchContext.query || "").trim();
+    var resolvedQuery = (searchContext.query || "").trim();
     activeSearchQuery = query;
     pendingSearchQuery = "";
     pendingSearchRestart = false;
@@ -1417,7 +1417,7 @@ Item {
   function startPlaylistSelection(entry) {
     var savedEntry = mainInstance?.findSavedEntry(entry);
     var targetEntry = savedEntry || entry;
-    var entryId = String(targetEntry?.id || "").trim();
+    var entryId = (targetEntry?.id || "").trim();
     if (entryId.length === 0) {
       return;
     }
@@ -1432,7 +1432,7 @@ Item {
   }
 
   function startPlaylistRename(playlist) {
-    var playlistId = String(playlist?.id || "").trim();
+    var playlistId = (playlist?.id || "").trim();
     if (playlistId.length === 0) {
       return;
     }
@@ -1447,7 +1447,7 @@ Item {
   }
 
   function normalizeTagValue(value) {
-    return String(value || "").replace(/^#+/, "").replace(/\s+/g, " ").trim();
+    return (value || "").replace(/^#+/, "").replace(/\s+/g, " ").trim();
   }
 
   function currentTagEditorEntry() {
@@ -1457,7 +1457,7 @@ Item {
 
     var library = mainInstance?.visibleLibraryEntries() || [];
     for (var i = 0; i < library.length; i++) {
-      if (String(library[i].id || "") === tagEditorEntryId) {
+      if ((library[i].id || "") === tagEditorEntryId) {
         return library[i];
       }
     }
@@ -1484,7 +1484,7 @@ Item {
   function startTagEditing(entry) {
     var savedEntry = mainInstance?.findSavedEntry(entry);
     var targetEntry = savedEntry || entry;
-    var entryId = String(targetEntry?.id || "").trim();
+    var entryId = (targetEntry?.id || "").trim();
     if (entryId.length === 0) {
       return;
     }
@@ -1498,7 +1498,7 @@ Item {
   }
 
   function metadataFieldLabel(field) {
-    var normalized = String(field || "").trim().toLowerCase();
+    var normalized = (field || "").trim().toLowerCase();
     if (normalized === "title") return pluginApi?.tr("metadata.titleField");
     if (normalized === "artist" || normalized === "uploader") return pluginApi?.tr("metadata.artistField");
     if (normalized === "album") return pluginApi?.tr("metadata.albumField");
@@ -1506,7 +1506,7 @@ Item {
   }
 
   function normalizeMetadataField(field) {
-    var normalized = String(field || "").trim().toLowerCase();
+    var normalized = (field || "").trim().toLowerCase();
     if (normalized === "artist") return "uploader";
     if (normalized === "uploader") return "uploader";
     if (normalized === "album") return "album";
@@ -1521,7 +1521,7 @@ Item {
 
     var library = mainInstance?.libraryEntries || [];
     for (var i = 0; i < library.length; i++) {
-      if (String(library[i].id || "") === metadataEditorEntryId) {
+      if ((library[i].id || "") === metadataEditorEntryId) {
         return library[i];
       }
     }
@@ -1530,7 +1530,7 @@ Item {
 
   function startMetadataEditing(entry, preferredField) {
     var targetEntry = mainInstance?.findLibraryEntry(entry);
-    var entryId = String(targetEntry?.id || "").trim();
+    var entryId = (targetEntry?.id || "").trim();
     if (entryId.length === 0) {
       return;
     }
@@ -1658,13 +1658,13 @@ Item {
   function buildPlayUrlItem(urlText) {
     return {
       "name": pluginApi?.tr("actions.playUrl"),
-      "description": String(urlText || "").trim(),
+      "description": (urlText || "").trim(),
       "icon": "player-play",
       "isTablerIcon": true,
       "isImage": false,
       "provider": root,
       "kind": "custom-url",
-      "url": String(urlText || "").trim(),
+      "url": (urlText || "").trim(),
       "_score": 10,
       "onActivate": function () {
         if (launcher) {
@@ -1678,13 +1678,13 @@ Item {
   function buildSaveUrlItem(urlText) {
     return {
       "name": pluginApi?.tr("actions.saveUrl"),
-      "description": String(urlText || "").trim(),
+      "description": (urlText || "").trim(),
       "icon": "bookmark-plus",
       "isTablerIcon": true,
       "isImage": false,
       "provider": root,
       "kind": "save-url",
-      "url": String(urlText || "").trim(),
+      "url": (urlText || "").trim(),
       "_score": 9,
       "onActivate": function () {
         mainInstance?.saveUrl(urlText);
@@ -1701,7 +1701,7 @@ Item {
       "isImage": false,
       "provider": root,
       "kind": "download-url",
-      "url": String(urlText || "").trim(),
+      "url": (urlText || "").trim(),
       "_score": 8,
       "onActivate": function () {
         mainInstance?.downloadUrl(urlText, pluginApi?.tr("common.downloadedTrack"));
@@ -1735,7 +1735,7 @@ Item {
     var sortBy = mainInstance?.currentSortBy || "date";
     entries.sort(function (a, b) {
       if (sortBy === "title") {
-        return String(a.title || "").localeCompare(String(b.title || ""));
+        return (a.title || "").localeCompare((b.title || ""));
       }
       if (sortBy === "duration") {
         return (Number(b.duration) || 0) - (Number(a.duration) || 0);
@@ -1743,7 +1743,7 @@ Item {
       if (sortBy === "rating") {
         return (Number(b.rating) || 0) - (Number(a.rating) || 0);
       }
-      return String(b.savedAt || "").localeCompare(String(a.savedAt || ""));
+      return (b.savedAt || "").localeCompare((a.savedAt || ""));
     });
 
     var matchedEntries = entries;
@@ -1789,10 +1789,10 @@ Item {
       if (Number(b.playCount || 0) !== Number(a.playCount || 0)) {
         return Number(b.playCount || 0) - Number(a.playCount || 0);
       }
-      if (String(b.lastPlayedAt || "") !== String(a.lastPlayedAt || "")) {
-        return String(b.lastPlayedAt || "").localeCompare(String(a.lastPlayedAt || ""));
+      if ((b.lastPlayedAt || "") !== (a.lastPlayedAt || "")) {
+        return (b.lastPlayedAt || "").localeCompare((a.lastPlayedAt || ""));
       }
-      return String(b.savedAt || "").localeCompare(String(a.savedAt || ""));
+      return (b.savedAt || "").localeCompare((a.savedAt || ""));
     });
 
     return matched.map(function (entry) {
@@ -1935,11 +1935,11 @@ Item {
     var label = metadataFieldLabel(field);
     var currentValue = "";
     if (field === "title") {
-      currentValue = String(entry?.title || "");
+      currentValue = (entry?.title || "");
     } else if (field === "uploader") {
-      currentValue = String(entry?.uploader || "");
+      currentValue = (entry?.uploader || "");
     } else if (field === "album") {
-      currentValue = String(entry?.album || "");
+      currentValue = (entry?.album || "");
     }
 
     return {
@@ -1972,15 +1972,15 @@ Item {
     var normalizedField = normalizeMetadataField(field);
     var value = "";
     if (normalizedField === "title") {
-      value = String(entry?.title || "");
+      value = (entry?.title || "");
     } else if (normalizedField === "uploader") {
-      value = String(entry?.uploader || "");
+      value = (entry?.uploader || "");
     } else if (normalizedField === "album") {
-      value = String(entry?.album || "");
+      value = (entry?.album || "");
     }
 
     return {
-      "id": String(entry?.id || "") + ":metadata:" + normalizedField,
+      "id": (entry?.id || "") + ":metadata:" + normalizedField,
       "name": pluginApi?.tr("metadata.editField", {"field": metadataFieldLabel(normalizedField)}),
       "description": value.length > 0 ? value : (pluginApi?.tr("metadata.empty")),
       "icon": "pencil",
@@ -1999,12 +1999,12 @@ Item {
 
   function buildMetadataApplyItem(entry, field, value) {
     var normalizedField = normalizeMetadataField(field);
-    var targetValue = String(value || "");
+    var targetValue = (value || "");
     var label = metadataFieldLabel(normalizedField);
     var description = targetValue.trim().length > 0 ? targetValue : (pluginApi?.tr("metadata.clearValue"));
 
     return {
-      "id": String(entry?.id || "") + ":metadata:" + normalizedField + ":" + description.toLowerCase(),
+      "id": (entry?.id || "") + ":metadata:" + normalizedField + ":" + description.toLowerCase(),
       "name": targetValue.trim().length > 0 ? (pluginApi?.tr("metadata.setField", {"field": label})) : (pluginApi?.tr("metadata.clearField", {"field": label})),
       "description": description,
       "icon": "check",
@@ -2013,7 +2013,7 @@ Item {
       "provider": root,
       "kind": "metadata-apply",
       "onActivate": function () {
-        mainInstance?.editMetadata(String(entry?.id || ""), normalizedField, targetValue);
+        mainInstance?.editMetadata((entry?.id || ""), normalizedField, targetValue);
         root.clearMetadataEditor();
         if (launcher) {
           launcher.setSearchText(commandName + " ");
@@ -2030,7 +2030,7 @@ Item {
           ];
     }
 
-    var queryText = String(editQuery || "").trim();
+    var queryText = (editQuery || "").trim();
     var field = metadataEditorField;
     var value = "";
 
@@ -2057,14 +2057,14 @@ Item {
     }
 
     var items = [buildMetadataEditorHeaderItem(entry, field)];
-    var trimmedValue = String(value || "").trim();
+    var trimmedValue = (value || "").trim();
     if (trimmedValue.length === 0) {
       items.push(buildMetadataEditorHintItem(
                    field === "album"
                        ? (pluginApi?.tr("metadata.albumHint"))
                        : (pluginApi?.tr("metadata.typeNew", {"field": metadataFieldLabel(field).toLowerCase()}))
                  ));
-      if (field === "album" && String(entry?.album || "").trim().length > 0) {
+      if (field === "album" && (entry?.album || "").trim().length > 0) {
         items.push(buildMetadataApplyItem(entry, field, ""));
       }
     } else {
@@ -2086,7 +2086,7 @@ Item {
 
   function findPlaylistMatches(playlistQuery) {
     var playlists = mainInstance?.playlistEntries || [];
-    var queryLower = String(playlistQuery || "").toLowerCase();
+    var queryLower = (playlistQuery || "").toLowerCase();
 
     if (queryLower.length === 0) {
       return playlists.slice();
@@ -2096,7 +2096,7 @@ Item {
     var prefix = [];
     for (var i = 0; i < playlists.length; i++) {
       var playlist = playlists[i];
-      var nameLower = String(playlist.name || "").toLowerCase();
+      var nameLower = (playlist.name || "").toLowerCase();
       if (nameLower === queryLower) {
         exact.push(playlist);
       } else if (nameLower.indexOf(queryLower) === 0) {
@@ -2110,7 +2110,7 @@ Item {
   function currentPlaylistRenameTarget() {
     var playlists = mainInstance?.playlistEntries || [];
     for (var i = 0; i < playlists.length; i++) {
-      if (String(playlists[i].id || "") === String(playlistRenameId || "")) {
+      if ((playlists[i].id || "") === (playlistRenameId || "")) {
         return playlists[i];
       }
     }
@@ -2118,17 +2118,17 @@ Item {
   }
 
   function playlistNameTaken(targetPlaylistId, name) {
-    var targetName = String(name || "").trim().toLowerCase();
+    var targetName = (name || "").trim().toLowerCase();
     if (targetName.length === 0) {
       return false;
     }
 
     var playlists = mainInstance?.playlistEntries || [];
     for (var i = 0; i < playlists.length; i++) {
-      if (String(playlists[i].id || "") === String(targetPlaylistId || "")) {
+      if ((playlists[i].id || "") === (targetPlaylistId || "")) {
         continue;
       }
-      if (String(playlists[i].name || "").trim().toLowerCase() === targetName) {
+      if ((playlists[i].name || "").trim().toLowerCase() === targetName) {
         return true;
       }
     }
@@ -2140,8 +2140,8 @@ Item {
     var playlistId = playlist.id || "";
     var playlistName = playlist.name || pluginApi?.tr("playlists.untitled");
     var entryCount = (playlist.entryIds || []).length;
-    var sourceType = String(playlist.sourceType || "").trim();
-    var sourceFolder = String(playlist.sourceFolder || "").trim();
+    var sourceType = (playlist.sourceType || "").trim();
+    var sourceFolder = (playlist.sourceFolder || "").trim();
     var description = entryCount === 1 ? (pluginApi?.tr("playlists.oneTrack")) : (pluginApi?.tr("playlists.trackCount", {"count": entryCount}));
     if (sourceType === "folder" && sourceFolder.length > 0) {
       description += " • " + (pluginApi?.tr("playlists.syncedFolder"));
@@ -2194,9 +2194,9 @@ Item {
   }
 
   function buildPlaylistRenameItem(playlist, name) {
-    var targetName = String(name || "").trim();
+    var targetName = (name || "").trim();
     return {
-      "id": String(playlist?.id || "") + ":rename:" + targetName.toLowerCase(),
+      "id": (playlist?.id || "") + ":rename:" + targetName.toLowerCase(),
       "name": pluginApi?.tr("playlists.renameTo", {"name": targetName}),
       "description": pluginApi?.tr("playlists.updateTitle"),
       "icon": "pencil",
@@ -2205,7 +2205,7 @@ Item {
       "provider": root,
       "kind": "playlist-rename",
       "onActivate": function () {
-        mainInstance?.renamePlaylist(String(playlist?.id || ""), targetName);
+        mainInstance?.renamePlaylist((playlist?.id || ""), targetName);
         root.clearPlaylistRename();
         if (launcher) {
           launcher.setSearchText(commandName + " playlist:" + targetName);
@@ -2225,7 +2225,7 @@ Item {
   }
 
   function buildCreatePlaylistItem(playlistName) {
-    var targetName = String(playlistName || "").trim();
+    var targetName = (playlistName || "").trim();
     var pendingEntryId = playlistPickerEntryId;
     var pendingEntryTitle = playlistPickerEntryTitle;
 
@@ -2281,13 +2281,13 @@ Item {
     }
 
     var items = [buildPlaylistRenameHeaderItem(playlist)];
-    var targetName = String(playlistQuery || "").trim();
+    var targetName = (playlistQuery || "").trim();
     if (targetName.length === 0) {
       items.push(buildPlaylistRenameHintItem(pluginApi?.tr("playlists.typeNewName", {"name": playlist.name || playlistRenameTitle || "this playlist"})));
       return items;
     }
 
-    if (String(playlist.name || "").trim().toLowerCase() === targetName.toLowerCase()) {
+    if ((playlist.name || "").trim().toLowerCase() === targetName.toLowerCase()) {
       items.push(buildPlaylistRenameHintItem(pluginApi?.tr("playlists.typeDifferent")));
       return items;
     }
@@ -2352,12 +2352,12 @@ Item {
   function buildPlaylistPickerItems(playlistQuery) {
     var items = [];
     var matches = findPlaylistMatches(playlistQuery);
-    var queryText = String(playlistQuery || "").trim();
+    var queryText = (playlistQuery || "").trim();
     var exactMatch = false;
 
     if (matches.length > 0) {
       for (var i = 0; i < matches.length; i++) {
-        if (String(matches[i].name || "").toLowerCase() === queryText.toLowerCase()) {
+        if ((matches[i].name || "").toLowerCase() === queryText.toLowerCase()) {
           exactMatch = true;
         }
         items.push(buildPlaylistPickerItem(matches[i]));
@@ -2386,7 +2386,7 @@ Item {
   function buildSearchResultItem(entry) {
     var saved = mainInstance?.isSaved(entry) === true;
     var badge = saved ? "bookmark-filled" : "";
-    var entryProvider = String(entry.provider || entry.providerName || mainInstance?.currentProvider || "youtube");
+    var entryProvider = (entry.provider || entry.providerName || mainInstance?.currentProvider || "youtube");
 
     return {
       "id": entry.id || "",
@@ -2768,7 +2768,7 @@ Item {
             }
           ];
 
-      if (String(item.sourceType || "") === "folder" && String(item.sourceFolder || "").trim().length > 0) {
+      if ((item.sourceType || "") === "folder" && (item.sourceFolder || "").trim().length > 0) {
         playlistActions.splice(3, 0, {
                                 "icon": "refresh",
                                 "tooltip": pluginApi?.tr("tooltip.syncFolder"),
