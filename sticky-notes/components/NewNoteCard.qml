@@ -22,29 +22,9 @@ Rectangle {
 
   Behavior on border.color { ColorAnimation { duration: 150 } }
 
-  // Save button (top-right)
-  NIconButton {
-    anchors.top: parent.top
-    anchors.right: parent.right
-    anchors.margins: Style.marginXS
-    icon: "check"
-    baseSize: 28 * Style.uiScaleRatio
-    customRadius: Style.radiusS
-    colorBg: Qt.rgba(0, 0, 0, 0.06)
-    colorBgHover: Qt.rgba(0, 0, 0, 0.12)
-    colorFg: "#37474F"
-    colorFgHover: "#37474F"
-    colorBorder: "transparent"
-    colorBorderHover: "transparent"
-    z: 20
-
-    onClicked: newNoteCard.saveClicked(textArea.text, newNoteCard.noteColor)
-  }
-
   ColumnLayout {
     anchors.fill: parent
     anchors.margins: Style.marginM
-    anchors.rightMargin: 36 * Style.uiScaleRatio
     spacing: 2
 
     Flickable {
@@ -52,7 +32,7 @@ Rectangle {
       Layout.fillWidth: true
       Layout.fillHeight: true
       contentWidth: width
-      contentHeight: Math.ceil(textArea.contentHeight) + 1
+      contentHeight: Math.max(flickable.height, Math.ceil(textArea.contentHeight) + 1)
       clip: true
       boundsBehavior: Flickable.StopAtBounds
       flickableDirection: Flickable.VerticalFlick
@@ -62,6 +42,7 @@ Rectangle {
       TextEdit {
         id: textArea
         width: flickable.width
+        height: flickable.contentHeight
         color: "#3E2723"
         font.pointSize: Style.fontSizeS * Style.uiScaleRatio
         wrapMode: TextEdit.Wrap
@@ -133,13 +114,36 @@ Rectangle {
       }
     }
 
-    // Shortcut hint
-    NText {
+    RowLayout {
       Layout.fillWidth: true
-      horizontalAlignment: Text.AlignRight
-      text: newNoteCard.pluginApi?.tr("editor.hint")
-      font.pointSize: (Style.fontSizeXS - 1) * Style.uiScaleRatio
-      color: Qt.rgba(0, 0, 0, 0.3)
+      spacing: Style.marginL
+
+      Item {
+        Layout.fillWidth: true
+      }
+
+      // Shortcut hint
+      NText {
+        Layout.alignment: Qt.AlignVCenter
+        text: newNoteCard.pluginApi?.tr("editor.hint")
+        font.pointSize: (Style.fontSizeXS - 1) * Style.uiScaleRatio
+        color: Qt.rgba(0, 0, 0, 0.3)
+      }
+
+      NIconButton {
+        Layout.alignment: Qt.AlignVCenter
+        icon: "check"
+        baseSize: 28 * Style.uiScaleRatio
+        customRadius: Style.iRadiusL
+        colorBg: Qt.rgba(0, 0, 0, 0.06)
+        colorBgHover: Qt.rgba(0, 0, 0, 0.12)
+        colorFg: "#37474F"
+        colorFgHover: "#37474F"
+        colorBorder: "transparent"
+        colorBorderHover: "transparent"
+
+        onClicked: newNoteCard.saveClicked(textArea.text, newNoteCard.noteColor)
+      }
     }
   }
 

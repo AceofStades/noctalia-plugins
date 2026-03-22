@@ -74,7 +74,7 @@ Item {
         NIconButton {
           icon: root.editing ? "check" : "pencil"
           baseSize: 34 * Style.uiScaleRatio
-          customRadius: 100
+          customRadius: Style.iRadiusL
           colorBg: Qt.rgba(0, 0, 0, 0.06)
           colorBgHover: Qt.rgba(0, 0, 0, 0.12)
           colorFg: "#37474F"
@@ -94,7 +94,7 @@ Item {
         NIconButton {
           icon: "arrow-down-right"
           baseSize: 34 * Style.uiScaleRatio
-          customRadius: 100
+          customRadius: Style.iRadiusL
           colorBg: Qt.rgba(0, 0, 0, 0.06)
           colorBgHover: Qt.rgba(0, 0, 0, 0.12)
           colorFg: "#37474F"
@@ -155,6 +155,7 @@ Item {
 
             TextArea {
               id: editor
+              height: Math.max(editorScrollView.height, contentHeight)
               color: "#3E2723"
               font.pointSize: Style.fontSizeM * Style.uiScaleRatio
               wrapMode: TextArea.Wrap

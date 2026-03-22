@@ -29,7 +29,7 @@
     "save": "Save",
     "delete": "Delete",
     "placeholder": "Start writing in Markdown...",
-    "hint": "Ctrl+S save"
+    "hint": "Ctrl+S to save"
   },
   "settings": {
     "saved": "Sticky Notes settings saved",

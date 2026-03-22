@@ -164,7 +164,7 @@ Rectangle {
           NIconButton {
             icon: "arrow-up-left"
             baseSize: 28 * Style.uiScaleRatio
-            customRadius: 100
+            customRadius: Style.iRadiusL
             colorBg: Qt.rgba(0, 0, 0, 0.06)
             colorBgHover: Qt.rgba(0, 0, 0, 0.12)
             colorFg: "#37474F"
@@ -179,7 +179,7 @@ Rectangle {
             id: copyBtn
             icon: "copy"
             baseSize: 28 * Style.uiScaleRatio
-            customRadius: 100
+            customRadius: Style.iRadiusL
             colorBg: Qt.rgba(0, 0, 0, 0.06)
             colorBgHover: Qt.rgba(0, 0, 0, 0.12)
             colorFg: "#37474F"
@@ -206,7 +206,7 @@ Rectangle {
           NIconButton {
             icon: "pencil"
             baseSize: 28 * Style.uiScaleRatio
-            customRadius: 100
+            customRadius: Style.iRadiusL
             colorBg: Qt.rgba(0, 0, 0, 0.06)
             colorBgHover: Qt.rgba(0, 0, 0, 0.12)
             colorFg: "#37474F"
@@ -220,7 +220,7 @@ Rectangle {
           NIconButton {
             icon: "trash"
             baseSize: 28 * Style.uiScaleRatio
-            customRadius: 100
+            customRadius: Style.iRadiusL
             colorBg: Qt.rgba(0, 0, 0, 0.06)
             colorBgHover: Qt.rgba(0.8, 0, 0, 0.15)
             colorFg: "#C62828"
@@ -297,29 +297,9 @@ Rectangle {
     anchors.fill: parent
     visible: noteCard.isEditing
 
-    // Save button (top-right)
-    NIconButton {
-      anchors.top: parent.top
-      anchors.right: parent.right
-      anchors.margins: Style.marginXS
-      icon: "check"
-      baseSize: 28 * Style.uiScaleRatio
-      customRadius: Style.radiusS
-      colorBg: Qt.rgba(0, 0, 0, 0.06)
-      colorBgHover: Qt.rgba(0, 0, 0, 0.12)
-      colorFg: "#37474F"
-      colorFgHover: "#37474F"
-      colorBorder: "transparent"
-      colorBorderHover: "transparent"
-      z: 20
-
-      onClicked: noteCard.saveClicked(editTextArea.text, noteCard.noteColor)
-    }
-
     ColumnLayout {
       anchors.fill: parent
       anchors.margins: Style.marginM
-      anchors.rightMargin: 36 * Style.uiScaleRatio
       spacing: 2
 
       Flickable {
@@ -328,7 +308,7 @@ Rectangle {
         Layout.fillHeight: true
         clip: true
         contentWidth: width
-        contentHeight: Math.ceil(editTextArea.contentHeight) + 1
+        contentHeight: Math.max(editFlickable.height, Math.ceil(editTextArea.contentHeight) + 1)
         boundsBehavior: Flickable.StopAtBounds
         flickableDirection: Flickable.VerticalFlick
 
@@ -337,6 +317,7 @@ Rectangle {
         TextEdit {
           id: editTextArea
           width: editFlickable.width
+          height: editFlickable.contentHeight
           color: "#3E2723"
           font.pointSize: Style.fontSizeS * Style.uiScaleRatio
           wrapMode: TextEdit.Wrap
@@ -400,13 +381,36 @@ Rectangle {
         }
       }
 
-      // Shortcut hint (#13)
-      NText {
+      RowLayout {
         Layout.fillWidth: true
-        horizontalAlignment: Text.AlignRight
-        text: noteCard.pluginApi?.tr("editor.hint")
-        font.pointSize: (Style.fontSizeXS - 1) * Style.uiScaleRatio
-        color: Qt.rgba(0, 0, 0, 0.3)
+        spacing: Style.marginXS
+
+        Item {
+          Layout.fillWidth: true
+        }
+
+        // Shortcut hint (#13)
+        NText {
+          Layout.alignment: Qt.AlignVCenter
+          text: noteCard.pluginApi?.tr("editor.hint")
+          font.pointSize: (Style.fontSizeXS - 1) * Style.uiScaleRatio
+          color: Qt.rgba(0, 0, 0, 0.3)
+        }
+
+        NIconButton {
+          Layout.alignment: Qt.AlignVCenter
+          icon: "check"
+          baseSize: 28 * Style.uiScaleRatio
+          customRadius: Style.iRadiusL
+          colorBg: Qt.rgba(0, 0, 0, 0.06)
+          colorBgHover: Qt.rgba(0, 0, 0, 0.12)
+          colorFg: "#37474F"
+          colorFgHover: "#37474F"
+          colorBorder: "transparent"
+          colorBorderHover: "transparent"
+
+          onClicked: noteCard.saveClicked(editTextArea.text, noteCard.noteColor)
+        }
       }
     }
   }
