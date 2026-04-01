@@ -86,7 +86,8 @@ Item {
           data.push({
             id: light.HueData.id,
             name: light.HueData.metadata.name,
-            brightness: light.HueData.dimming.brightness,
+            brightness: light.HueData.dimming ? light.HueData.dimming.brightness : 0,
+            dimmable: !!light.HueData.dimming,
             on: light.HueData.on.on
           });
         }
@@ -108,9 +109,10 @@ Item {
           const lightsInRoom = devices.filter(d => d.Light !== null);
           const anyOn = lightsInRoom.some(d => d.Light.HueData.on.on);
           let avgBrightness = 0;
-          if (lightsInRoom.length > 0) {
-            const total = lightsInRoom.reduce((sum, d) => sum + d.Light.HueData.dimming.brightness, 0);
-            avgBrightness = total / lightsInRoom.length;
+          const dimmableLights = lightsInRoom.filter(d => d.Light.HueData.dimming);
+          if (dimmableLights.length > 0) {
+            const total = dimmableLights.reduce((sum, d) => sum + d.Light.HueData.dimming.brightness, 0);
+            avgBrightness = total / dimmableLights.length;
           }
           data.push({
             id: room.Id,
