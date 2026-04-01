@@ -90,7 +90,6 @@ QtObject {
 				const f = difficultyFactor
 
 				if (_sleeping) {
-						console.log(Math.min(100, energy + 2.3 * f))
 						energy      = Math.min(100, energy + 2.3 * f * _randFactor())
 						hunger      = Math.max(0, hunger - 0.03 * f * _randFactor())
 						happiness   = Math.max(0, happiness - 0.005 * f * _randFactor())
