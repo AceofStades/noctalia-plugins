@@ -23,12 +23,12 @@ Item {
     readonly property real   barFontSize:   Style.getBarFontSizeForScreen(screenName)
 
     readonly property var    mainInstance:   pluginApi?.mainInstance
-    readonly property var    hosts:          mainInstance?.hosts            ?? []
-    readonly property var    displayHost:    mainInstance?.displayHost      ?? null
-    readonly property string status:         mainInstance?.status           ?? "unknown"
-    readonly property int    thresholdGood:  mainInstance?.thresholdGood    ?? 20
-    readonly property int    thresholdWarn:  mainInstance?.thresholdWarning ?? 70
-    readonly property int    showHostName:   mainInstance?.showHostName     ?? true
+    readonly property var    hosts:          mainInstance?.hosts
+    readonly property var    displayHost:    mainInstance?.displayHost
+    readonly property string status:         mainInstance?.status
+    readonly property int    thresholdGood:  mainInstance?.thresholdGood
+    readonly property int    thresholdWarn:  mainInstance?.thresholdWarning
+    readonly property int    showHostName:   mainInstance?.showHostName
 
     readonly property string displayText: {
         if (!displayHost) return "—"
@@ -53,9 +53,9 @@ Item {
 
     readonly property color statusColor: {
         switch(status) {
-            case "good":     return Color.resolveColorKey(mainInstance?.colorGood     ?? "primary")
-            case "warning":  return Color.resolveColorKey(mainInstance?.colorWarning  ?? "tertiary")
-            case "critical": return Color.resolveColorKey(mainInstance?.colorCritical ?? "error")
+            case "good":     return mainInstance?.colorGood
+            case "warning":  return mainInstance?.colorWarning
+            case "critical": return mainInstance?.colorCritical
             default:         return Color.mOnSurface
         }
     }

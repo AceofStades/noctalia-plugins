@@ -10,15 +10,15 @@ ColumnLayout {
     property var cfg:      pluginApi?.pluginSettings || ({})
     property var defaults: pluginApi?.manifest?.metadata?.defaultSettings || ({})
 
-    property int    valueIntervalSeconds:  cfg.intervalSeconds  ?? defaults.intervalSeconds  ?? 5
-    property int    valueThresholdGood:    cfg.thresholdGood    ?? defaults.thresholdGood    ?? 20
-    property int    valueThresholdWarning: cfg.thresholdWarning ?? defaults.thresholdWarning ?? 70
-    property bool   valueShowHostName:     cfg.showHostName     ?? defaults.showHostName     ?? true
-    property string valueBarHost:          cfg.barHost          ?? defaults.barHost          ?? "worst"
-    property string valueColorGood:        cfg.colorGood        ?? defaults.colorGood        ?? "primary"
-    property string valueColorWarning:     cfg.colorWarning     ?? defaults.colorWarning     ?? "tertiary"
-    property string valueColorCritical:    cfg.colorCritical    ?? defaults.colorCritical    ?? "error"
-    property var    valueHosts:            cfg.hosts            ?? defaults.hosts            ?? []
+    property int    valueIntervalSeconds:  cfg.intervalSeconds  ?? defaults.intervalSeconds
+    property int    valueThresholdGood:    cfg.thresholdGood    ?? defaults.thresholdGood
+    property int    valueThresholdWarning: cfg.thresholdWarning ?? defaults.thresholdWarning
+    property bool   valueShowHostName:     cfg.showHostName     ?? defaults.showHostName
+    property string valueBarHost:          cfg.barHost          ?? defaults.barHost
+    property string valueColorGood:        cfg.colorGood        ?? defaults.colorGood
+    property string valueColorWarning:     cfg.colorWarning     ?? defaults.colorWarning
+    property string valueColorCritical:    cfg.colorCritical    ?? defaults.colorCritical
+    property var    valueHosts:            cfg.hosts            ?? defaults.hosts
 
     spacing: Style.marginL
 
@@ -165,7 +165,7 @@ ColumnLayout {
         Layout.fillWidth: true
         spacing: Style.marginM
         NText { text: pluginApi?.tr("settings.thresholds.good"); pointSize: Style.fontSizeS; color: Color.mOnSurface; Layout.fillWidth: true }
-        NText { text: root.valueThresholdGood + " ms"; pointSize: Style.fontSizeS; color: Color.resolveColorKey(root.valueColorGood ?? "primary"); font.family: "monospace" }
+        NText { text: root.valueThresholdGood + " ms"; pointSize: Style.fontSizeS; color: root.valueColorGood; font.family: "monospace" }
     }
     NSlider {
         Layout.fillWidth: true
@@ -180,7 +180,7 @@ ColumnLayout {
         Layout.fillWidth: true
         spacing: Style.marginM
         NText { text: pluginApi?.tr("settings.thresholds.warning"); pointSize: Style.fontSizeS; color: Color.mOnSurface; Layout.fillWidth: true }
-        NText { text: root.valueThresholdWarning + " ms"; pointSize: Style.fontSizeS; color: Color.resolveColorKey(root.valueColorWarning ?? "tertiary"); font.family: "monospace" }
+        NText { text: root.valueThresholdWarning + " ms"; pointSize: Style.fontSizeS; color: root.valueColorWarning; font.family: "monospace" }
     }
     NSlider {
         Layout.fillWidth: true
@@ -206,22 +206,40 @@ ColumnLayout {
         onToggled:   checked => root.valueShowHostName = checked
     }
 
-    NColorChoice {
-        label:      pluginApi?.tr("settings.colorGood.label")
-        currentKey: root.valueColorGood
-        onSelected: key => root.valueColorGood = key
+    RowLayout {
+        NLabel {
+            label:            pluginApi?.tr("settings.colorGood.label")
+            Layout.alignment: Qt.AlignCenter
+        }
+
+        NColorPicker {
+            selectedColor: root.valueColorGood
+            onColorSelected: key => root.valueColorGood = key
+        }
     }
 
-    NColorChoice {
-        label:      pluginApi?.tr("settings.colorWarning.label")
-        currentKey: root.valueColorWarning
-        onSelected: key => root.valueColorWarning = key
+    RowLayout {
+        NLabel {
+            label:            pluginApi?.tr("settings.colorWarning.label")
+            Layout.alignment: Qt.AlignCenter
+        }
+
+        NColorPicker {
+            selectedColor: root.valueColorWarning
+            onColorSelected: key => root.valueColorWarning = key
+        }
     }
 
-    NColorChoice {
-        label:      pluginApi?.tr("settings.colorCritical.label")
-        currentKey: root.valueColorCritical
-        onSelected: key => root.valueColorCritical = key
+    RowLayout {
+        NLabel {
+            label:            pluginApi?.tr("settings.colorCritical.label")
+            Layout.alignment: Qt.AlignCenter
+        }
+
+        NColorPicker {
+            selectedColor: root.valueColorCritical
+            onColorSelected: key => root.valueColorCritical = key
+        }
     }
 
     function saveSettings() {

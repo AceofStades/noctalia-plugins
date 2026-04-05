@@ -13,9 +13,9 @@ Item {
     readonly property int    thresholdWarning: cfg.thresholdWarning ?? defaults.thresholdWarning ?? 70
     readonly property bool   showHostName:     cfg.showHostName     ?? defaults.showHostName     ?? true
     readonly property string barHost:          cfg.barHost          ?? defaults.barHost          ?? "worst"
-    readonly property string colorGood:        cfg.colorGood        ?? defaults.colorGood        ?? "primary"
-    readonly property string colorWarning:     cfg.colorWarning     ?? defaults.colorWarning     ?? "tertiary"
-    readonly property string colorCritical:    cfg.colorCritical    ?? defaults.colorCritical    ?? "error"
+    readonly property string colorGood:        cfg.colorGood        ?? defaults.colorGood        ?? "#00ff7f"
+    readonly property string colorWarning:     cfg.colorWarning     ?? defaults.colorWarning     ?? "#f1fa8c"
+    readonly property string colorCritical:    cfg.colorCritical    ?? defaults.colorCritical    ?? "#ff5555"
 
     readonly property var hostsCfg: cfg.hosts ?? defaults.hosts ?? [
         { name: "Cloudflare", address: "1.1.1.1" },

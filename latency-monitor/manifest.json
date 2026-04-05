@@ -38,9 +38,9 @@
       "thresholdWarning": 70,
       "showHostName": true,
       "barHost": "worst",
-      "colorGood": "primary",
-      "colorWarning": "tertiary",
-      "colorCritical": "error"
+      "colorGood": "#00ff7f",
+      "colorWarning": "#f1fa8c",
+      "colorCritical": "#ff5555"
     }
   }
 }

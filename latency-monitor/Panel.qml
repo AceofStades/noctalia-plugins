@@ -39,17 +39,13 @@ Item {
 
     readonly property var _currentRtts: _currentSamples.map(s => s.rtt)
 
-    function _colorizeStatus(status) {
+    function statusColor(status) {
         switch(status) {
             case "good":     return mainInstance?.colorGood
             case "warning":  return mainInstance?.colorWarning
             case "critical": return mainInstance?.colorCritical
             default:         return "onSurface"
         }
-    }
-
-    function statusColor(status) {
-        return Color.resolveColorKey(_colorizeStatus(status))
     }
 
     function _threshY(thresh, maxVal, h) {
@@ -252,15 +248,15 @@ Item {
 
                     Repeater {
                         model: [
-                            { thresh: root.thresholdGood,    colorKey: mainInstance?.colorGood    ?? "primary"  },
-                            { thresh: root.thresholdWarning, colorKey: mainInstance?.colorWarning ?? "tertiary" },
+                            { thresh: root.thresholdGood,    color: mainInstance?.colorGood  },
+                            { thresh: root.thresholdWarning, color: mainInstance?.colorWarning },
                         ]
                         delegate: Item {
                             required property var modelData
                             anchors { left: parent.left; right: parent.right }
 
                             readonly property real  _y:   root._threshY(modelData.thresh, graph.maxValue, graph.height)
-                            readonly property color _col: Color.resolveColorKey(modelData.colorKey)
+                            readonly property color _col: modelData.color
 
                             visible: _y >= 0 && _y <= graph.height
                             y: _y
