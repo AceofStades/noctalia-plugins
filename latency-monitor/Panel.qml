@@ -22,12 +22,6 @@ Item {
         NumberAnimation { duration: 180; easing.type: Easing.InOutCubic }
     }
 
-    Timer { id: readyTimer; interval: 400; repeat: false; onTriggered: panelReady = true }
-    Component.onCompleted: readyTimer.start()
-
-    property var cfg:      pluginApi?.pluginSettings || ({})
-    property var defaults: pluginApi?.manifest?.metadata?.defaultSettings || ({})
-
     readonly property var    mainInstance:    pluginApi?.mainInstance
     readonly property var    hosts:           mainInstance?.hosts            ?? []
     readonly property int    thresholdGood:   mainInstance?.thresholdGood    ?? 20
