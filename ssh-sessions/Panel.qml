@@ -17,42 +17,6 @@ Item {
   readonly property var mainInstance: pluginApi?.mainInstance
   readonly property int activeCount: mainInstance?.activeCount ?? 0
 
-  // Rebuild the ListModel whenever mainInstance.sortedHosts changes
-  ListModel { id: hostModel }
-
-  Connections {
-    target: root.mainInstance
-    function onSortedHostsChanged() { root.rebuildModel() }
-  }
-
-  onMainInstanceChanged: rebuildModel()
-
-  function rebuildModel() {
-    var hosts = root.mainInstance?.sortedHosts ?? []
-
-    // Update existing rows, add new ones
-    for (var i = 0; i < hosts.length; i++) {
-      var h = hosts[i]
-      var entry = {
-        hostName: h.host.name,
-        hostname: h.host.hostname ?? "",
-        user: h.host.user ?? "",
-        port: h.host.port ?? "",
-        isActive: h.isActive
-      }
-      if (i < hostModel.count) {
-        hostModel.set(i, entry)
-      } else {
-        hostModel.append(entry)
-      }
-    }
-
-    // Remove extra rows
-    while (hostModel.count > hosts.length) {
-      hostModel.remove(hostModel.count - 1)
-    }
-  }
-
   anchors.fill: parent
 
   Rectangle {
@@ -94,9 +58,10 @@ Item {
           spacing: Style.marginS
 
           Repeater {
-            model: hostModel
+            model: root.mainInstance?.sortedHosts ?? []
 
             delegate: NBox {
+              required property var modelData
               Layout.fillWidth: true
               Layout.preferredHeight: hostRow.implicitHeight + Style.marginM * 2
 
@@ -111,10 +76,10 @@ Item {
                   width: 8 * Style.uiScaleRatio
                   height: width
                   radius: width / 2
-                  color: model.isActive ? Color.mPrimary : "transparent"
-                  border.width: model.isActive ? 0 : 1.5 * Style.uiScaleRatio
+                  color: modelData.isActive ? Color.mPrimary : "transparent"
+                  border.width: modelData.isActive ? 0 : 1.5 * Style.uiScaleRatio
                   border.color: Color.mOnSurfaceVariant
-                  opacity: model.isActive ? 1.0 : 0.5
+                  opacity: modelData.isActive ? 1.0 : 0.5
                   Layout.alignment: Qt.AlignVCenter
                 }
 
@@ -124,16 +89,16 @@ Item {
                   spacing: Style.marginXS
 
                   NText {
-                    text: model.hostName
+                    text: modelData.host.name
                     pointSize: Style.fontSizeM
-                    font.weight: model.isActive ? Font.DemiBold : Font.Normal
+                    font.weight: modelData.isActive ? Font.DemiBold : Font.Normal
                     color: Color.mOnSurface
                     Layout.fillWidth: true
                     elide: Text.ElideRight
                   }
 
                   NText {
-                    text: (model.user ? model.user + "@" : "") + (model.hostname || model.hostName)
+                    text: root.mainInstance?.getHostDescription(modelData.host) ?? ""
                     pointSize: Style.fontSizeS
                     color: Color.mOnSurfaceVariant
                     Layout.fillWidth: true
@@ -154,7 +119,7 @@ Item {
                     anchors.margins: -Style.marginS
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: root.mainInstance?.connectToHost(model.hostName)
+                    onClicked: root.mainInstance?.connectToHost(modelData.host.name)
                   }
                 }
               }

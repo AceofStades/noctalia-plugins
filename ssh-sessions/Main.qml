@@ -17,7 +17,7 @@ Item {
   property var activeSessions: []
   property int activeCount: 0
   property bool configLoaded: false
-  property var sortedHosts: []
+  property list<var> sortedHosts: []
 
   // Terminal detection (netbird pattern)
   property string detectedTerminal: ""
