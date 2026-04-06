@@ -124,7 +124,7 @@ DraggableDesktopWidget {
                         NText {
                             anchors.centerIn: parent
                             text: dayNum
-                            color: isActuallyToday ? Color.mOnPrimary : Color.mOnSurface
+                            color: isActuallyToday ? Color.mPrimary : "transparent"
                             font.bold: isActuallyToday
                             font.pointSize: Style.fontSizeS
                         }
