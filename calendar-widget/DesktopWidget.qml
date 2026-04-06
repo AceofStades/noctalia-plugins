@@ -61,29 +61,29 @@ DraggableDesktopWidget {
         anchors.fill: parent
         color: Color.mSurface || "#1e1e1e"
         opacity: 0.85
-        radius: Style.radiusM || 8
+        radius: Style.radiusM
         border.color: Color.mOutlineVariant || "#333333"
         border.width: 1
 
         ColumnLayout {
             anchors.fill: parent
-            anchors.margins: Style.marginL || 15
-            spacing: Style.marginS || 5
+            anchors.margins: Style.marginL
+            spacing: Style.marginS
 
             NText {
                 text: currentDate.toLocaleDateString(Qt.locale(), "MMMM yyyy").toUpperCase()
                 color: Color.mPrimary || "#21A3D5"
                 font.bold: true
                 font.letterSpacing: 1.2
-                font.pointSize: Style.fontSizeM || 11
+                font.pointSize: Style.fontSizeM
                 Layout.alignment: Qt.AlignHCenter
-                Layout.bottomMargin: Style.marginS || 5
+                Layout.bottomMargin: Style.marginS
             }
 
             GridLayout {
                 columns: 7
-                rowSpacing: Style.marginS || 5
-                columnSpacing: Style.marginS || 5
+                rowSpacing: Style.marginS
+                columnSpacing: Style.marginS
                 Layout.fillWidth: true
 
                 // Days Header (M T W...)
@@ -93,7 +93,7 @@ DraggableDesktopWidget {
                         text: modelData
                         color: Color.mOnSurfaceVariant || "#888888"
                         font.bold: true
-                        font.pointSize: Style.fontSizeS || 9
+                        font.pointSize: Style.fontSizeS
                         Layout.fillWidth: true
                         horizontalAlignment: Text.AlignHCenter
                     }
@@ -120,14 +120,14 @@ DraggableDesktopWidget {
 
                         // Use safe color fallbacks
                         color: isActuallyToday ? (Color.mPrimary || "#21A3D5") : "transparent"
-                        radius: Style.radiusS || 4
+                        radius: Style.radiusS
 
                         NText {
                             anchors.centerIn: parent
                             text: dayNum
                             color: isActuallyToday ? (Color.mOnPrimary || "#ffffff") : (Color.mOnSurface || "#eeeeee")
                             font.bold: isActuallyToday
-                            font.pointSize: Style.fontSizeS || 9
+                            font.pointSize: Style.fontSizeS
                         }
                     }
                 }
