@@ -16,21 +16,22 @@ DraggableDesktopWidget {
     implicitWidth:  _width
     implicitHeight: _height
 
-    // --- Data Variables ---
+    // --- Data Variables with Localized Loading State ---
     property string distroVal: pluginApi?.tr("widget.loading")
-    property string kernelVal: "..."
-    property string uptimeVal: "..."
-    property string lanaddressVal: "..."
-    property string ipaddressVal: "..."
-    property string cpuUsage: "..."
-    property string cpuTemp: "..."
-    property string memUsage: "..."
-    property string rootDisk: "..."
-    property string homeDisk: "..."
+    property string kernelVal: pluginApi?.tr("widget.loading")
+    property string uptimeVal: pluginApi?.tr("widget.loading")
+    property string lanaddressVal: pluginApi?.tr("widget.loading")
+    property string ipaddressVal: pluginApi?.tr("widget.loading")
+    property string cpuUsage: pluginApi?.tr("widget.loading")
+    property string cpuTemp: pluginApi?.tr("widget.loading")
+    property string memUsage: pluginApi?.tr("widget.loading")
+    property string rootDisk: pluginApi?.tr("widget.loading")
+    property string homeDisk: pluginApi?.tr("widget.loading")
 
     // --- Data Fetching ---
     Process {
         id: distroProc
+        running: true // Static: Run once
         command: ["sh", "-c", "grep '^NAME=' /etc/os-release | cut -d'=' -f2 | tr -d '\"'"]
         stdout: StdioCollector {
             onTextChanged: if (text.trim() !== "") root.distroVal = text.trim()
@@ -39,6 +40,7 @@ DraggableDesktopWidget {
 
     Process {
         id: kernelProc
+        running: true // Static: Run once
         command: ["uname", "-r"]
         stdout: StdioCollector {
             onTextChanged: if (text.trim() !== "") root.kernelVal = text.trim()
@@ -125,8 +127,6 @@ DraggableDesktopWidget {
     Timer {
         interval: 60000; running: true; repeat: true; triggeredOnStart: true
         onTriggered: {
-            distroProc.running = true
-            kernelProc.running = true
             lanaddressProc.running = true
             ipaddressProc.running = true
         }
@@ -149,7 +149,7 @@ DraggableDesktopWidget {
                 Layout.fillWidth: true
                 rowSpacing: 8
 
-                // --- System Row ---
+                // System
                 NText {
                     text: pluginApi?.tr("widget.distribution")
                     color: Color.mOnSurfaceVariant
@@ -164,7 +164,7 @@ DraggableDesktopWidget {
                     horizontalAlignment: Text.AlignRight
                 }
 
-                // --- Kernel Row ---
+                // Kernel
                 NText {
                     text: pluginApi?.tr("widget.kernel")
                     color: Color.mOnSurfaceVariant
@@ -179,7 +179,7 @@ DraggableDesktopWidget {
                     horizontalAlignment: Text.AlignRight
                 }
 
-                // --- Uptime Row ---
+                // Uptime
                 NText {
                     text: pluginApi?.tr("widget.uptime")
                     color: Color.mOnSurfaceVariant
@@ -194,7 +194,7 @@ DraggableDesktopWidget {
                     horizontalAlignment: Text.AlignRight
                 }
 
-                // --- CPU Row ---
+                // CPU
                 NText {
                     text: pluginApi?.tr("widget.cpu")
                     color: Color.mOnSurfaceVariant
@@ -209,7 +209,7 @@ DraggableDesktopWidget {
                     horizontalAlignment: Text.AlignRight
                 }
 
-                // --- Memory Row ---
+                // Memory
                 NText {
                     text: pluginApi?.tr("widget.memory")
                     color: Color.mOnSurfaceVariant
@@ -224,7 +224,7 @@ DraggableDesktopWidget {
                     horizontalAlignment: Text.AlignRight
                 }
 
-                // --- Disk Root Row ---
+                // Root Disk
                 NText {
                     text: pluginApi?.tr("widget.disk_root")
                     color: Color.mOnSurfaceVariant
@@ -239,7 +239,7 @@ DraggableDesktopWidget {
                     horizontalAlignment: Text.AlignRight
                 }
 
-                // --- Disk Home Row ---
+                // Home Disk
                 NText {
                     text: pluginApi?.tr("widget.disk_home")
                     color: Color.mOnSurfaceVariant
@@ -254,18 +254,14 @@ DraggableDesktopWidget {
                     horizontalAlignment: Text.AlignRight
                 }
 
-                // --- Separator ---
-                Rectangle {
+                NDivider {
                     Layout.columnSpan: 2
                     Layout.fillWidth: true
-                    height: 1
-                    color: Color.mOnSurfaceVariant
-                    opacity: 0.15
                     Layout.topMargin: 4
                     Layout.bottomMargin: 4
                 }
 
-                // --- LAN Row ---
+                // LAN
                 NText {
                     text: pluginApi?.tr("widget.lanaddress")
                     color: Color.mOnSurfaceVariant
@@ -280,7 +276,7 @@ DraggableDesktopWidget {
                     horizontalAlignment: Text.AlignRight
                 }
 
-                // --- IP Row ---
+                // IP
                 NText {
                     text: pluginApi?.tr("widget.ipaddress")
                     color: Color.mOnSurfaceVariant
