@@ -67,6 +67,8 @@ Item {
 
   readonly property string lastPrayerLabel: {
     return pluginApi?.tr(mainInstance?.getPrayer(lastPrayerName)?.labelKey ?? "")
+    if (!key) return ""
+    return pluginApi?.tr(key) ?? ""
   }
 
   readonly property string nextPrayerTimeStr: {
