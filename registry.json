@@ -562,6 +562,22 @@
       "lastUpdated": "2026-04-07T22:03:44+02:00"
     },
     {
+      "id": "khal-agenda-widget",
+      "name": "Khal Agenda Info",
+      "version": "1.0.0",
+      "official": false,
+      "author": "Simon",
+      "description": "Shows khal agenda.",
+      "repository": "https://github.com/noctalia-dev/noctalia-plugins",
+      "minNoctaliaVersion": "4.6.6",
+      "license": "MIT",
+      "tags": [
+        "Desktop",
+        "System"
+      ],
+      "lastUpdated": "2026-04-13T16:46:21+02:00"
+    },
+    {
       "id": "latency-monitor",
       "name": "Latency Monitor",
       "version": "1.0.0",
