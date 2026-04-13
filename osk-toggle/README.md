@@ -37,6 +37,21 @@ A [Noctalia](https://github.com/noctalia-dev/noctalia) bar widget for toggling a
 
 Toggle state is controlled via `gsettings set org.gnome.desktop.a11y.applications screen-keyboard-enabled`. State changes are tracked live with `dconf watch`, and Squeekboard's D-Bus presence is monitored continuously with `dbus-monitor` so the widget reacts if Squeekboard stops or starts.
 
+#### Tablet Mode (2-in-1 Laptops)
+
+This widget **complements** automated tablet-mode switching. 
+For Niri onfigure `switch-events` in `~/.config/niri/config.kdl` to auto-toggle the keyboard:
+
+```kdl
+switch-events {
+    tablet-mode-on { spawn "bash" "-c" "gsettings set org.gnome.desktop.a11y.applications screen-keyboard-enabled true"; }
+    tablet-mode-off { spawn "bash" "-c" "gsettings set org.gnome.desktop.a11y.applications screen-keyboard-enabled false"; }
+}
+```
+
+The widget will **reflect these changes in real-time** without conflicts. Manual toggles via the widget work independently of tablet-mode automation.
+
+
 ### wvkbd backend
 
 The plugin takes ownership of the wvkbd process: on load it kills any pre-existing instance and relaunches it with `--hidden`. Show/hide is then controlled by sending `SIGUSR1` / `SIGUSR2` directly to the owned process. When the plugin unloads, the process is stopped.
