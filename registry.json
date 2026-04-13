@@ -1369,7 +1369,7 @@
     {
       "id": "ssh-sessions",
       "name": "SSH Sessions",
-      "version": "1.1.1",
+      "version": "1.1.2",
       "official": false,
       "author": "adriamartin91",
       "description": "Manage SSH connections from ~/.ssh/config with active session detection and launcher integration.",
@@ -1383,7 +1383,7 @@
         "Utility",
         "Development"
       ],
-      "lastUpdated": "2026-04-08T20:26:40+02:00"
+      "lastUpdated": "2026-04-13T20:17:59+02:00"
     },
     {
       "id": "steam-price-watcher",
