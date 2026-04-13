@@ -105,10 +105,8 @@ DraggableDesktopWidget {
 
                     color: Color.mOnSurface
                     font.pointSize: Style.fontSizeL * widgetScale
-
-                    // WrapMode should be Wrap if you want to see everything,
-                    // or NoWrap with Elide if you want to keep lines single.
-                    wrapMode: Text.Wrap
+                    wrapMode: Text.NoWrap
+                    elide: Text.ElideRight
                     font.family: "Monospace"
                 }
             }
