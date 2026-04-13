@@ -40,7 +40,7 @@ Toggle state is controlled via `gsettings set org.gnome.desktop.a11y.application
 #### Tablet Mode (2-in-1 Laptops)
 
 This widget **complements** automated tablet-mode switching. 
-For Niri onfigure `switch-events` in `~/.config/niri/config.kdl` to auto-toggle the keyboard:
+For Niri configure `switch-events` in `~/.config/niri/config.kdl` to auto-toggle the keyboard:
 
 ```kdl
 switch-events {
