@@ -443,7 +443,7 @@
     {
       "id": "hyprland-visual-editor",
       "name": "Hyprland Visual Editor",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "official": false,
       "author": "XimoCP",
       "description": "Elevate your Hyprland experience. A modular plugin to safely inject custom animations, borders, and visual effects on the fly.",
@@ -459,7 +459,7 @@
         "Utility",
         "Hyprland"
       ],
-      "lastUpdated": "2026-03-29T19:05:12-04:00"
+      "lastUpdated": "2026-04-14T10:55:32+02:00"
     },
     {
       "id": "ideapad-battery-health",
