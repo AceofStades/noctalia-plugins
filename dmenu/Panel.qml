@@ -238,7 +238,7 @@ FocusScope {
                 fontSize: Style.fontSizeM
                 placeholderText: {
                     var st = root.dmenuState;
-                    return (st && st.prompt) ? st.prompt : "Type to filter...";
+                    return (st && st.prompt) ? st.prompt : root.pluginApi?.tr("provider.typeToFilterPlaceholder");
                 }
                 text: root.filterText
                 onTextChanged: root.filterText = text
@@ -388,9 +388,9 @@ FocusScope {
                     visible: root.filteredItems.length === 0
                     text: {
                         var st = root.dmenuState;
-                        if (!st || !st.active) return "Loading...";
-                        if (root.filterText !== "") return "No matches";
-                        return "No items";
+                        if (!st || !st.active) return root.pluginApi?.tr("provider.loading");
+                        if (root.filterText !== "") return root.pluginApi?.tr("provider.noMatches");
+                        return root.pluginApi?.tr("provider.noItems");
                     }
                     pointSize: Style.fontSizeM
                     color: Color.mOnSurfaceVariant
@@ -407,13 +407,27 @@ FocusScope {
                     Layout.fillWidth: true
                     text: {
                         if (root.filteredItems.length === 0) {
-                            if (root.filterText) return "No results";
+                            if (root.filterText) return root.pluginApi?.tr("provider.noResults");
                             return "";
                         }
-                        var prefix = "";
-                        if (root.filterText && root.showMatchCount)
-                            prefix = root.filteredItems.length + " of " + (root.dmenuState ? root.dmenuState.items.length : 0) + " · ";
-                        return prefix + root.filteredItems.length + " result" + (root.filteredItems.length !== 1 ? "s" : "");
+                        if (root.filterText && root.showMatchCount) {
+                            return root.pluginApi?.trp(
+                                "provider.filteredResultsCount",
+                                root.filteredItems.length,
+                                "{filtered} of {total} · {count} result",
+                                "{filtered} of {total} · {count} results",
+                                {
+                                    filtered: root.filteredItems.length,
+                                    total: root.dmenuState ? root.dmenuState.items.length : 0
+                                }
+                            );
+                        }
+                        return root.pluginApi?.trp(
+                            "provider.resultsCount",
+                            root.filteredItems.length,
+                            "{count} result",
+                            "{count} results"
+                        );
                     }
                     pointSize: Style.fontSizeXS
                     color: Color.mOnSurfaceVariant
