@@ -39,7 +39,7 @@ ColumnLayout {
           }
 
           ColumnLayout {
-            spacing: 2
+            spacing: Style.marginXS
             Layout.fillWidth: true
 
             NText {

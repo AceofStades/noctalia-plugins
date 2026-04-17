@@ -60,20 +60,22 @@ ColumnLayout {
   }
 
   function installPlugin(pluginMetadata) {
-    var title = pluginApi?.tr("panel.title") ?? ""
-    var msg = pluginApi?.tr("panel.installing") ?? ""
+    if (!pluginApi) return;
+    var title = pluginApi.tr("panel.title")
+    var msg = pluginApi.tr("panel.installing")
     msg = msg.replace("{plugin}", pluginMetadata.name)
     ToastService.showNotice(title, msg);
 
     PluginService.installPlugin(pluginMetadata, false, function (success, error, registeredKey) {
+      if (!pluginApi) return;
       if (success) {
-        var successMsg = pluginApi?.tr("panel.install-success") ?? ""
+        var successMsg = pluginApi.tr("panel.install-success")
         successMsg = successMsg.replace("{plugin}", pluginMetadata.name)
         ToastService.showNotice(title, successMsg);
         PluginService.enablePlugin(registeredKey);
       } else {
-        var errorMsg = pluginApi?.tr("panel.install-error") ?? ""
-        errorMsg = errorMsg.replace("{error}", error || (pluginApi?.tr("panel.unknown-error") ?? ""))
+        var errorMsg = pluginApi.tr("panel.install-error")
+        errorMsg = errorMsg.replace("{error}", error || pluginApi.tr("panel.unknown-error"))
         ToastService.showError(title, errorMsg);
       }
     });
@@ -347,13 +349,13 @@ ColumnLayout {
             Layout.fillWidth: true
 
             NText {
-              text: "v" + modelData.version
+              text: pluginApi?.tr("panel.version-prefix") + modelData.version
               font.pointSize: Style.fontSizeXS
               color: Color.mOnSurfaceVariant
             }
 
             NText {
-              text: "\u2022"
+              text: pluginApi?.tr("panel.separator")
               font.pointSize: Style.fontSizeXS
               color: Color.mOnSurfaceVariant
             }

@@ -61,7 +61,8 @@ ColumnLayout {
       NHeader {
         label: pluginApi?.tr("panel.uninstall-dialog-title")
         description: {
-          var base = pluginApi?.tr("panel.uninstall-dialog-description") ?? ""
+          if (!pluginApi) return ""
+          var base = pluginApi.tr("panel.uninstall-dialog-description")
           return base.replace("{plugin}", uninstallDialog.pluginToUninstall?.name || "")
         }
       }
@@ -107,19 +108,21 @@ ColumnLayout {
 
     BarService.widgetsRevision++;
 
-    var title = pluginApi?.tr("panel.title") ?? ""
-    var msg = pluginApi?.tr("panel.uninstalling") ?? ""
+    if (!pluginApi) return;
+    var title = pluginApi.tr("panel.title")
+    var msg = pluginApi.tr("panel.uninstalling")
     msg = msg.replace("{plugin}", pluginName)
     ToastService.showNotice(title, msg);
 
     PluginService.uninstallPlugin(pluginId, function (success, error) {
+      if (!pluginApi) return;
       if (success) {
-        var successMsg = pluginApi?.tr("panel.uninstall-success") ?? ""
+        var successMsg = pluginApi.tr("panel.uninstall-success")
         successMsg = successMsg.replace("{plugin}", pluginName)
         ToastService.showNotice(title, successMsg);
       } else {
-        var errorMsg = pluginApi?.tr("panel.uninstall-error") ?? ""
-        errorMsg = errorMsg.replace("{error}", error || (pluginApi?.tr("panel.unknown-error") ?? ""))
+        var errorMsg = pluginApi.tr("panel.uninstall-error")
+        errorMsg = errorMsg.replace("{error}", error || pluginApi.tr("panel.unknown-error"))
         ToastService.showError(title, errorMsg);
       }
     });
@@ -380,15 +383,16 @@ ColumnLayout {
                   updates2[pid] = false;
                   rootRef.updatingPlugins = updates2;
 
+                  if (!pluginApi) return;
                   if (success) {
-                    var title = pluginApi?.tr("panel.title") ?? ""
-                    var msg = pluginApi?.tr("panel.install-success") ?? ""
+                    var title = pluginApi.tr("panel.title")
+                    var msg = pluginApi.tr("panel.install-success")
                     msg = msg.replace("{plugin}", pname)
                     ToastService.showNotice(title, msg);
                   } else {
-                    var title2 = pluginApi?.tr("panel.title") ?? ""
-                    var errMsg = pluginApi?.tr("panel.install-error") ?? ""
-                    errMsg = errMsg.replace("{error}", error || (pluginApi?.tr("panel.unknown-error") ?? ""))
+                    var title2 = pluginApi.tr("panel.title")
+                    var errMsg = pluginApi.tr("panel.install-error")
+                    errMsg = errMsg.replace("{error}", error || pluginApi.tr("panel.unknown-error"))
                     ToastService.showError(title2, errMsg);
                   }
                 });
@@ -429,9 +433,9 @@ ColumnLayout {
             NText {
               text: {
                 if (modelData.updateInfo) {
-                  return "v" + modelData.version + " -> v" + modelData.updateInfo.availableVersion
+                  return pluginApi?.tr("panel.version-prefix") + modelData.version + " → " + pluginApi?.tr("panel.version-prefix") + modelData.updateInfo.availableVersion
                 }
-                return "v" + modelData.version;
+                return pluginApi?.tr("panel.version-prefix") + modelData.version;
               }
               font.pointSize: Style.fontSizeXS
               color: modelData.updateInfo ? Color.mPrimary : Color.mOnSurfaceVariant
@@ -439,7 +443,7 @@ ColumnLayout {
             }
 
             NText {
-              text: "\u2022"
+              text: pluginApi?.tr("panel.separator")
               font.pointSize: Style.fontSizeXS
               color: Color.mOnSurfaceVariant
             }

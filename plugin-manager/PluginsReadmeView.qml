@@ -213,7 +213,7 @@ Item {
       NText {
         text: {
           var m = PluginRegistry.getPluginManifest(root.selectedPluginId)
-          return m && m.version ? "v" + m.version : ""
+          return m && m.version ? pluginApi?.tr("panel.version-prefix") + m.version : ""
         }
         pointSize: Style.fontSizeM
         color: Color.mOnSurfaceVariant
@@ -469,7 +469,7 @@ Item {
         Layout.preferredWidth: Math.round(3 * Style.uiScaleRatio)
         Layout.fillHeight: true
         color: Color.mPrimary
-        radius: 1
+        radius: Style.radiusXS
       }
 
       NText {

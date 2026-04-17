@@ -39,7 +39,9 @@
     "cancel": "Cancel",
     "refresh": "Refresh",
     "hot-reload": "Hot reload",
-    "unknown-error": "Unknown error"
+    "unknown-error": "Unknown error",
+    "version-prefix": "v",
+    "separator": "\u2022"
   },
   "settings": {
     "iconColor": {
