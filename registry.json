@@ -819,7 +819,7 @@
     {
       "id": "mpvpaper",
       "name": "Mpvpaper",
-      "version": "1.6.3",
+      "version": "1.6.4",
       "official": false,
       "author": "spiros132",
       "description": "A plugin that allows having video wallpapers using mpvpaper.",
@@ -832,7 +832,7 @@
         "Fun",
         "System"
       ],
-      "lastUpdated": "2026-03-29T19:05:12-04:00"
+      "lastUpdated": "2026-04-18T21:56:28+02:00"
     },
     {
       "id": "music-search",
