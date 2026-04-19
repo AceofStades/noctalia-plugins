@@ -1,0 +1,47 @@
+{
+  "provider": {
+    "name": "Espaces de travail Niri"
+  },
+  "launcher": {
+    "command": {
+      "description": "Filtrer, basculer, renommer ou réinitialiser les espaces de travail Niri"
+    },
+    "unnamedLabel": "Espace de travail {idx}",
+    "currentSuffix": " (actuel)",
+    "focus": {
+      "description": "Basculer vers cet espace de travail",
+      "descriptionCurrent": "Espace de travail actuel"
+    },
+    "actions": {
+      "rename": "Renommer",
+      "reset": "Réinitialiser le nom (selon l'index)"
+    },
+    "renamePrompt": {
+      "name": "Saisir un nouveau nom pour l'espace de travail {idx}",
+      "nameWithCurrent": "Modifier le nom de « {current} »",
+      "description": "Entrée pour appliquer. {sigil}{sigil} pour réinitialiser."
+    },
+    "resetPrompt": {
+      "name": "Réinitialiser le nom de {target}",
+      "description": "Supprime le nom personnalisé — Entrée pour appliquer"
+    },
+    "applyRename": {
+      "name": "Définir le nom : {name}",
+      "description": "Renommer {target} ainsi",
+      "unchangedName": "Garder le nom : {name}",
+      "unchangedDescription": "Le nom est déjà défini — Entrée pour fermer"
+    },
+    "noMatches": {
+      "name": "Aucun espace de travail ne correspond à « {filter} »",
+      "description": "Essayez un autre filtre ou effacez-le"
+    },
+    "noHighlighted": {
+      "name": "Aucun espace de travail à modifier",
+      "description": "Sélectionnez un espace de travail dans la liste, ou ouvrez le lanceur sur Niri"
+    },
+    "notNiri": {
+      "name": "Ne fonctionne pas sous Niri",
+      "description": "Ce plugin ne fonctionne que sur le compositeur Niri"
+    }
+  }
+}
