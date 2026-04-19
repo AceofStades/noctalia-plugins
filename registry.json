@@ -1323,7 +1323,7 @@
     {
       "id": "screenshot",
       "name": "Screenshot",
-      "version": "1.1.1",
+      "version": "1.2.1",
       "official": false,
       "author": "Cleboost",
       "description": "Quick screenshot button in bar for Hyprland, Sway, and Niri",
@@ -1334,7 +1334,7 @@
         "Bar",
         "Utility"
       ],
-      "lastUpdated": "2026-04-11T00:42:02+02:00"
+      "lastUpdated": "2026-04-19T00:00:51+02:00"
     },
     {
       "id": "shell-profiles",
