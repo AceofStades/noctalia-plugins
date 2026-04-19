@@ -19,17 +19,17 @@
     "renamePrompt": {
       "name": "Saisir un nouveau nom pour l'espace de travail {idx}",
       "nameWithCurrent": "Modifier le nom de « {current} »",
-      "description": "Entrée pour appliquer. {sigil}{sigil} pour réinitialiser."
+      "description": "Appuyez sur entrée pour appliquer. {sigil}{sigil} pour réinitialiser."
     },
     "resetPrompt": {
       "name": "Réinitialiser le nom de {target}",
-      "description": "Supprime le nom personnalisé — Entrée pour appliquer"
+      "description": "Supprime le nom personnalisé — appuyez sur entrée pour appliquer"
     },
     "applyRename": {
       "name": "Définir le nom : {name}",
       "description": "Renommer {target} ainsi",
       "unchangedName": "Garder le nom : {name}",
-      "unchangedDescription": "Le nom est déjà défini — Entrée pour fermer"
+      "unchangedDescription": "Le nom est déjà défini — appuyez sur entrée pour fermer"
     },
     "noMatches": {
       "name": "Aucun espace de travail ne correspond à « {filter} »",
@@ -41,7 +41,7 @@
     },
     "notNiri": {
       "name": "Ne fonctionne pas sous Niri",
-      "description": "Ce plugin ne fonctionne que sur le compositeur Niri"
+      "description": "Ce plugin fonctionne uniquement avec le compositeur Niri"
     }
   }
 }
