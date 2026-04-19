@@ -1175,7 +1175,7 @@
     {
       "id": "port-monitor",
       "name": "Port Monitor",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "official": false,
       "author": "adriamartin91",
       "description": "Monitor listening ports and their processes. Shows TCP/UDP ports with process info and kill functionality.",
@@ -1189,7 +1189,7 @@
         "System",
         "Utility"
       ],
-      "lastUpdated": "2026-04-06T17:44:59+07:00"
+      "lastUpdated": "2026-04-19T11:51:23+02:00"
     },
     {
       "id": "privacy-indicator",
