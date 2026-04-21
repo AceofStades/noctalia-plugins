@@ -171,6 +171,24 @@
       "lastUpdated": "2026-03-29T19:05:12-04:00"
     },
     {
+      "id": "claude-code-panel",
+      "name": "Claude Code Panel",
+      "version": "0.1.2",
+      "official": false,
+      "author": "d7om",
+      "description": "Claude Code (Anthropic agentic CLI) with full tool access, permission controls, session management, MCP servers, and device integration",
+      "repository": "https://github.com/noctalia-dev/noctalia-plugins",
+      "minNoctaliaVersion": "4.1.2",
+      "license": "MIT",
+      "tags": [
+        "Bar",
+        "Panel",
+        "AI",
+        "Productivity"
+      ],
+      "lastUpdated": "2026-04-21T00:34:48+02:00"
+    },
+    {
       "id": "clipper",
       "name": "Clipper",
       "version": "2.4.0",
