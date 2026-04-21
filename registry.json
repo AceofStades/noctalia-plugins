@@ -76,7 +76,7 @@
     {
       "id": "asus-um5606-fan-state",
       "name": "ASUS UM5606 Fan State",
-      "version": "1.1.6",
+      "version": "1.1.7",
       "official": false,
       "author": "ThatOneCalculator",
       "description": "Set the fan state on the ZenBook S 16 UM5606",
@@ -87,7 +87,7 @@
         "Bar",
         "System"
       ],
-      "lastUpdated": "2026-04-20T16:57:44+03:00"
+      "lastUpdated": "2026-04-21T17:30:13+02:00"
     },
     {
       "id": "battery-actions",
