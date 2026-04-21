@@ -1,5 +1,11 @@
 # Clipper Plugin - Comprehensive Changelog
 
+## Version 2.4.2 (2026-04-22)
+
+### Fix ReferenceError on plugin teardown
+
+- Removed a dead `wlCopyProc` reference in `Component.onDestruction` (`Main.qml`) that threw `ReferenceError: wlCopyProc is not defined` when the panel or shell was torn down. The id was left over from an earlier refactor; wl-copy usage already lives in `copyToClipboardProc` and direct `Quickshell.execDetached(["wl-copy", ...])` calls, so no replacement logic is needed.
+
 ## Version 2.4.1 (2026-04-21)
 
 ### Fix Qt.btoa deprecation warnings

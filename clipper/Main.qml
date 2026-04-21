@@ -1297,8 +1297,6 @@ Item {
       getSelectionForNoteSelectorProcess.terminate();
     if (copyToClipboardProc.running)
       copyToClipboardProc.terminate();
-    if (wlCopyProc.running)
-      wlCopyProc.terminate();
     if (deleteItemProc.running)
       deleteItemProc.terminate();
     if (wipeProc.running)
