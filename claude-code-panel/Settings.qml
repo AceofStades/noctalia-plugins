@@ -229,50 +229,13 @@ Item {
     }
 
     // ---- Tab content (right) ----
-    ColumnLayout {
+    Item {
       Layout.fillWidth: true
       Layout.fillHeight: true
-      spacing: 0
-
-      // Save indicator strip — flashes "Saved ✓" briefly after any change,
-      // then settles to "All changes saved". Lives outside the StackLayout
-      // so it stays visible when switching tabs.
-      Rectangle {
-        Layout.fillWidth: true
-        Layout.preferredHeight: Math.round(28 * Style.uiScaleRatio)
-        color: root._saveBlinking
-                 ? Qt.alpha(Color.mSecondary, 0.18)
-                 : Qt.alpha(Color.mSurfaceVariant, 0.5)
-        Behavior on color { ColorAnimation { duration: Style.animationFast } }
-
-        RowLayout {
-          anchors.fill: parent
-          anchors.leftMargin: Style.marginM
-          anchors.rightMargin: Style.marginM
-          spacing: Style.marginS
-
-          NIcon {
-            icon: root._saveBlinking ? "check-circle-2" : "check"
-            pointSize: Style.fontSizeXS
-            color: root._saveBlinking ? Color.mSecondary : Color.mOnSurfaceVariant
-          }
-          NText {
-            text: root._saveBlinking
-                    ? (pluginApi?.tr("settings.savedFlash") || "Saved")
-                    : (pluginApi?.tr("settings.savedIdle")  || "All changes saved")
-            pointSize: Style.fontSizeXS
-            font.weight: root._saveBlinking ? Font.DemiBold : Font.Normal
-            color: root._saveBlinking ? Color.mSecondary : Color.mOnSurfaceVariant
-            Layout.fillWidth: true
-            elide: Text.ElideRight
-          }
-        }
-      }
 
       NScrollView {
         id: scroller
-        Layout.fillWidth: true
-        Layout.fillHeight: true
+        anchors.fill: parent
         contentWidth: availableWidth
         clip: true
 
@@ -624,7 +587,51 @@ Item {
         }
       }
       } // /NScrollView
-    } // /ColumnLayout (right pane wrapper)
+
+      // Floating "Saved ✓" pill — appears near the bottom-right of the settings
+      // pane (where Apply/Save buttons typically live), pops in on each save,
+      // fades out after the timer. Anchored as a sibling of the NScrollView so
+      // it overlays content without affecting layout.
+      Rectangle {
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.rightMargin: Style.marginM
+        anchors.bottomMargin: Style.marginM
+        z: 100
+        opacity: root._saveBlinking ? 1 : 0
+        Behavior on opacity { NumberAnimation { duration: 200 } }
+        // Subtle slide-up while appearing. Behavior must live on a regular
+        // property — not inside the Translate — so we drive Translate via
+        // a bound property and animate that.
+        property real _slideY: root._saveBlinking ? 0 : 6
+        Behavior on _slideY { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+        transform: Translate { y: _slideY }
+
+        implicitWidth: savedRow.implicitWidth + Style.marginM * 2
+        implicitHeight: savedRow.implicitHeight + Style.marginS * 2
+        radius: height / 2
+        color: Color.mSecondary
+        border.color: Qt.darker(Color.mSecondary, 1.2)
+        border.width: Style.borderS
+
+        RowLayout {
+          id: savedRow
+          anchors.centerIn: parent
+          spacing: Style.marginXS
+          NIcon {
+            icon: "check"
+            pointSize: Style.fontSizeXS
+            color: Color.mOnSecondary
+          }
+          NText {
+            text: pluginApi?.tr("settings.savedFlash") || "Saved"
+            pointSize: Style.fontSizeXS
+            font.weight: Font.DemiBold
+            color: Color.mOnSecondary
+          }
+        }
+      }
+    } // /Item (right pane wrapper)
   } // /RowLayout
 
   // ============================================================================
