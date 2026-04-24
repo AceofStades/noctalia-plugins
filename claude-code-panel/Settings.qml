@@ -313,11 +313,17 @@ Item {
                 description: pluginApi?.tr("settings.additionalDirsHelp")
               }
               TextArea {
+                id: addlDirsArea
                 Layout.fillWidth: true
                 Layout.preferredHeight: Math.round(72 * Style.uiScaleRatio)
                 text: (cs.additionalDirs || []).join("\n")
                 placeholderText: "/home/you/notes\n/tmp/scratch"
-                onEditingFinished: set("additionalDirs", parseList(text))
+                // QtQuick.Controls.TextArea has no editingFinished — commit on
+                // focus loss instead. Without this, multi-line edits silently
+                // never save.
+                onActiveFocusChanged: {
+                  if (!activeFocus) { set("additionalDirs", parseList(text)); }
+                }
               }
             }
           }
@@ -477,7 +483,9 @@ Item {
                 Layout.fillWidth: true
                 Layout.preferredHeight: Math.round(80 * Style.uiScaleRatio)
                 text: cs.appendSystemPrompt || ""
-                onEditingFinished: set("appendSystemPrompt", text)
+                onActiveFocusChanged: {
+                  if (!activeFocus) { set("appendSystemPrompt", text); }
+                }
               }
             }
           }
