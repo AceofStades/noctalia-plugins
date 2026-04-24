@@ -5,6 +5,7 @@ import Quickshell.Wayland
 import qs.Commons
 import qs.Widgets
 import qs.Services.UI
+import "../utils/utils.js" as U
 Variants {
     id: measureVariants
     property bool isVisible: false
@@ -62,39 +63,7 @@ Variants {
         property var _shotMeasure: null
         property string _shotColor: "#ffffff"
         function _tr(key, interp) {
-            return measureVariants.mainInstance?.pluginApi?.tr(key, interp ?? {}) ?? key
-        }
-        function expandPath(p) {
-            if (!p || p.trim() === "") return ""
-            if (p.startsWith("~/"))
-                return Quickshell.env("HOME") + "/" + p.substring(2)
-            return p
-        }
-        function getScreenshotDir() {
-            if (measureVariants.mainInstance && measureVariants.mainInstance.pluginApi) {
-                var custom = measureVariants.mainInstance.pluginApi.pluginSettings?.screenshotPath ?? ""
-                if (custom.trim() !== "") return expandPath(custom.trim())
-            }
-            return Quickshell.env("HOME") + "/Pictures/Screenshots"
-        }
-        function buildMeasureFilename() {
-            if (measureVariants.mainInstance && measureVariants.mainInstance.pluginApi) {
-                var fmt = measureVariants.mainInstance.pluginApi.pluginSettings?.filenameFormat ?? ""
-                if (fmt.trim() !== "") {
-                    var now = new Date()
-                    var s = fmt.trim()
-                    s = s.replace(/%Y/g, Qt.formatDateTime(now, "yyyy"))
-                    s = s.replace(/%m/g, Qt.formatDateTime(now, "MM"))
-                    s = s.replace(/%d/g, Qt.formatDateTime(now, "dd"))
-                    s = s.replace(/%H/g, Qt.formatDateTime(now, "HH"))
-                    s = s.replace(/%M/g, Qt.formatDateTime(now, "mm"))
-                    s = s.replace(/%S/g, Qt.formatDateTime(now, "ss"))
-                    s = s.replace(/[\/\\\n\r\0]/g, "_").trim()
-                    if (s !== "") return s
-                }
-            }
-            var now = new Date()
-            return "measure-" + Qt.formatDateTime(now, "yyyy-MM-dd_HH-mm-ss")
+            return measureVariants.mainInstance?.pluginApi?.tr(key, interp ?? {})
         }
         Process {
             id: shotProc
@@ -139,13 +108,15 @@ Variants {
                 var lw  = Math.abs(lx2 - lx1)
                 var lh  = Math.abs(ly2 - ly1)
                 var col = overlayWin._shotColor
-                var destDir = getScreenshotDir()
-                var baseName = buildMeasureFilename()
-                var fullPath = destDir + "/" + baseName + ".png"
+                var home     = Quickshell.env("HOME")
+                var settings = measureVariants.mainInstance?.pluginApi?.pluginSettings
+                var destDir  = U.screenshotDir(home, settings?.screenshotPath)
+                var baseName = U.buildFilename("measure", ".png", settings?.filenameFormat)
+                var fullPath = destDir + "/" + baseName
                 var cmd = [
                     "bash", "-c",
-                    "mkdir -p '" + destDir + "' || exit 1; " +
-                    "grim -g '" + (sx + rx) + "," + (sy + ry) + " " + rw + "x" + rh + "' /tmp/measure-crop.png || exit 1; " +
+                    "mkdir -p " + U.shellEscape(destDir) + " || exit 1; " +
+                    "grim -g " + U.shellEscape((sx + rx) + "," + (sy + ry) + " " + rw + "x" + rh) + " /tmp/measure-crop.png || exit 1; " +
                     (function() {
                         var bx1 = Math.min(lx1,lx2), bx2 = Math.max(lx1,lx2)
                         var by1 = Math.min(ly1,ly2), by2 = Math.max(ly1,ly2)
@@ -201,10 +172,10 @@ Variants {
                             " /tmp/measure-out.png" +
                             " && rm -f /tmp/measure-vlabel.png; "
                     })() +
-                    "cp /tmp/measure-out.png '" + fullPath + "' || exit 1; " +
+                    "cp /tmp/measure-out.png " + U.shellEscape(fullPath) + " || exit 1; " +
                     "wl-copy -t image/png < /tmp/measure-out.png || exit 1; " +
                     "rm -f /tmp/measure-crop.png /tmp/measure-out.png; " +
-                    "echo '" + destDir + "'"
+                    "echo " + U.shellEscape(destDir)
                 ]
                 shotProc.exec({ command: cmd })
             }
@@ -460,7 +431,7 @@ Variants {
             }
         }
         Rectangle {
-            visible: overlayWin.pinned.length >= 2
+            visible: overlayWin.pinned.length >= 1
             anchors.bottom: parent.bottom
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottomMargin: 32
@@ -471,7 +442,7 @@ Variants {
             Row {
                 id: clearRow; anchors.centerIn: parent; spacing: Style.marginS
                 NIcon { icon: "trash"; color: Color.mError || "#f44336" }
-                NText { text: "Clear all"; color: Color.mError || "#f44336"; font.weight: Font.Bold; pointSize: Style.fontSizeS }
+                NText { text: _tr("measure.clearAll"); color: Color.mError || "#f44336"; font.weight: Font.Bold; pointSize: Style.fontSizeS }
             }
             MouseArea { id: clearAllBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
                 onClicked: overlayWin.clearAll()
@@ -482,3 +453,4 @@ Variants {
         if (mainInstance) mainInstance.copyToClipboard(txt)
     }
 }
+

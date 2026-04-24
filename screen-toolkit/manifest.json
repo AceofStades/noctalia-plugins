@@ -1,7 +1,7 @@
 {
   "id": "screen-toolkit",
   "name": "Screen Toolkit",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "minNoctaliaVersion": "4.5.0",
   "author": "ycf-anon",
   "license": "MIT",
@@ -36,7 +36,11 @@
       "videoPath": "",
       "filenameFormat": "",
       "detectedRecorder": "",
-      "detectedCompositor": ""
+      "recordSkipConfirmation": false,
+      "recordCopyToClipboard": false,
+      "gifMaxSeconds": 30
     }
   }
 }
+
+

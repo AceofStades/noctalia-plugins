@@ -24,6 +24,7 @@
     "copy": "Copy",
     "openUrl": "Open URL",
     "composeEmail": "Compose Email",
+    "composeMail": "Compose Email",
     "searchText": "Search text",
     "copyText": "Copy text",
     "translationCopied": "Translation copied",
@@ -32,13 +33,14 @@
     "allFormatsCopied": "All formats copied",
     "copied": "Copied",
     "pinCapture": "Pin Screenshot",
-    "pinFile": "Pin Image",
+    "pinFile": "Pin Image/Video",
     "formatCopied": "{label} copied",
     "colorCopied": "{color} copied",
     "clickToCopy": "Click to copy",
     "noPassword": "No password",
     "passwordCopied": "Password copied",
     "cssVars": "Copy as CSS vars",
+    "pickAgain": "Pick again",
     "hexList": "Copy hex list"
   },
   "tools": {
@@ -56,7 +58,7 @@
   "tooltips": {
     "colorpicker": "Pick a color from screen",
     "pinRegion": "Pin screen region",
-    "pinImage": "Pin local image",
+    "pinImage": "Pin local image/Video",
     "palette": "Extract dominant colors from a region",
     "ocr": "Extract text from screen",
     "lens": "Search image with Google Lens",
@@ -76,13 +78,30 @@
     "cursor": "Include cursor in recording",
     "composeEmail": "Compose email",
     "openUrl": "Open URL",
-    "clearResult": "Clear result"
+    "clearResult": "Clear result",
+    "recordfs": "Record the entire screen as GIF or MP4"
   },
   "mirror": {
     "title": "Webcam Mirror",
     "hint": "Floating camera preview. Drag to move, resize from corners.",
     "open": "Open Mirror",
-    "close": "Close Mirror"
+    "close": "Close Mirror",
+    "takeScreenshot": "Take screenshot (3s countdown)",
+    "screenshotSaved": "Screenshot saved!",
+    "screenshotFailed": "Screenshot failed",
+    "startRecord": "Record video (3s countdown)",
+    "stopRecord": "Stop recording",
+    "recordSaved": "Recording saved!",
+    "recordFailed": "Recording failed",
+    "saving": "Saving…",
+    "micEnable": "Enable microphone",
+    "micDisable": "Disable microphone",
+    "capturing": "Capturing…",
+    "recordingInProgress": "Recording…",
+    "noCamera": "No camera found",
+    "pinEnable": "Pin screenshot after capture",
+    "pinDisable": "Don't pin screenshots",
+    "pinOnScreenshot": "Pin screenshot after capture"
   },
   "ocr": {
     "title": "OCR",
@@ -106,6 +125,7 @@
     "measure-saved": "Saved",
     "measure-failed": "Screenshot failed.",
     "measure-copied": "Measurement copied.",
+    "no-file-picker": "No file picker available (install python3-gi, zenity, or kdialog)",
     "measure-pinned": "Pinned."
   },
   "settings": {
@@ -118,6 +138,13 @@
     "filenameFormat": "Filename Format",
     "filenameFormatDesc": "Template for generated filenames. Extension is added automatically.",
     "widgetSettings": "Widget Settings",
+    "recordingSection": "Recording",
+    "recordSkipConfirmation": "Skip Save Confirmation",
+    "recordSkipConfirmationDesc": "Automatically save to disk when recording finishes, without showing the save dialog.",
+    "recordCopyToClipboard": "Copy to Clipboard",
+    "recordCopyToClipboardDesc": "Copy the recording to clipboard when done instead of showing the save dialog.",
+    "gifMaxSeconds": "Max GIF Duration",
+    "gifMaxSecondsDesc": "Maximum duration in seconds for GIF recordings.",
     "filenameTokens": {
       "year": "Year",
       "month": "Month",
@@ -142,7 +169,6 @@
     "savedTo": "Saved",
     "saveFileFailed": "Failed to save file",
     "colorSize": "Color & size",
-    "region": "Region",
     "regionTooltip": "Select a region to annotate",
     "window": "Window",
     "windowTooltip": "Annotate the focused window",
@@ -161,8 +187,11 @@
     "zoomOut": "Zoom out",
     "zoomIn": "Zoom in (view only)",
     "undo": "Undo last stroke",
+    "redo": "Redo last stroke",
     "clearAll": "Clear all",
     "close": "Close",
+    "refresh": "Start over",
+    "region": "Region",
     "dragToolbar": "Drag to move toolbar",
     "toolPencil": "Draw freehand",
     "toolHighlighter": "Highlight area",
@@ -171,6 +200,9 @@
     "toolRect": "Draw rectangle",
     "toolCircle": "Draw ellipse",
     "toolText": "Add text",
+    "toolStep": "Add step badge",
+    "toolRuler": "Measure distance",
+    "zoomViewOnly": "× (view only)",
     "toolBlur": "Pixelate region"
   },
   "record": {
@@ -182,6 +214,9 @@
     "mp4Ready": "MP4 ready",
     "gifReady": "GIF ready",
     "saved": "Saved",
+    "region": "Region",
+    "savedAndCopied": "Saved and copied to clipboard",
+    "copiedToClipboard": "Copied to clipboard",
     "failed": "Recording failed or cancelled",
     "saveMp4Failed": "Failed to save MP4",
     "saveGifFailed": "GIF conversion failed",
@@ -191,7 +226,12 @@
     "close": "Close",
     "fillFit": "Fill: Fit",
     "fillCrop": "Fill: Crop",
-    "fillStretch": "Fill: Stretch"
+    "play": "Play",
+    "pause": "Pause",
+    "mute": "Mute audio",
+    "unmute": "Unmute audio",
+    "fillStretch": "Fill: Stretch",
+    "tooMany": "Maximum number of pins reached"
   },
   "measure": {
     "hint": "Click and drag to measure",
@@ -201,6 +241,8 @@
     "pin": "Pin",
     "discard": "Discard",
     "copy": "Copy",
+    "clearAll": "Clear all",
     "remove": "Remove"
   }
 }
+
