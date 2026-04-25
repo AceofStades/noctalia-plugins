@@ -597,7 +597,7 @@ Item {
                          : Color.mOnSurface
                 }
                 Rectangle {
-                    width: Style.marginXS * 2; height: Style.marginXS * 2; radius: Style.radiusXXS
+                    width: 8; height: 8; radius: 4
                     color: btn._accentColor
                     border.color: Color.mSurface
                     border.width: Style.borderM
