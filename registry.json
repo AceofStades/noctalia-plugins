@@ -1376,7 +1376,7 @@
     {
       "id": "screen-shot-and-record",
       "name": "ScreenShot & Record",
-      "version": "1.0.3",
+      "version": "1.0.4",
       "official": false,
       "author": "Pulsar",
       "description": "A screenshot plugin with OCR, Google Lens integration, and screen recording. Supports Sway, Hyprland and MangoWM.",
@@ -1390,7 +1390,7 @@
         "Hyprland",
         "Sway"
       ],
-      "lastUpdated": "2026-04-16T17:07:27-04:00"
+      "lastUpdated": "2026-04-22T19:11:15-04:00"
     },
     {
       "id": "screen-toolkit",
