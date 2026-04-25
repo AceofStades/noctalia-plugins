@@ -120,14 +120,16 @@ Item {
             if (isDone && viewedTool === "record") {
                 root.viewedTool = ""
                 if (mainInstance) mainInstance.activeTool = ""
-            }
+            }    
         } else {
-            if (isDone && viewedTool === "record" && root._panelWasShown)
-                mainInstance?.runRecordDiscard()
-            if (recordState === "" && !isRunning) {
+            if (viewedTool !== "record") {
                 root.viewedTool  = ""
                 root.focusedTool = -1
                 if (mainInstance) mainInstance.activeTool = ""
+                } else if (recordState === "" && !isRunning) {
+                    root.viewedTool  = ""
+                    root.focusedTool = -1
+                    if (mainInstance) mainInstance.activeTool = ""
             }
         }
     }

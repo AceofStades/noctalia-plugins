@@ -246,31 +246,20 @@ Item {
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
             WlrLayershell.exclusionMode: ExclusionMode.Ignore
             WlrLayershell.namespace: "noctalia-record"
-            readonly property real _btnW:    110
-            readonly property real _btnH:     36
-            readonly property real _btnC:     36   // compact square
-            readonly property real _spaceBelow: parent.height - (root.uiY + root.regionH)
-            readonly property real _spaceAbove: root.uiY
-            readonly property real _spaceLeft:  root.uiX
-            readonly property real _spaceRight: parent.width - (root.uiX + root.regionW)
-            readonly property int _placement: {
-                if (_isFullscreen)                      return 4
-                if (_spaceBelow >= _btnH + 10)          return 0
-                if (_spaceAbove >= _btnH + 10)          return 1
-                if (_spaceLeft  >= _btnC + 10)          return 2
-                if (_spaceRight >= _btnC + 10)          return 3
-                return 4
-            }
             Item {
-                id: fullBtn
-                visible: isPrimary && (recWin._placement === 0 || recWin._placement === 1)
-                width: recWin._btnW; height: recWin._btnH
-                x: Math.max(8, Math.min(
-                    root.uiX + (root.regionW - recWin._btnW) / 2,
-                    parent.width - recWin._btnW - 8))
-                y: recWin._placement === 0
-                    ? root.uiY + root.regionH + 8
-                    : root.uiY - recWin._btnH - 8
+                id: stopBtnAnchor
+                readonly property real btnW: 110
+                readonly property real btnH: 36
+                readonly property real spaceBelow: parent.height - (root.uiY + root.regionH)
+                readonly property real spaceAbove: root.uiY
+                readonly property bool hasRoomBelow: spaceBelow >= btnH + 10
+                readonly property bool hasRoomAbove: spaceAbove >= btnH + 10
+                visible: isPrimary && !_isFullscreen && (hasRoomBelow || hasRoomAbove)
+                x: Math.max(8, Math.min(root.uiX + (root.regionW - btnW) / 2, parent.width - btnW - 8))
+                y: hasRoomBelow
+                    ? root.uiY + root.regionH + 8       // preferred: below
+                    : root.uiY - btnH - 8               // fallback: above
+                width: btnW; height: btnH
                 Rectangle {
                     anchors.fill: parent
                     radius: Style.radiusL
@@ -300,14 +289,19 @@ Item {
             }
             Item {
                 id: compactBtn
-                visible: isPrimary && (recWin._placement === 2 || recWin._placement === 3)
-                width: recWin._btnC; height: recWin._btnC
+                readonly property real btnC: 36
+                readonly property bool hasRoomLeft:  root.uiX >= btnC + 10
+                readonly property bool hasRoomRight: (parent.width - root.uiX - root.regionW) >= btnC + 10
+                visible: isPrimary && !_isFullscreen
+                         && !stopBtnAnchor.hasRoomBelow && !stopBtnAnchor.hasRoomAbove
+                         && (hasRoomLeft || hasRoomRight)
+                width: btnC; height: btnC
                 y: Math.max(8, Math.min(
-                    root.uiY + (root.regionH - recWin._btnC) / 2,
-                    parent.height - recWin._btnC - 8))
-                x: recWin._placement === 2
-                    ? root.uiX - recWin._btnC - 8          // left of region
-                    : root.uiX + root.regionW + 8           // right of region
+                    root.uiY + (root.regionH - btnC) / 2,
+                    parent.height - btnC - 8))
+                x: hasRoomLeft
+                    ? root.uiX - btnC - 8               // left of region
+                    : root.uiX + root.regionW + 8       // right of region
                 Rectangle {
                     anchors.fill: parent
                     radius: Style.radiusL
@@ -328,13 +322,13 @@ Item {
             }
             Item {
                 id: maskItem
-                x:      fullBtn.visible ? fullBtn.x      : compactBtn.x
-                y:      fullBtn.visible ? fullBtn.y      : compactBtn.y
-                width:  fullBtn.visible ? fullBtn.width  : compactBtn.width
-                height: fullBtn.visible ? fullBtn.height : compactBtn.height
+                x:      stopBtnAnchor.visible ? stopBtnAnchor.x : compactBtn.x
+                y:      stopBtnAnchor.visible ? stopBtnAnchor.y : compactBtn.y
+                width:  stopBtnAnchor.visible ? stopBtnAnchor.width  : compactBtn.width
+                height: stopBtnAnchor.visible ? stopBtnAnchor.height : compactBtn.height
             }
             mask: Region {
-                item: (recWin._placement < 4 && isPrimary) ? maskItem : null
+                item: (isPrimary && (stopBtnAnchor.visible || compactBtn.visible)) ? maskItem : null
             }
             Rectangle {
                 visible: isPrimary && !_isFullscreen
@@ -379,4 +373,3 @@ Item {
         }
     }
 }
-
