@@ -38,7 +38,7 @@
     {
       "id": "arch-updater",
       "name": "Arch Updater",
-      "version": "1.2.2",
+      "version": "2.0.0",
       "official": false,
       "author": "Ast",
       "description": "A plugin to manage updates on Arch",
@@ -52,7 +52,7 @@
         "System",
         "Utility"
       ],
-      "lastUpdated": "2026-04-21T22:36:27+01:00"
+      "lastUpdated": "2026-04-22T18:42:20+01:00"
     },
     {
       "id": "assistant-panel",
@@ -272,7 +272,7 @@
     {
       "id": "cookie-clock",
       "name": "Cookie Clock",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "official": false,
       "author": "elrondforwin",
       "description": "An analog cookie-shaped clock desktop widget. Features a sine-wave cookie background, hour/minute/second hands, dial marks and date bubbless.",
@@ -283,7 +283,7 @@
         "Desktop",
         "Fun"
       ],
-      "lastUpdated": "2026-04-21T18:43:05+03:00"
+      "lastUpdated": "2026-04-23T21:39:21+02:00"
     },
     {
       "id": "currency-exchange",
@@ -665,9 +665,27 @@
       "lastUpdated": "2026-04-14T21:58:06+02:00"
     },
     {
+      "id": "kubectl-ctx",
+      "name": "Kubectl Context",
+      "version": "1.0.4",
+      "official": false,
+      "author": "ultherego",
+      "description": "Kubernetes context and namespace switcher with resource browser powered by kubectl.",
+      "repository": "https://github.com/noctalia-dev/noctalia-plugins",
+      "minNoctaliaVersion": "4.6.6",
+      "license": "MIT",
+      "tags": [
+        "Bar",
+        "Panel",
+        "Utility",
+        "Development"
+      ],
+      "lastUpdated": "2026-04-23T23:03:50+02:00"
+    },
+    {
       "id": "latency-monitor",
       "name": "Latency Monitor",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "official": false,
       "author": "Borhaneddine GUEMIDI <guemidiborhane@gmail.com>",
       "description": "Network latency monitor — multi-host, windowed averages, sparkline graphs",
@@ -679,12 +697,12 @@
         "Panel",
         "Network"
       ],
-      "lastUpdated": "2026-04-21T09:53:34+01:00"
+      "lastUpdated": "2026-04-23T21:41:29+02:00"
     },
     {
       "id": "linux-wallpaperengine-controller",
       "name": "Linux WallpaperEngine Controller",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "official": false,
       "author": "PaloMiku",
       "description": "Control linux-wallpaperengine from Noctalia with per-screen wallpaper selection.",
@@ -696,7 +714,7 @@
         "Panel",
         "Theming"
       ],
-      "lastUpdated": "2026-04-16T19:20:08+08:00"
+      "lastUpdated": "2026-04-22T19:54:38+08:00"
     },
     {
       "id": "lyrics-fetch",
@@ -1358,7 +1376,7 @@
     {
       "id": "screen-shot-and-record",
       "name": "ScreenShot & Record",
-      "version": "1.0.3",
+      "version": "1.0.4",
       "official": false,
       "author": "Pulsar",
       "description": "A screenshot plugin with OCR, Google Lens integration, and screen recording. Supports Sway, Hyprland and MangoWM.",
@@ -1372,7 +1390,7 @@
         "Hyprland",
         "Sway"
       ],
-      "lastUpdated": "2026-04-16T17:07:27-04:00"
+      "lastUpdated": "2026-04-22T19:11:15-04:00"
     },
     {
       "id": "screen-toolkit",
