@@ -32,6 +32,7 @@ Rectangle {
       easing.type: Easing.OutBack
     }
   }
+
   transform: Matrix4x4 {
     property real s: topBar.shearFactor
 
@@ -120,6 +121,7 @@ Rectangle {
         opacity: 0
         radius: parent.radius
       }
+
       SequentialAnimation {
         id: shuffleAnim
 
@@ -130,6 +132,7 @@ Rectangle {
           target: flashOverlay
           to: 0.3
         }
+
         NumberAnimation {
           duration: 300
           easing.type: Easing.OutCubic
@@ -139,6 +142,7 @@ Rectangle {
         }
       }
     }
+
     TopBarButton {
       accentColor: topBar.livePreview ? Color.mTertiary : Color.mOnSurfaceVariant
       active: topBar.livePreview

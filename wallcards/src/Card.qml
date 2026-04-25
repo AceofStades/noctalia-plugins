@@ -18,7 +18,6 @@ Item {
   anchors.fill: parent
   clip: true
 
-  //
   Item {
     id: imgComposite
 
@@ -40,6 +39,7 @@ Item {
       sourceSize.width: cardContent.centerWidth
     }
   }
+
   Rectangle {
     id: border
 
@@ -51,6 +51,7 @@ Item {
     radius: cardContent.radius
     z: 20
   }
+
   Rectangle {
     id: mask
 
@@ -58,6 +59,7 @@ Item {
     radius: cardContent.radius
     visible: false
   }
+
   OpacityMask {
     anchors.fill: parent
     maskSource: mask
@@ -68,7 +70,6 @@ Item {
     }
   }
 
-  //
   Loader {
     id: videoLoader
 
@@ -107,17 +108,19 @@ Item {
           }
 
           Component.onCompleted: play()
-          onPlayingChanged: {
-            if (playing)
+          onPlayingChanged: function () {
+            if (mediaPlayer.playing)
               videoFadeIn.start();
           }
         }
+
         VideoOutput {
           id: videoOutput
 
           anchors.fill: parent
           fillMode: VideoOutput.PreserveAspectCrop
         }
+
         NumberAnimation {
           id: videoFadeIn
 

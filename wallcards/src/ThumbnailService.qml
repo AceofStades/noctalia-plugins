@@ -20,6 +20,10 @@ Item {
 
   signal ready
 
+  function toLocalPath(urlStr) {
+    return String(urlStr).replace(/^file:\/\//, "");
+  }
+
   FolderListModel {
     id: thumbnailModel
 
@@ -31,7 +35,6 @@ Item {
     onStatusChanged: {
       if (status === FolderListModel.Ready) {
         service.createThumbnails();
-        filesModel.running = true;
       }
     }
   }
@@ -45,19 +48,19 @@ Item {
     var items = [];
     for (var i = 0; i < thumbnailModel.count; i++) {
       (function (idx) {
-          var filePath = thumbnailModel.get(idx, "filePath");
+          var filePath = toLocalPath(thumbnailModel.get(idx, "filePath"));
           var fileName = thumbnailModel.get(idx, "fileName");
-          var thumbnailPath = cacheDir + "/" + fileName;
+          var isVid = Utils.isVideo(fileName, service.videoFilter);
+          var thumbName = isVid ? fileName + ".jpg" : fileName;
+          var thumbnailPath = cacheDir + "/" + thumbName;
 
-          var thumbnailCmd = Utils.isVideo(fileName, service.videoFilter)
-            ? videoToThumnailCmd(filePath, thumbnailPath)
-            : imageToThumbnailCmd(filePath, thumbnailPath);
+          var thumbnailCmd = isVid ? videoToThumbnailCmd(filePath, thumbnailPath) : imageToThumbnailCmd(filePath, thumbnailPath);
           var hexCmd = thumbnailHexValueCmd(thumbnailPath);
 
           const script = `
-            [ -f ${thumbnailPath}* ] && exit 0
+            [ -f "${thumbnailPath}"* ] && exit 0
             ${thumbnailCmd}
-            mv ${thumbnailPath} ${thumbnailPath}__x$(${hexCmd})
+            mv "${thumbnailPath}" "${thumbnailPath}__x$(${hexCmd})"
           `;
 
           service.pendingProcesses++;
@@ -70,7 +73,7 @@ Item {
             service.thumbnailRevision++;
 
             if (service.pendingProcesses === 0) {
-              filesModel.starting;
+              filesModel.running = true;
             }
 
             proc.destroy();
@@ -89,24 +92,24 @@ Item {
   }
 
   function imageToThumbnailCmd(filePath, thumbnailPath) {
-    return `magick ${filePath} \
+    return `magick "${filePath}" \
       -resize x500 \
       -quality 95 \
-      ${thumbnailPath}
+      "${thumbnailPath}"
     `;
   }
 
-  function videoToThumnailCmd(filePath, thumbnailPath) {
+  function videoToThumbnailCmd(filePath, thumbnailPath) {
     return `ffmpeg -y -i \
-      ${filePath} \
-      -vf select=eq(n\\,0),scale=-1:1080 \
+      "${filePath}" \
+      -vf "select=eq(n\\,0),scale=-1:1080" \
       -frames:v 1 \
       -q:v 2 \
-      ${thumbnailPath} </dev/null 2>/dev/null`;
+      "${thumbnailPath}" </dev/null 2>/dev/null`;
   }
 
   function thumbnailHexValueCmd(thumbnailPath) {
-    return `magick ${thumbnailPath} -modulate 100,200 \
+    return `magick "${thumbnailPath}" -modulate 100,200 \
       -resize "1x1^" \
       -gravity center \
       -extent 1x1 \
@@ -126,12 +129,14 @@ Item {
     property bool running: false
 
     onRunningChanged: {
-      folder = running ? Qt.resolvedUrl("file://" + service.cacheDir) : "";
+      if (running)
+        folder = Qt.resolvedUrl("file://" + service.cacheDir);
     }
 
     onStatusChanged: {
-      if (status === FolderListModel.Ready) {
+      if (status === FolderListModel.Ready && running) {
         service.buildFileList();
+        running = false;
       }
     }
   }
@@ -140,13 +145,18 @@ Item {
     var items = [];
 
     for (let i = 0; i < filesModel.count; i++) {
-      const filePath = filesModel.get(i, "filePath");
-      const fileName = filesModel.get(i, "fileName").substring(0, filePath.lastIndexOf("_x"));
+      const filePath = toLocalPath(filesModel.get(i, "filePath"));
+      const fileName = filesModel.get(i, "fileName");
 
       const idx = fileName.lastIndexOf("__x");
-      const wallpaperName = fileName.substring(0, idx);
-      const hexColor = fileName.substring(idx + 2);
-      const filterColor = getFilterColor(hexColor);
+      if (idx === -1)
+        continue;
+
+      const thumbBase = fileName.substring(0, idx);
+      const hexColor = fileName.substring(idx + 3);
+
+      var isVid = thumbBase.toLowerCase().endsWith(".jpg") && Utils.isVideo(thumbBase.substring(0, thumbBase.lastIndexOf(".")), service.videoFilter);
+      var wallpaperName = isVid ? thumbBase.substring(0, thumbBase.lastIndexOf(".")) : thumbBase;
 
       items.push({
         fileName: wallpaperName,
@@ -154,7 +164,7 @@ Item {
         thumbnail: filePath,
         hexCode: hexColor,
         filterColor: getFilterColor(hexColor),
-        isVideo: Utils.isVideo(wallpaperName, service.videoFilter)
+        isVideo: isVid
       });
     }
 
@@ -170,7 +180,6 @@ Item {
       return "Monochrome";
 
     const cleaned = String(hexColor).trim().replace(/x/g, '').substring(0, 6);
-    console.log(cleaned);
     if (cleaned.length !== 6)
       return "Monochrome";
 
