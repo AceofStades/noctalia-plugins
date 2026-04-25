@@ -9,6 +9,7 @@ ColumnLayout {
     property string screenshotPath:         ""
     property string videoPath:              ""
     property string filenameFormat:         ""
+    property string imgurClientId:          ""
     property bool   recordSkipConfirmation: false
     property bool   recordCopyToClipboard:  false
     property int    gifMaxSeconds:          30
@@ -25,6 +26,7 @@ ColumnLayout {
         screenshotPath         = pluginApi.pluginSettings.screenshotPath         || ""
         videoPath              = pluginApi.pluginSettings.videoPath              || ""
         filenameFormat         = pluginApi.pluginSettings.filenameFormat         || ""
+        imgurClientId          = pluginApi.pluginSettings.imgurClientId          || ""
         recordSkipConfirmation = pluginApi.pluginSettings.recordSkipConfirmation ?? false
         recordCopyToClipboard  = pluginApi.pluginSettings.recordCopyToClipboard  ?? false
         gifMaxSeconds          = pluginApi.pluginSettings.gifMaxSeconds          ?? 30
@@ -37,6 +39,7 @@ ColumnLayout {
         pluginApi.pluginSettings.screenshotPath         = root.screenshotPath
         pluginApi.pluginSettings.videoPath              = root.videoPath
         pluginApi.pluginSettings.filenameFormat         = root.filenameFormat
+        pluginApi.pluginSettings.imgurClientId          = root.imgurClientId
         pluginApi.pluginSettings.recordSkipConfirmation = root.recordSkipConfirmation
         pluginApi.pluginSettings.recordCopyToClipboard  = root.recordCopyToClipboard
         pluginApi.pluginSettings.gifMaxSeconds          = root.gifMaxSeconds
@@ -61,7 +64,7 @@ ColumnLayout {
         description:     pluginApi?.tr("settings.screenshotPathDesc")
         placeholderText: "~/Pictures/Screenshots"
         text:            root.screenshotPath
-        onTextChanged: { root.screenshotPath = text; saveSettings() }
+        onTextChanged:   { root.screenshotPath = text; saveSettings() }
     }
     NTextInput {
         Layout.fillWidth: true
@@ -69,7 +72,15 @@ ColumnLayout {
         description:     pluginApi?.tr("settings.videoPathDesc")
         placeholderText: "~/Videos"
         text:            root.videoPath
-        onTextChanged: { root.videoPath = text; saveSettings() }
+        onTextChanged:   { root.videoPath = text; saveSettings() }
+    }
+    NTextInput {
+        Layout.fillWidth: true
+        label:           pluginApi?.tr("settings.imgurClientId")
+        description:     pluginApi?.tr("settings.imgurClientIdDesc")
+        placeholderText: "xxxxxxxxxxxxxxx"
+        text:            root.imgurClientId
+        onTextChanged:   { root.imgurClientId = text; saveSettings() }
     }
     NDivider { Layout.fillWidth: true; Layout.topMargin: Style.marginM; Layout.bottomMargin: Style.marginM }
     ColumnLayout {
@@ -106,16 +117,31 @@ ColumnLayout {
                     color:  tokenMA.containsMouse ? Color.mPrimary : Color.mSurfaceVariant
                     Behavior on color { ColorAnimation { duration: 120 } }
                     Row {
-                        id: tokenRow; anchors.centerIn: parent; spacing: Style.marginXS
-                        NText { text: modelData.label; pointSize: Style.fontSizeXS; font.weight: Font.Medium; color: tokenMA.containsMouse ? Color.mOnPrimary : Color.mOnSurface; anchors.verticalCenter: parent.verticalCenter }
-                        NText { text: modelData.value; pointSize: Style.fontSizeXS; color: tokenMA.containsMouse ? Qt.rgba(1,1,1,0.65) : Color.mOnSurfaceVariant; anchors.verticalCenter: parent.verticalCenter }
+                        id: tokenRow
+                        anchors.centerIn: parent
+                        spacing: Style.marginXS
+                        NText {
+                            text:       modelData.label
+                            pointSize:  Style.fontSizeXS
+                            font.weight: Font.Medium
+                            color:      tokenMA.containsMouse ? Color.mOnPrimary : Color.mOnSurface
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                        NText {
+                            text:      modelData.value
+                            pointSize: Style.fontSizeXS
+                            color:     tokenMA.containsMouse ? Qt.rgba(1,1,1,0.65) : Color.mOnSurfaceVariant
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
                     }
                     MouseArea {
-                        id: tokenMA; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                        id: tokenMA
+                        anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
                         onClicked: {
                             if (!filenameInput.inputItem) return
                             var input = filenameInput.inputItem
-                            var cur = input.cursorPosition; var txt = input.text
+                            var cur = input.cursorPosition
+                            var txt = input.text
                             input.text = txt.substring(0, cur) + modelData.value + txt.substring(cur)
                             input.cursorPosition = cur + modelData.value.length
                             input.forceActiveFocus()
@@ -128,19 +154,36 @@ ColumnLayout {
             id: filenameInput
             Layout.fillWidth: true
             placeholderText: "%Y-%m-%dT%H-%M-%S"
-            text: root.filenameFormat
-            onTextChanged: { root.filenameFormat = text; saveSettings() }
+            text:            root.filenameFormat
+            onTextChanged:   { root.filenameFormat = text; saveSettings() }
         }
         Rectangle {
             Layout.fillWidth: true
-            height: previewRow.implicitHeight + Style.marginM * 2
-            radius: Style.radiusM; color: Color.mSurfaceVariant; opacity: 0.7
+            height:  previewRow.implicitHeight + Style.marginM * 2
+            radius:  Style.radiusM
+            color:   Color.mSurfaceVariant
+            opacity: 0.7
             Row {
                 id: previewRow
-                anchors { left: parent.left; right: parent.right; verticalCenter: parent.verticalCenter; leftMargin: Style.marginM; rightMargin: Style.marginM }
+                anchors {
+                    left: parent.left; right: parent.right
+                    verticalCenter: parent.verticalCenter
+                    leftMargin: Style.marginM; rightMargin: Style.marginM
+                }
                 spacing: Style.marginS
-                NIcon { icon: "file"; color: Color.mOnSurfaceVariant; scale: 0.85; anchors.verticalCenter: parent.verticalCenter }
-                NText { text: root.buildPreview(root.filenameFormat) + ".ext"; pointSize: Style.fontSizeXS; color: Color.mOnSurface; font.family: "monospace"; anchors.verticalCenter: parent.verticalCenter; elide: Text.ElideRight; width: parent.width - (Style.marginM * 2) }
+                NIcon {
+                    icon:  "file"; color: Color.mOnSurfaceVariant; scale: 0.85
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+                NText {
+                    text:        root.buildPreview(root.filenameFormat) + ".ext"
+                    pointSize:   Style.fontSizeXS
+                    color:       Color.mOnSurface
+                    font.family: "monospace"
+                    elide:       Text.ElideRight
+                    width:       parent.width - Style.marginM * 2
+                    anchors.verticalCenter: parent.verticalCenter
+                }
             }
         }
     }
@@ -182,22 +225,36 @@ ColumnLayout {
         signal toggled(bool value)
         spacing: Style.marginM
         ColumnLayout {
-            Layout.fillWidth: true; spacing: Style.marginXXS
+            Layout.fillWidth: true
+            spacing: Style.marginXXS
             NLabel { label: _tog.labelText }
-            NText { text: _tog.descText; pointSize: Style.fontSizeXS; color: Color.mOnSurfaceVariant; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+            NText {
+                text:      _tog.descText
+                pointSize: Style.fontSizeXS
+                color:     Color.mOnSurfaceVariant
+                wrapMode:  Text.WordWrap
+                Layout.fillWidth: true
+            }
         }
         Rectangle {
-            width: Style.marginXL * 2 + Style.marginXS; height: Style.marginL + Style.marginM; radius: Math.round((Style.marginL + Style.marginM) / 2)
-            color: _tog.checked ? Color.mPrimary : Color.mSurfaceVariant
+            width:  Style.marginXL * 2 + Style.marginXS
+            height: Style.marginL + Style.marginM
+            radius: Math.round((Style.marginL + Style.marginM) / 2)
+            color:  _tog.checked ? Color.mPrimary : Color.mSurfaceVariant
             Behavior on color { ColorAnimation { duration: 120 } }
             Rectangle {
-                id: _thumb; width: Style.marginXL; height: Style.marginXL; radius: Math.round(Style.marginXL / 2); color: "white"
+                id: _thumb
+                width:  Style.marginXL; height: Style.marginXL
+                radius: Math.round(Style.marginXL / 2)
+                color:  "white"
                 anchors.verticalCenter: parent.verticalCenter
                 x: _tog.checked ? parent.width - width - 2 : 2
                 Behavior on x { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
             }
-            MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: _tog.toggled(!_tog.checked) }
+            MouseArea {
+                anchors.fill: parent; cursorShape: Qt.PointingHandCursor
+                onClicked: _tog.toggled(!_tog.checked)
+            }
         }
     }
 }
-

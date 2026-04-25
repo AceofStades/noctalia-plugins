@@ -11,10 +11,10 @@ Variants {
     property string imagePath: "/tmp/screen-toolkit-annotate.png"
     property var    mainInstance: null
     property bool   isVisible: false
-    property int  regionX: 0
-    property int  regionY: 0
-    property int  regionW: 0
-    property int  regionH: 0
+    property int    regionX: 0
+    property int    regionY: 0
+    property int    regionW: 0
+    property int    regionH: 0
     property real   zoomScale:  1.0
     property string lastRegion: ""
     property var _primaryScreen: null
@@ -30,7 +30,7 @@ Variants {
         zoomScale    = 1.0
         lastRegion   = regionStr
         imagePath    = imgPath
-        _resetToken  = !_resetToken
+        _resetToken++
         _primaryScreen = screen ?? Quickshell.screens[0] ?? null
         isVisible    = true
     }
@@ -45,10 +45,10 @@ Variants {
         regionH     = parseInt(wh[1]) || 300
         zoomScale   = scale
         imagePath   = imgPath
-        _resetToken = !_resetToken
+        _resetToken++
         isVisible   = true
     }
-    property bool _resetToken: false
+    property int _resetToken: 0
     function hide() {
         isVisible      = false
         _primaryScreen = null
@@ -99,7 +99,7 @@ Variants {
         property real _panStartMouseY:   0.0
         property bool isPanning:         false
         property var  _savedStrokes:     []
-        property var  _redoStack:        []   // redo history
+        property var  _redoStack:        []
         property real _tbUserX: -1
         property real _tbUserY: -1
         property real _lastMouseX:  0
@@ -108,6 +108,10 @@ Variants {
         property bool _cacheValid:      false
         property bool _cacheRebuilding: false
         property int  stepCounter:      1
+        property bool   isUploading:      false
+        property string shareUrl:         ""
+        property bool   showSharePopover: false
+        property bool   uploadFailed:     false
         function _invalidateCache() {
             _cacheValid      = false
             _cacheRebuilding = false
@@ -425,6 +429,35 @@ Variants {
                 root.hide()
             }
         }
+        Process {
+            id: flattenForShareProc
+            onExited: (code) => {
+                if (code !== 0) {
+                    overlayWin.isUploading  = false
+                    overlayWin.uploadFailed = true
+                    return
+                }
+                overlayWin._doUpload("/tmp/screen-toolkit-share.png")
+            }
+        }
+        Process {
+            id: uploadProc
+            stdout: StdioCollector {}
+            onExited: (code) => {
+                overlayWin.isUploading = false
+                var url = uploadProc.stdout.text.trim()
+                if (code === 0 && url.startsWith("http")) {
+                    overlayWin.shareUrl     = url
+                    overlayWin.uploadFailed = false
+                    wlCopyUrlProc.exec({ command: ["bash", "-c",
+                        "printf '%s' " + U.shellEscape(url) + " | wl-copy"] })
+                } else {
+                    overlayWin.uploadFailed = true
+                    overlayWin.shareUrl     = ""
+                }
+            }
+        }
+        Process { id: wlCopyUrlProc }
         Connections {
             target: root
             function onIsVisibleChanged() {
@@ -446,6 +479,10 @@ Variants {
                     overlayWin._tbUserX          = -1
                     overlayWin._tbUserY          = -1
                     overlayWin.stepCounter       = 1
+                    overlayWin.isUploading       = false
+                    overlayWin.shareUrl          = ""
+                    overlayWin.showSharePopover  = false
+                    overlayWin.uploadFailed      = false
                     var pixUrl = "file:///tmp/screen-toolkit-annotate-pixel.png?"
                         + overlayWin._pixelCacheBust
                     cacheCanvas.unloadImage(pixUrl)
@@ -472,14 +509,114 @@ Variants {
                                  && mouse.y >= iy && mouse.y <= iy + ih
                     var inToolbar = mouse.x >= toolbar.x && mouse.x <= toolbar.x + toolbar.width
                                  && mouse.y >= toolbar.y && mouse.y <= toolbar.y + toolbar.height
-                    var inPopover = overlayWin.showPopover
+                    var inPopover = (overlayWin.showPopover
                                  && mouse.x >= popover.x && mouse.x <= popover.x + popover.width
-                                 && mouse.y >= popover.y && mouse.y <= popover.y + popover.height
+                                 && mouse.y >= popover.y && mouse.y <= popover.y + popover.height)
+                                 || (overlayWin.showSharePopover
+                                 && mouse.x >= sharePopover.x && mouse.x <= sharePopover.x + sharePopover.width
+                                 && mouse.y >= sharePopover.y && mouse.y <= sharePopover.y + sharePopover.height)
                     if (!inRegion && !inToolbar && !inPopover) {
                         overlayWin.strokes = []
                         _invalidateCache()
                         root.hide()
                     }
+                }
+            }
+        }
+        Rectangle {
+            id: sharePopover
+            visible:      overlayWin.isPrimary && overlayWin.showSharePopover
+            z:            20
+            radius:       Style.radiusL
+            color:        Color.mSurface
+            border.color: Style.capsuleBorderColor
+            border.width: Style.capsuleBorderWidth
+            height: 44
+            width:  overlayWin.isUploading  ? (_spLoadRow.implicitWidth  + Style.marginM * 2)
+                  : overlayWin.uploadFailed ? (_spErrRow.implicitWidth   + Style.marginM * 2)
+                  :                           (_spSuccRow.implicitWidth   + Style.marginM * 2)
+            x: Math.max(Style.marginS, Math.min(
+                   toolbar.x + (toolbar.width - width) / 2,
+                   overlayWin.width - width - Style.marginS))
+            y: toolbar.useVertical
+               ? Math.max(Style.marginS, Math.min(
+                     toolbar.y + (toolbar.height - height) / 2,
+                     overlayWin.height - height - Style.marginS))
+               : (toolbar.spaceAbove >= height + Style.marginS
+                  ? toolbar.y - height - Style.marginXS
+                  : toolbar.y + toolbar.height + Style.marginXS)
+            Row {
+                id: _spLoadRow
+                anchors.centerIn: parent
+                spacing: Style.marginS
+                visible: overlayWin.isUploading
+                NIcon {
+                    icon: "upload"; color: Color.mOnSurfaceVariant
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+                NText {
+                    text:      root.mainInstance?.pluginApi?.tr("annotate.sharing")
+                    color:     Color.mOnSurface
+                    pointSize: Style.fontSizeS
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+            Row {
+                id: _spSuccRow
+                anchors.centerIn: parent
+                spacing: Style.marginXS
+                visible: !overlayWin.isUploading && !overlayWin.uploadFailed && overlayWin.shareUrl !== ""
+                NIcon {
+                    icon: "link"; color: Color.mPrimary
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+                NText {
+                    text:      overlayWin.shareUrl
+                    color:     Color.mOnSurface
+                    pointSize: Style.fontSizeXS
+                    width:     Math.min(implicitWidth, 260)
+                    elide:     Text.ElideMiddle
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+                Rectangle {
+                    width: 28; height: 28; radius: Style.radiusS
+                    color: _copyUrlMA.containsMouse ? Color.mHover : "transparent"
+                    anchors.verticalCenter: parent.verticalCenter
+                    NIcon {
+                        anchors.centerIn: parent
+                        icon:  "copy"
+                        color: _copyUrlMA.containsMouse ? Color.mOnHover : Color.mOnSurface
+                    }
+                    MouseArea {
+                        id: _copyUrlMA
+                        anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            overlayWin.showSharePopover = false
+                            wlCopyUrlProc.exec({ command: ["bash", "-c",
+                                "printf '%s' " + U.shellEscape(overlayWin.shareUrl) + " | wl-copy"] })
+                            ToastService.showNotice(
+                                root.mainInstance?.pluginApi?.tr("annotate.shareUrl"),
+                                overlayWin.shareUrl, "link")
+                        }
+                        onEntered: TooltipService.show(parent, root.mainInstance?.pluginApi?.tr("annotate.sharePopoverCopy"))
+                        onExited:  TooltipService.hide()
+                    }
+                }
+            }
+            Row {
+                id: _spErrRow
+                anchors.centerIn: parent
+                spacing: Style.marginS
+                visible: !overlayWin.isUploading && overlayWin.uploadFailed
+                NIcon {
+                    icon: "alert-circle"; color: Color.mError ?? "#f44336"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+                NText {
+                    text:      root.mainInstance?.pluginApi?.tr("annotate.shareFailed")
+                    color:     Color.mOnSurface
+                    pointSize: Style.fontSizeS
+                    anchors.verticalCenter: parent.verticalCenter
                 }
             }
         }
@@ -597,15 +734,15 @@ Variants {
                 var r  = overlayWin.drawSize * 12
                 var r2 = r * r
                 function seg2(px, py, ax, ay, bx, by) {
-                    var dx = bx - ax, dy = by - ay
-                    var l2 = dx * dx + dy * dy
+                    var sdx = bx - ax, sdy = by - ay
+                    var l2  = sdx * sdx + sdy * sdy
                     if (l2 === 0) {
                         var ex2 = px - ax, ey2 = py - ay
                         return ex2 * ex2 + ey2 * ey2
                     }
-                    var t  = Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / l2))
-                    var nx = ax + t * dx - px
-                    var ny = ay + t * dy - py
+                    var t  = Math.max(0, Math.min(1, ((px - ax) * sdx + (py - ay) * sdy) / l2))
+                    var nx = ax + t * sdx - px
+                    var ny = ay + t * sdy - py
                     return nx * nx + ny * ny
                 }
                 for (var i = overlayWin.strokes.length - 1; i >= 0; i--) {
@@ -613,15 +750,15 @@ Variants {
                     var hit = false
                     if (s.points) {
                         for (var p = 0; p < s.points.length; p++) {
-                            var dx = s.points[p].x - ex
-                            var dy = s.points[p].y - ey
-                            if (dx * dx + dy * dy < r2) { hit = true; break }
+                            var pdx = s.points[p].x - ex
+                            var pdy = s.points[p].y - ey
+                            if (pdx * pdx + pdy * pdy < r2) { hit = true; break }
                         }
                     } else if (s.type === "line" || s.type === "arrow" || s.type === "ruler") {
                         hit = seg2(ex, ey, s.x1, s.y1, s.x2, s.y2) < r2
                     } else if (s.type === "rect" || s.type === "blur") {
-                        var lx = Math.min(s.x1, s.x2); var rx2 = Math.max(s.x1, s.x2)
-                        var ty = Math.min(s.y1, s.y2); var by2 = Math.max(s.y1, s.y2)
+                        var lx  = Math.min(s.x1, s.x2); var rx2 = Math.max(s.x1, s.x2)
+                        var ty  = Math.min(s.y1, s.y2); var by2  = Math.max(s.y1, s.y2)
                         hit = seg2(ex, ey, lx,  ty,  rx2, ty)  < r2
                            || seg2(ex, ey, rx2, ty,  rx2, by2) < r2
                            || seg2(ex, ey, rx2, by2, lx,  by2) < r2
@@ -638,10 +775,10 @@ Variants {
                         var tdy = ey - s.y1
                         hit = tdx * tdx + tdy * tdy < r2 * 4
                     } else if (s.type === "step") {
-                        var sdx = ex - s.x1
-                        var sdy = ey - s.y1
-                        var sr  = Math.max(10, s.size * 1.5 + 9)
-                        hit = sdx * sdx + sdy * sdy < sr * sr * 1.5
+                        var stepDx = ex - s.x1
+                        var stepDy = ey - s.y1
+                        var sr     = Math.max(10, s.size * 1.5 + 9)
+                        hit = stepDx * stepDx + stepDy * stepDy < sr * sr * 1.5
                     }
                     if (hit) {
                         var arr = overlayWin.strokes.slice()
@@ -666,7 +803,8 @@ Variants {
                         drawCanvas.eraseAt(mouse.x, mouse.y)
                         return
                     }
-                    overlayWin.showPopover = false
+                    overlayWin.showPopover      = false
+                    overlayWin.showSharePopover = false
                     if (overlayWin.tool === "step") {
                         var stepStroke = {
                             type:  "step",
@@ -680,7 +818,7 @@ Variants {
                         var ss = overlayWin.strokes.slice()
                         ss.push(stepStroke)
                         overlayWin.strokes    = ss
-                        overlayWin._redoStack = []   // new action clears redo
+                        overlayWin._redoStack = []
                         var sctx = cacheCanvas.getContext("2d")
                         overlayWin._drawStrokeToCtx(sctx, stepStroke)
                         overlayWin._cacheValid = true
@@ -786,7 +924,7 @@ Variants {
                     var s = overlayWin.strokes.slice()
                     s.push(stroke)
                     overlayWin.strokes    = s
-                    overlayWin._redoStack = []   // new stroke clears redo history
+                    overlayWin._redoStack = []
                     var cctx = cacheCanvas.getContext("2d")
                     overlayWin._drawStrokeToCtx(cctx, stroke)
                     overlayWin._cacheValid   = true
@@ -1145,53 +1283,98 @@ Variants {
                         ToolBtn { toolId: modelData.id; iconName: modelData.icon; tip: modelData.tooltip }
                     }
                     ToolbarSeparator {}
-                    ZoomBtn { iconName: "zoom-out"; tip: root.mainInstance?.pluginApi?.tr("annotate.zoomOut"); btnEnabled: root.zoomScale > 1.0; onClicked: overlayWin.requestZoom(Math.max(1.0, root.zoomScale - 1.0)) }
+                    ZoomBtn {
+                        iconName:   "zoom-out"
+                        tip:        root.mainInstance?.pluginApi?.tr("annotate.zoomOut")
+                        btnEnabled: root.zoomScale > 1.0
+                        onClicked:  overlayWin.requestZoom(Math.max(1.0, root.zoomScale - 1.0))
+                    }
                     Text {
                         anchors.verticalCenter: parent.verticalCenter
-                        text: root.zoomScale === 1.0 ? "1×" : Math.round(root.zoomScale) + "×"
-                        color: root.zoomScale > 1.0 ? Color.mPrimary : Color.mOnSurfaceVariant
-                        font.pixelSize: 11; font.bold: root.zoomScale > 1.0; width: 22
-                        horizontalAlignment: Text.AlignHCenter
+                        text:                   root.zoomScale === 1.0 ? "1×" : Math.round(root.zoomScale) + "×"
+                        color:                  root.zoomScale > 1.0 ? Color.mPrimary : Color.mOnSurfaceVariant
+                        font.pixelSize:         11
+                        font.bold:              root.zoomScale > 1.0
+                        width:                  22
+                        horizontalAlignment:    Text.AlignHCenter
                     }
-                    ZoomBtn { iconName: "zoom-in"; tip: root.mainInstance?.pluginApi?.tr("annotate.zoomIn"); btnEnabled: root.zoomScale < 5.0; onClicked: overlayWin.requestZoom(Math.min(5.0, root.zoomScale + 1.0)) }
+                    ZoomBtn {
+                        iconName:   "zoom-in"
+                        tip:        root.mainInstance?.pluginApi?.tr("annotate.zoomIn")
+                        btnEnabled: root.zoomScale < 5.0
+                        onClicked:  overlayWin.requestZoom(Math.min(5.0, root.zoomScale + 1.0))
+                    }
                     ToolbarSeparator {}
                     Rectangle {
-                        width: Style.marginXL; height: Style.marginXL; radius: Math.round(Style.marginXL / 2); anchors.verticalCenter: parent.verticalCenter
-                        color: overlayWin.drawColor
-                        border.color: overlayWin.showPopover ? Color.mPrimary : Qt.rgba(0,0,0,0.2)
+                        width:  Style.marginXL; height: Style.marginXL
+                        radius: Math.round(Style.marginXL / 2)
+                        anchors.verticalCenter: parent.verticalCenter
+                        color:        overlayWin.drawColor
+                        border.color: overlayWin.showPopover ? Color.mPrimary : Qt.rgba(0, 0, 0, 0.2)
                         border.width: overlayWin.showPopover ? Style.borderM : Style.borderS
                         scale: colorBtnH.containsMouse ? 1.1 : 1
                         Behavior on scale { NumberAnimation { duration: 80 } }
-                        MouseArea { id: colorBtnH; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                        MouseArea {
+                            id: colorBtnH
+                            anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
                             onClicked: overlayWin.showPopover = !overlayWin.showPopover
                             onEntered: TooltipService.show(parent, root.mainInstance?.pluginApi?.tr("annotate.colorSize"))
                             onExited:  TooltipService.hide()
                         }
                     }
                     ToolbarSeparator {}
-                    ActionBtn { iconName: "corner-up-left"; tip: root.mainInstance?.pluginApi?.tr("annotate.undo"); onClicked: toolbar.doUndo(); disabled: overlayWin.strokes.length === 0 }
-                    ActionBtn { iconName: "corner-up-right"; tip: root.mainInstance?.pluginApi?.tr("annotate.redo"); onClicked: toolbar.doRedo(); disabled: overlayWin._redoStack.length === 0 }
-                    ActionBtn { iconName: "trash"; tip: root.mainInstance?.pluginApi?.tr("annotate.clearAll"); danger: true; onClicked: toolbar.doClear() }
+                    ActionBtn {
+                        iconName: "corner-up-left"
+                        tip:      root.mainInstance?.pluginApi?.tr("annotate.undo")
+                        disabled: overlayWin.strokes.length === 0
+                        onClicked: toolbar.doUndo()
+                    }
+                    ActionBtn {
+                        iconName: "corner-up-right"
+                        tip:      root.mainInstance?.pluginApi?.tr("annotate.redo")
+                        disabled: overlayWin._redoStack.length === 0
+                        onClicked: toolbar.doRedo()
+                    }
+                    ActionBtn {
+                        iconName: "trash"
+                        tip:      root.mainInstance?.pluginApi?.tr("annotate.clearAll")
+                        danger:   true
+                        onClicked: toolbar.doClear()
+                    }
                     SaveBtn {
                         iconName:  "copy"
-                        labelText: overlayWin.isSaving ? root.mainInstance?.pluginApi?.tr("annotate.copying") : root.mainInstance?.pluginApi?.tr("annotate.copy")
-                        tip:       root.mainInstance?.pluginApi?.tr("annotate.copyTip")
-                        primary:   true
+                        labelText: overlayWin.isSaving
+                            ? root.mainInstance?.pluginApi?.tr("annotate.copying")
+                            : root.mainInstance?.pluginApi?.tr("annotate.copy")
+                        tip:     root.mainInstance?.pluginApi?.tr("annotate.copyTip")
+                        primary: true
                         onClicked: overlayWin.flattenAndCopy()
                     }
                     SaveBtn {
                         iconName:  "device-floppy"
-                        labelText: overlayWin.isSaving ? root.mainInstance?.pluginApi?.tr("annotate.saving") : root.mainInstance?.pluginApi?.tr("annotate.save")
-                        tip:       root.mainInstance?.pluginApi?.tr("annotate.saveTip")
-                        primary:   false
+                        labelText: overlayWin.isSaving
+                            ? root.mainInstance?.pluginApi?.tr("annotate.saving")
+                            : root.mainInstance?.pluginApi?.tr("annotate.save")
+                        tip:     root.mainInstance?.pluginApi?.tr("annotate.saveTip")
+                        primary: false
                         onClicked: overlayWin.flattenAndSave()
+                    }
+                    ActionBtn {
+                        iconName:  "share"
+                        tip:       root.mainInstance?.pluginApi?.tr("annotate.shareTip")
+                        disabled:  overlayWin.isUploading
+                        onClicked: overlayWin.flattenAndShare()
                     }
                     ActionBtn {
                         iconName:  "refresh"
                         tip:       root.mainInstance?.pluginApi?.tr("annotate.refresh")
                         onClicked: { root.hide(); root.mainInstance?.runAnnotate() }
                     }
-                    ActionBtn { iconName: "x"; tip: root.mainInstance?.pluginApi?.tr("annotate.close"); onClicked: toolbar.doClose() }
+                    ActionBtn {
+                        iconName:  "x"
+                        tip:       root.mainInstance?.pluginApi?.tr("annotate.close")
+                        onClicked: toolbar.doClose()
+                    }
                     ToolbarSeparator {}
                     DragBtn { isVertical: false; anchors.verticalCenter: parent.verticalCenter }
                 }
@@ -1205,36 +1388,88 @@ Variants {
                         ToolBtn { toolId: modelData.id; iconName: modelData.icon; tip: modelData.tooltip }
                     }
                     ToolbarSeparator {}
-                    ZoomBtn { iconName: "zoom-out"; tip: root.mainInstance?.pluginApi?.tr("annotate.zoomOut"); btnEnabled: root.zoomScale > 1.0; onClicked: overlayWin.requestZoom(Math.max(1.0, root.zoomScale - 1.0)) }
+                    ZoomBtn {
+                        iconName:   "zoom-out"
+                        tip:        root.mainInstance?.pluginApi?.tr("annotate.zoomOut")
+                        btnEnabled: root.zoomScale > 1.0
+                        onClicked:  overlayWin.requestZoom(Math.max(1.0, root.zoomScale - 1.0))
+                    }
                     Text {
                         anchors.horizontalCenter: parent.horizontalCenter
-                        text: root.zoomScale === 1.0 ? "1×" : Math.round(root.zoomScale) + "×"
-                        color: root.zoomScale > 1.0 ? Color.mPrimary : Color.mOnSurfaceVariant
-                        font.pixelSize: 10; font.bold: root.zoomScale > 1.0
+                        text:           root.zoomScale === 1.0 ? "1×" : Math.round(root.zoomScale) + "×"
+                        color:          root.zoomScale > 1.0 ? Color.mPrimary : Color.mOnSurfaceVariant
+                        font.pixelSize: 10
+                        font.bold:      root.zoomScale > 1.0
                     }
-                    ZoomBtn { iconName: "zoom-in"; tip: root.mainInstance?.pluginApi?.tr("annotate.zoomIn"); btnEnabled: root.zoomScale < 5.0; onClicked: overlayWin.requestZoom(Math.min(5.0, root.zoomScale + 1.0)) }
+                    ZoomBtn {
+                        iconName:   "zoom-in"
+                        tip:        root.mainInstance?.pluginApi?.tr("annotate.zoomIn")
+                        btnEnabled: root.zoomScale < 5.0
+                        onClicked:  overlayWin.requestZoom(Math.min(5.0, root.zoomScale + 1.0))
+                    }
                     ToolbarSeparator {}
                     Rectangle {
-                        width: Style.marginXL; height: Style.marginXL; radius: Math.round(Style.marginXL / 2); anchors.horizontalCenter: parent.horizontalCenter
-                        color: overlayWin.drawColor
-                        border.color: overlayWin.showPopover ? Color.mPrimary : Qt.rgba(0,0,0,0.2)
+                        width:  Style.marginXL; height: Style.marginXL
+                        radius: Math.round(Style.marginXL / 2)
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        color:        overlayWin.drawColor
+                        border.color: overlayWin.showPopover ? Color.mPrimary : Qt.rgba(0, 0, 0, 0.2)
                         border.width: overlayWin.showPopover ? Style.borderM : Style.borderS
                         scale: colorBtnV.containsMouse ? 1.1 : 1
                         Behavior on scale { NumberAnimation { duration: 80 } }
-                        MouseArea { id: colorBtnV; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                        MouseArea {
+                            id: colorBtnV
+                            anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
                             onClicked: overlayWin.showPopover = !overlayWin.showPopover
                             onEntered: TooltipService.show(parent, root.mainInstance?.pluginApi?.tr("annotate.colorSize"))
                             onExited:  TooltipService.hide()
                         }
                     }
                     ToolbarSeparator {}
-                    ActionBtn { iconName: "corner-up-left"; tip: root.mainInstance?.pluginApi?.tr("annotate.undo"); onClicked: toolbar.doUndo(); disabled: overlayWin.strokes.length === 0 }
-                    ActionBtn { iconName: "corner-up-right"; tip: root.mainInstance?.pluginApi?.tr("annotate.redo"); onClicked: toolbar.doRedo(); disabled: overlayWin._redoStack.length === 0 }
-                    ActionBtn { iconName: "trash"; tip: root.mainInstance?.pluginApi?.tr("annotate.clearAll"); danger: true; onClicked: toolbar.doClear() }
-                    ActionBtn { iconName: "copy";           tip: root.mainInstance?.pluginApi?.tr("annotate.copyTip");  onClicked: overlayWin.flattenAndCopy() }
-                    ActionBtn { iconName: "device-floppy";  tip: root.mainInstance?.pluginApi?.tr("annotate.saveTip");  onClicked: overlayWin.flattenAndSave() }
-                    ActionBtn { iconName: "refresh"; tip: root.mainInstance?.pluginApi?.tr("annotate.refresh"); onClicked: { root.hide(); root.mainInstance?.runAnnotate() } }
-                    ActionBtn { iconName: "x";              tip: root.mainInstance?.pluginApi?.tr("annotate.close");    onClicked: toolbar.doClose() }
+                    ActionBtn {
+                        iconName:  "corner-up-left"
+                        tip:       root.mainInstance?.pluginApi?.tr("annotate.undo")
+                        disabled:  overlayWin.strokes.length === 0
+                        onClicked: toolbar.doUndo()
+                    }
+                    ActionBtn {
+                        iconName:  "corner-up-right"
+                        tip:       root.mainInstance?.pluginApi?.tr("annotate.redo")
+                        disabled:  overlayWin._redoStack.length === 0
+                        onClicked: toolbar.doRedo()
+                    }
+                    ActionBtn {
+                        iconName:  "trash"
+                        tip:       root.mainInstance?.pluginApi?.tr("annotate.clearAll")
+                        danger:    true
+                        onClicked: toolbar.doClear()
+                    }
+                    ActionBtn {
+                        iconName:  "copy"
+                        tip:       root.mainInstance?.pluginApi?.tr("annotate.copyTip")
+                        onClicked: overlayWin.flattenAndCopy()
+                    }
+                    ActionBtn {
+                        iconName:  "device-floppy"
+                        tip:       root.mainInstance?.pluginApi?.tr("annotate.saveTip")
+                        onClicked: overlayWin.flattenAndSave()
+                    }
+                    ActionBtn {
+                        iconName:  "share"
+                        tip:       root.mainInstance?.pluginApi?.tr("annotate.shareTip")
+                        disabled:  overlayWin.isUploading
+                        onClicked: overlayWin.flattenAndShare()
+                    }
+                    ActionBtn {
+                        iconName:  "refresh"
+                        tip:       root.mainInstance?.pluginApi?.tr("annotate.refresh")
+                        onClicked: { root.hide(); root.mainInstance?.runAnnotate() }
+                    }
+                    ActionBtn {
+                        iconName:  "x"
+                        tip:       root.mainInstance?.pluginApi?.tr("annotate.close")
+                        onClicked: toolbar.doClose()
+                    }
                     ToolbarSeparator {}
                     DragBtn { isVertical: true; anchors.horizontalCenter: parent.horizontalCenter }
                 }
@@ -1269,11 +1504,13 @@ Variants {
                         model: toolbar.colorDefs
                         delegate: Rectangle {
                             width: 20; height: 20; radius: 10; color: modelData
-                            border.color: overlayWin.drawColor.toString().toUpperCase() === modelData.toUpperCase() ? Color.mPrimary : Qt.rgba(0,0,0,0.15)
+                            border.color: overlayWin.drawColor.toString().toUpperCase() === modelData.toUpperCase() ? Color.mPrimary : Qt.rgba(0, 0, 0, 0.15)
                             border.width: overlayWin.drawColor.toString().toUpperCase() === modelData.toUpperCase() ? Style.borderM : Style.borderS
                             scale: chH.containsMouse ? 1.2 : 1
                             Behavior on scale { NumberAnimation { duration: 80 } }
-                            MouseArea { id: chH; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                            MouseArea {
+                                id: chH
+                                anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
                                 onClicked: { overlayWin.drawColor = modelData; overlayWin.showPopover = false }
                             }
                         }
@@ -1284,13 +1521,16 @@ Variants {
                         delegate: Rectangle {
                             width: 28; height: 24; radius: Style.radiusS
                             color: overlayWin.drawSize === modelData.size ? Color.mPrimaryContainer : (shH.containsMouse ? Color.mHover : "transparent")
-                            border.color: overlayWin.drawSize === modelData.size ? Color.mPrimary : "transparent"; border.width: Style.borderS
+                            border.color: overlayWin.drawSize === modelData.size ? Color.mPrimary : "transparent"
+                            border.width: Style.borderS
                             Row {
                                 anchors.centerIn: parent; spacing: Style.marginXS
-                                Rectangle { width: modelData.size*2; height: modelData.size*2; radius: modelData.size; color: overlayWin.drawColor; anchors.verticalCenter: parent.verticalCenter }
+                                Rectangle { width: modelData.size * 2; height: modelData.size * 2; radius: modelData.size; color: overlayWin.drawColor; anchors.verticalCenter: parent.verticalCenter }
                                 NText { text: modelData.label; pointSize: Style.fontSizeXS; color: Color.mOnSurfaceVariant; anchors.verticalCenter: parent.verticalCenter }
                             }
-                            MouseArea { id: shH; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                            MouseArea {
+                                id: shH
+                                anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
                                 onClicked: { overlayWin.drawSize = modelData.size; overlayWin.showPopover = false }
                             }
                         }
@@ -1306,13 +1546,18 @@ Variants {
                         delegate: Item {
                             width: 32; height: 20
                             Rectangle {
-                                width: Style.marginXL + Style.marginXXS; height: Style.marginXL + Style.marginXXS; radius: Math.round((Style.marginXL + Style.marginXXS) / 2); color: modelData
+                                width:  Style.marginXL + Style.marginXXS
+                                height: Style.marginXL + Style.marginXXS
+                                radius: Math.round((Style.marginXL + Style.marginXXS) / 2)
                                 anchors.centerIn: parent
-                                border.color: overlayWin.drawColor.toString().toUpperCase() === modelData.toUpperCase() ? Color.mPrimary : Qt.rgba(0,0,0,0.15)
+                                color:        modelData
+                                border.color: overlayWin.drawColor.toString().toUpperCase() === modelData.toUpperCase() ? Color.mPrimary : Qt.rgba(0, 0, 0, 0.15)
                                 border.width: overlayWin.drawColor.toString().toUpperCase() === modelData.toUpperCase() ? Style.borderM : Style.borderS
                                 scale: chV.containsMouse ? 1.2 : 1
                                 Behavior on scale { NumberAnimation { duration: 80 } }
-                                MouseArea { id: chV; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                                MouseArea {
+                                    id: chV
+                                    anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
                                     onClicked: { overlayWin.drawColor = modelData; overlayWin.showPopover = false }
                                 }
                             }
@@ -1324,18 +1569,49 @@ Variants {
                         delegate: Rectangle {
                             width: 32; height: 24; radius: Style.radiusS
                             color: overlayWin.drawSize === modelData.size ? Color.mPrimaryContainer : (shV.containsMouse ? Color.mHover : "transparent")
-                            border.color: overlayWin.drawSize === modelData.size ? Color.mPrimary : "transparent"; border.width: Style.borderS
+                            border.color: overlayWin.drawSize === modelData.size ? Color.mPrimary : "transparent"
+                            border.width: Style.borderS
                             Row {
                                 anchors.centerIn: parent; spacing: Style.marginXS
-                                Rectangle { width: modelData.size*2; height: modelData.size*2; radius: modelData.size; color: overlayWin.drawColor; anchors.verticalCenter: parent.verticalCenter }
+                                Rectangle { width: modelData.size * 2; height: modelData.size * 2; radius: modelData.size; color: overlayWin.drawColor; anchors.verticalCenter: parent.verticalCenter }
                                 NText { text: modelData.label; pointSize: Style.fontSizeXS; color: Color.mOnSurfaceVariant; anchors.verticalCenter: parent.verticalCenter }
                             }
-                            MouseArea { id: shV; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                            MouseArea {
+                                id: shV
+                                anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
                                 onClicked: { overlayWin.drawSize = modelData.size; overlayWin.showPopover = false }
                             }
                         }
                     }
                 }
+            }
+        }
+        function _doUpload(file) {
+            var clientId   = (root.mainInstance?.pluginApi?.pluginSettings?.imgurClientId ?? "").trim()
+            var scriptPath = Qt.resolvedUrl("../scripts/share-upload.sh").toString().replace("file://", "")
+            uploadProc.exec({ command: ["bash", scriptPath, file, clientId] })
+        }
+        function flattenAndShare() {
+            if (overlayWin.isUploading || overlayWin.isSaving) return
+            overlayWin.isUploading      = true
+            overlayWin.shareUrl         = ""
+            overlayWin.uploadFailed     = false
+            overlayWin.showSharePopover = true
+            if (root.zoomScale > 1.0) {
+                _doUpload(root.imagePath)
+            } else {
+                drawCanvas.grabToImage(function(result) {
+                    if (!result || !result.saveToFile("/tmp/screen-toolkit-overlay.png")) {
+                        overlayWin.isUploading  = false
+                        overlayWin.uploadFailed = true
+                        return
+                    }
+                    flattenForShareProc.exec({ command: ["bash", "-c",
+                        "magick /tmp/screen-toolkit-annotate.png /tmp/screen-toolkit-overlay.png"
+                            + " -composite /tmp/screen-toolkit-share.png"
+                            + " && rm -f /tmp/screen-toolkit-overlay.png"
+                    ]})
+                })
             }
         }
         function flattenAndSave() {
@@ -1350,38 +1626,45 @@ Variants {
                     var ssDir  = home + "/Pictures/Screenshots"
                     var picDir = home + "/Pictures"
                     saveFileProc.exec({ command: ["bash", "-c",
-                        "if [ -d " + U.shellEscape(ssDir) + " ]; then DEST=" + U.shellEscape(ssDir) +
-                        "; elif [ -d " + U.shellEscape(picDir) + " ]; then DEST=" + U.shellEscape(picDir) +
-                        "; else exit 1; fi; " +
-                        "cp " + U.shellEscape(root.imagePath) + " \"$DEST/" + filename + "\" && " +
-                        "echo \"$DEST/" + filename + "\""
+                        "if [ -d " + U.shellEscape(ssDir) + " ]; then DEST=" + U.shellEscape(ssDir)
+                            + "; elif [ -d " + U.shellEscape(picDir) + " ]; then DEST=" + U.shellEscape(picDir)
+                            + "; else exit 1; fi;"
+                            + " cp " + U.shellEscape(root.imagePath) + " \"$DEST/" + filename + "\""
+                            + " && echo \"$DEST/" + filename + "\""
                     ]})
                 } else {
                     var dest = custom + "/" + filename
                     saveFileProc.exec({ command: ["bash", "-c",
-                        "cp " + U.shellEscape(root.imagePath) + " " + U.shellEscape(dest) + " && echo " + U.shellEscape(dest)
+                        "cp " + U.shellEscape(root.imagePath) + " " + U.shellEscape(dest)
+                            + " && echo " + U.shellEscape(dest)
                     ]})
                 }
             } else {
                 drawCanvas.grabToImage(function(result) {
-                    result.saveToFile("/tmp/screen-toolkit-overlay.png")
+                    if (!result || !result.saveToFile("/tmp/screen-toolkit-overlay.png")) {
+                        overlayWin.isSaving = false
+                        ToastService.showError(root.mainInstance?.pluginApi?.tr("annotate.saveFileFailed"))
+                        return
+                    }
                     if (custom === "__auto__") {
                         var ssDir2  = home + "/Pictures/Screenshots"
                         var picDir2 = home + "/Pictures"
                         saveFileProc.exec({ command: ["bash", "-c",
-                            "if [ -d " + U.shellEscape(ssDir2) + " ]; then DEST=" + U.shellEscape(ssDir2) +
-                            "; elif [ -d " + U.shellEscape(picDir2) + " ]; then DEST=" + U.shellEscape(picDir2) +
-                            "; else exit 1; fi; " +
-                            "magick /tmp/screen-toolkit-annotate.png /tmp/screen-toolkit-overlay.png " +
-                            "-composite \"$DEST/" + filename + "\" && " +
-                            "rm -f /tmp/screen-toolkit-overlay.png && echo \"$DEST/" + filename + "\""
+                            "if [ -d " + U.shellEscape(ssDir2) + " ]; then DEST=" + U.shellEscape(ssDir2)
+                                + "; elif [ -d " + U.shellEscape(picDir2) + " ]; then DEST=" + U.shellEscape(picDir2)
+                                + "; else exit 1; fi;"
+                                + " magick /tmp/screen-toolkit-annotate.png /tmp/screen-toolkit-overlay.png"
+                                + " -composite \"$DEST/" + filename + "\""
+                                + " && rm -f /tmp/screen-toolkit-overlay.png"
+                                + " && echo \"$DEST/" + filename + "\""
                         ]})
                     } else {
                         var dest2 = custom + "/" + filename
                         saveFileProc.exec({ command: ["bash", "-c",
-                            "magick /tmp/screen-toolkit-annotate.png /tmp/screen-toolkit-overlay.png " +
-                            "-composite " + U.shellEscape(dest2) + " && " +
-                            "rm -f /tmp/screen-toolkit-overlay.png && echo " + U.shellEscape(dest2)
+                            "magick /tmp/screen-toolkit-annotate.png /tmp/screen-toolkit-overlay.png"
+                                + " -composite " + U.shellEscape(dest2)
+                                + " && rm -f /tmp/screen-toolkit-overlay.png"
+                                + " && echo " + U.shellEscape(dest2)
                         ]})
                     }
                 })
@@ -1394,16 +1677,19 @@ Variants {
                 copyProc.exec({ command: ["bash", "-c", "wl-copy < " + U.shellEscape(root.imagePath)] })
             } else {
                 drawCanvas.grabToImage(function(result) {
-                    result.saveToFile("/tmp/screen-toolkit-overlay.png")
+                    if (!result || !result.saveToFile("/tmp/screen-toolkit-overlay.png")) {
+                        overlayWin.isSaving = false
+                        ToastService.showError(root.mainInstance?.pluginApi?.tr("annotate.copyFailed"))
+                        return
+                    }
                     clipFlattenProc.exec({ command: ["bash", "-c",
-                        "magick /tmp/screen-toolkit-annotate.png /tmp/screen-toolkit-overlay.png " +
-                        "-composite /tmp/screen-toolkit-annotated.png && " +
-                        "wl-copy < /tmp/screen-toolkit-annotated.png && " +
-                        "rm -f /tmp/screen-toolkit-overlay.png"
+                        "magick /tmp/screen-toolkit-annotate.png /tmp/screen-toolkit-overlay.png"
+                            + " -composite /tmp/screen-toolkit-annotated.png"
+                            + " && wl-copy < /tmp/screen-toolkit-annotated.png"
+                            + " && rm -f /tmp/screen-toolkit-overlay.png"
                     ]})
                 })
             }
         }
     }
 }
-

@@ -149,6 +149,8 @@
     "recordCopyToClipboard": "Copy to Clipboard",
     "recordCopyToClipboardDesc": "Copy the recording to clipboard when done instead of showing the save dialog.",
     "gifMaxSeconds": "Max GIF Duration",
+    "imgurClientId":     "Imgur Client ID",
+    "imgurClientIdDesc": "For permanent links. Leave empty to use uguu.se. Get a Client ID at imgur.com/oauth2/addclient — choose 'Anonymous usage'.",
     "gifMaxSecondsDesc": "Maximum duration in seconds for GIF recordings.",
     "filenameTokens": {
       "year": "Year",
@@ -208,7 +210,13 @@
     "toolStep": "Add step badge",
     "toolRuler": "Measure distance",
     "zoomViewOnly": "× (view only)",
-    "toolBlur": "Pixelate region"
+    "toolBlur": "Pixelate region",
+    "share":           "Share",
+    "sharing":         "Uploading…",
+    "shareTip":        "Upload & copy link",
+    "shareUrl":        "Link copied",
+    "shareFailed":     "Upload failed",
+    "sharePopoverCopy": "Copy link"
   },
   "record": {
     "stop": "Stop",
