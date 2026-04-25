@@ -7,14 +7,18 @@ Rectangle {
   id: topBar
 
   required property int animationDuration
+  required property var colorOrder
+  required property var colorOrderColors
   required property int currentIndex
   property real entryOffset: parent.width / 2
   required property int filteredCount
   required property bool livePreview
   required property var pluginApi
+  required property string selectedColorFilter
   required property string selectedFilter
   required property real shearFactor
 
+  signal colorFilterSelected(string key)
   signal filterSelected(string key)
   signal livePreviewToggled
   signal shuffleRequested
@@ -52,7 +56,7 @@ Rectangle {
   // Center
   Row {
     anchors.centerIn: parent
-    spacing: Style.marginXXXS
+    spacing: Style.marginXS
 
     Repeater {
       model: [
@@ -85,6 +89,57 @@ Rectangle {
         label: modelData.label
 
         onClicked: topBar.filterSelected(modelData.key)
+      }
+    }
+
+    // Separator
+    Rectangle {
+      anchors.verticalCenter: parent.verticalCenter
+      color: Qt.alpha(Color.mOnSurface, 0.15)
+      height: parent.height * 0.5
+      width: 1
+    }
+
+    Repeater {
+      model: topBar.colorOrder
+
+      Rectangle {
+        required property int index
+        required property string modelData
+
+        property bool active: topBar.selectedColorFilter === modelData
+
+        anchors.verticalCenter: parent.verticalCenter
+        border.color: active ? Color.mOnSurface : Qt.alpha(Color.mOutline, 0.3)
+        border.width: Style.borderS
+        color: topBar.colorOrderColors[index]
+        height: Style.margin2L
+        opacity: active ? 1.0 : 0.4
+        radius: Style.radiusM
+        width: height
+
+        Behavior on opacity {
+          NumberAnimation {
+            duration: Style.animationFast
+          }
+        }
+        Behavior on border.color {
+          ColorAnimation {
+            duration: Style.animationFast
+          }
+        }
+
+        MouseArea {
+          anchors.fill: parent
+          cursorShape: Qt.PointingHandCursor
+
+          onClicked: {
+            if (parent.active)
+              topBar.colorFilterSelected("");
+            else
+              topBar.colorFilterSelected(parent.modelData);
+          }
+        }
       }
     }
   }

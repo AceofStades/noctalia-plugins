@@ -34,6 +34,7 @@ PanelWindow {
   property int pendingProcesses: 0
   property var pluginApi: null
   property string selectedFilter: pluginApi?.pluginSettings?.selected_filter || pluginApi?.manifest?.metadata?.defaultSettings?.selected_filter
+  property string selectedColorFilter: ""
   property real shearFactor: pluginApi?.pluginSettings?.shear_factor ?? pluginApi?.manifest?.metadata?.defaultSettings?.shear_factor
   property int thumbnailRevision: thumbnailService.thumbnailRevision
   property int topBarHeight: pluginApi?.pluginSettings?.top_bar_height ?? pluginApi?.manifest?.metadata?.defaultSettings?.top_bar_height
@@ -66,9 +67,19 @@ PanelWindow {
   //
   function applyFilterToFiles() {
     var all = thumbnailService.files ?? [];
-    filteredFiles = selectedFilter === "all" ? all : all.filter(f => selectedFilter === "videos" ? f.isVideo : !f.isVideo);
-    // TODO: Proper indices transition needed here.
+    var result = all;
+
+    if (selectedFilter === "images")
+      result = result.filter(f => !f.isVideo);
+    else if (selectedFilter === "videos")
+      result = result.filter(f => f.isVideo);
+
+    if (selectedColorFilter !== "")
+      result = result.filter(f => f.filterColor === selectedColorFilter);
+
+    filteredFiles = result;
     cardDeck.navigateTo(0);
+    // TODO: Proper indices tranisition needed here.
   }
   function close() {
     if (exitAnimation.running)
@@ -91,6 +102,7 @@ PanelWindow {
       applyCurrentCard();
   }
   onSelectedFilterChanged: applyFilterToFiles()
+  onSelectedColorFilterChanged: applyFilterToFiles()
 
   Process {
     id: applicant
@@ -106,7 +118,6 @@ PanelWindow {
     target: thumbnailService
   }
 
-  //
   ThumbnailService {
     id: thumbnailService
 
@@ -116,7 +127,6 @@ PanelWindow {
     wallpaperDir: root.pluginApi?.Settings.data.wallpaper.directory
   }
 
-  //
   ParallelAnimation {
     id: enterAnimation
 
@@ -148,7 +158,6 @@ PanelWindow {
     // }
   }
 
-  //
   ParallelAnimation {
     id: exitAnimation
 
@@ -269,7 +278,10 @@ PanelWindow {
       const bindings = {
         [Qt.Key_Question]: () => bottomBar.expanded = !bottomBar.expanded,
         [Qt.Key_Q]: () => root.close(),
-        [Qt.Key_Return]: () => root.applyCurrentCard(),
+        [Qt.Key_Return]: () => {
+          root.applyCurrentCard();
+          root.close();
+        },
         [Qt.Key_Space]: () => root.applyCurrentCard(),
         [Qt.Key_Escape]: () => root.close(),
         [Qt.Key_A]: () => root.selectedFilter = "all",
@@ -310,17 +322,21 @@ PanelWindow {
       anchors.horizontalCenter: parent.horizontalCenter
       anchors.horizontalCenterOffset: shearFactor * -root.topBarHeight * 4 / 3
       animationDuration: root.animationCardsDuration
+      colorOrder: thumbnailService.colorOrder
+      colorOrderColors: thumbnailService.colorOrderColors
       currentIndex: cardDeck.currentIndex
       filteredCount: root.filteredFiles.length
       height: root.topBarHeight
       livePreview: root.livePreview
       pluginApi: root.pluginApi
       radius: root.topBarRadius
+      selectedColorFilter: root.selectedColorFilter
       selectedFilter: root.selectedFilter
       shearFactor: root.shearFactor
       visible: !loadingBar.visible && !root.hideTopBar
       width: cardDeck.width
 
+      onColorFilterSelected: key => root.selectedColorFilter = key
       onFilterSelected: key => root.selectedFilter = key
       onLivePreviewToggled: root.livePreview = !root.livePreview
       onShuffleRequested: cardDeck.randomJump()

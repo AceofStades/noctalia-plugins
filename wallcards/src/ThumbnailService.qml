@@ -10,8 +10,8 @@ Item {
   required property var imageFilter
   required property var videoFilter
   required property string wallpaperDir
-  property var colorOrder: ["Red", "Orange", "Yellow", "Green", "Blue", "Purple", "Pink", "Monochrome"]
-  property var colorOrderColors: ["#FF4500", "#FFA500", "#FFD700", "#32CD32", "#1E90FF", "#8A2BE2", "#FF69B4", "#A9A9A9"]
+  property var colorOrder: ["Red", "Orange", "Green", "Teal", "Blue", "Purple", "Pink", "Monochrome"]
+  property var colorOrderColors: ["#FF4500", "#FFA500", "#32CD32", "#2EC4B6", "#1E90FF", "#8A2BE2", "#FF69B4", "#A9A9A9"]
   property int fileCount: files.length
   property var files: []
   property bool loading: true
@@ -109,7 +109,7 @@ Item {
   }
 
   function thumbnailHexValueCmd(thumbnailPath) {
-    return `magick "${thumbnailPath}" -modulate 100,200 \
+    return `magick "${thumbnailPath}" \
       -resize "1x1^" \
       -gravity center \
       -extent 1x1 \
@@ -155,6 +155,8 @@ Item {
       const thumbBase = fileName.substring(0, idx);
       const hexColor = fileName.substring(idx + 3);
 
+      // Video thumbnails are named <original>.<vidext>.jpg__x<hex>
+      // Strip trailing .jpg to recover the original video filename.
       var isVid = thumbBase.toLowerCase().endsWith(".jpg") && Utils.isVideo(thumbBase.substring(0, thumbBase.lastIndexOf(".")), service.videoFilter);
       var wallpaperName = isVid ? thumbBase.substring(0, thumbBase.lastIndexOf(".")) : thumbBase;
 
@@ -207,16 +209,16 @@ Item {
       h = (h / 6) * 360;
     }
 
-    if (s < 0.05 || v < 0.08)
+    if (s < 0.15 || v < 0.10)
       return "Monochrome";
     if (h >= 345 || h < 15)
       return "Red";
-    if (h < 45)
+    if (h < 50)
       return "Orange";
-    if (h < 75)
-      return "Yellow";
-    if (h < 165)
+    if (h < 160)
       return "Green";
+    if (h < 200)
+      return "Teal";
     if (h < 260)
       return "Blue";
     if (h < 315)
