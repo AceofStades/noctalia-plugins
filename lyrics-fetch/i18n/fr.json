@@ -25,7 +25,14 @@
         },
 
         "hide-when-empty": "Masquer lorsqu'il est vide",
-        "hide-when-paused": "Masquer lorsqu'il est en pause"
+        "hide-when-paused": "Masquer lorsqu'il est en pause",
+        "vertical-rotation": {
+            "title": "Orientation verticale des paroles",
+            "description": "Change la direction des paroles lors de l'utilisation d'une barre verticale.",
+            "auto": "Automatique",
+            "cw": "Sens horaire",
+            "ccw": "Sens antihoraire"
+        }
     },
 
     "lyrics": {
