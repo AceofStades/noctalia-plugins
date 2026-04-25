@@ -41,7 +41,12 @@
     "passwordCopied": "Password copied",
     "cssVars": "Copy as CSS vars",
     "pickAgain": "Pick again",
-    "hexList": "Copy hex list"
+    "hexList": "Copy hex list",
+    "loading": "...",
+    "labelHex": "HEX",
+    "labelRgb": "RGB",
+    "labelHsl": "HSL",
+    "labelHsv": "HSV"
   },
   "tools": {
     "colorpicker": "Color",
@@ -220,7 +225,8 @@
     "failed": "Recording failed or cancelled",
     "saveMp4Failed": "Failed to save MP4",
     "saveGifFailed": "GIF conversion failed",
-    "discard": "Discard"
+    "discard": "Discard",
+    "recLabel": "REC"
   },
   "pin": {
     "close": "Close",
@@ -231,6 +237,7 @@
     "mute": "Mute audio",
     "unmute": "Unmute audio",
     "fillStretch": "Fill: Stretch",
+    "noFile": "No file",
     "tooMany": "Maximum number of pins reached"
   },
   "measure": {
@@ -245,4 +252,5 @@
     "remove": "Remove"
   }
 }
+
 

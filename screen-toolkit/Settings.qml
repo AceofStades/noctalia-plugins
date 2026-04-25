@@ -182,16 +182,16 @@ ColumnLayout {
         signal toggled(bool value)
         spacing: Style.marginM
         ColumnLayout {
-            Layout.fillWidth: true; spacing: 2
+            Layout.fillWidth: true; spacing: Style.marginXXS
             NLabel { label: _tog.labelText }
             NText { text: _tog.descText; pointSize: Style.fontSizeXS; color: Color.mOnSurfaceVariant; wrapMode: Text.WordWrap; Layout.fillWidth: true }
         }
         Rectangle {
-            width: 40; height: 22; radius: 11
+            width: Style.marginXL * 2 + Style.marginXS; height: Style.marginL + Style.marginM; radius: Math.round((Style.marginL + Style.marginM) / 2)
             color: _tog.checked ? Color.mPrimary : Color.mSurfaceVariant
             Behavior on color { ColorAnimation { duration: 120 } }
             Rectangle {
-                id: _thumb; width: 18; height: 18; radius: 9; color: "white"
+                id: _thumb; width: Style.marginXL; height: Style.marginXL; radius: Math.round(Style.marginXL / 2); color: "white"
                 anchors.verticalCenter: parent.verticalCenter
                 x: _tog.checked ? parent.width - width - 2 : 2
                 Behavior on x { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
@@ -200,3 +200,4 @@ ColumnLayout {
         }
     }
 }
+

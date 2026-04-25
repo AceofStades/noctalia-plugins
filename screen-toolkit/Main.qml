@@ -64,7 +64,7 @@ Item {
     Component.onCompleted: {
         root.isRunning  = false
         root.activeTool = ""
-        console.log("Scripts dir:", root._scriptsDir)
+        Logger.i("ScreenToolkit", "Scripts dir: " + root._scriptsDir)
         if (!_capsDetected) {
             detectCapabilities()
             _capsDetected = true
@@ -881,3 +881,4 @@ Item {
         function recordStop()          { if (recordOverlay.isRecording) recordOverlay.stopRecording() }
     }
 }
+

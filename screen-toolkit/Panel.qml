@@ -270,7 +270,7 @@ Item {
                 Row {
                     anchors.centerIn: parent; spacing: Style.marginS
                     Rectangle {
-                        width: 10; height: 10; radius: 2
+                        width: Style.marginM; height: Style.marginM; radius: Style.radiusXXXS
                         color: recPanelStopBtn.containsMouse ? "white" : (Color.mError || "#f44336")
                         anchors.verticalCenter: parent.verticalCenter
                     }
@@ -597,10 +597,10 @@ Item {
                          : Color.mOnSurface
                 }
                 Rectangle {
-                    width: 8; height: 8; radius: 4
+                    width: Style.marginXS * 2; height: Style.marginXS * 2; radius: Style.radiusXXS
                     color: btn._accentColor
                     border.color: Color.mSurface
-                    border.width: 2
+                    border.width: Style.borderM
                     anchors.top:         parent.top
                     anchors.right:       parent.right
                     anchors.topMargin:   3
@@ -624,3 +624,4 @@ Item {
         }
     }
 }
+

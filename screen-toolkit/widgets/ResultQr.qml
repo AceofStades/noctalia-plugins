@@ -56,7 +56,7 @@ Item {
         Row {
             width: parent.width; spacing: Style.marginS
             NIcon { icon: "qrcode"; color: Color.mPrimary; anchors.verticalCenter: parent.verticalCenter }
-            NText { text: "QR"; color: Color.mPrimary; font.weight: Font.Bold; pointSize: Style.fontSizeS; anchors.verticalCenter: parent.verticalCenter }
+            NText { text: pluginApi?.tr("tools.qr"); color: Color.mPrimary; font.weight: Font.Bold; pointSize: Style.fontSizeS; anchors.verticalCenter: parent.verticalCenter }
         }
         Rectangle {
             width: parent.width
@@ -192,4 +192,5 @@ Item {
         }
     }
 }
+
 

@@ -17,7 +17,7 @@ Item {
         id: btn
         anchors.fill: parent
         icon:        "crosshair"
-        tooltipText: pluginApi?.tr("widget.tooltip") ?? "Screen Toolkit"
+        tooltipText: pluginApi?.tr("widget.tooltip")
         onClicked: {
             if (!pluginApi) return
             if (root._isRecording)
@@ -38,3 +38,4 @@ Item {
         }
     }
 }
+

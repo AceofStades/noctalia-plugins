@@ -52,6 +52,9 @@ Item {
     property bool   _isSaving:       false
     property int    _recElapsed:     0
     property string _recTmpPath:     ""
+    // Derived from Style so all sizing scales with the user's UI scale/density settings
+    readonly property int _ctrlBtnSize: Style.baseWidgetSize - Style.borderS
+    readonly property int _ctrlPillH:   _ctrlBtnSize + Style.marginS * 2
     property var _imgCapture: null
     property var _recorder:   null
     function _formatTime(secs) {
@@ -316,14 +319,14 @@ Item {
                 }
                 Rectangle {
                     visible: root._isRecording
-                    anchors { top: parent.top; left: parent.left; margins: 8 }
-                    width: recBadge.implicitWidth + 12; height: 22; radius: Style.radiusS
+                    anchors { top: parent.top; left: parent.left; margins: Style.marginXS * 2 }
+                    width: recBadge.implicitWidth + Style.marginM; height: Style.marginXL + Style.marginXXS; radius: Style.radiusS
                     color: Qt.rgba(0, 0, 0, 0.65); z: 5
                     Row {
                         id: recBadge
                         anchors.centerIn: parent; spacing: Style.marginXS
                         Rectangle {
-                            width: 7; height: 7; radius: 4; color: "#FF4444"
+                            width: Style.marginXS * 2; height: Style.marginXS * 2; radius: Style.radiusXXS; color: "#FF4444"
                             anchors.verticalCenter: parent.verticalCenter
                             SequentialAnimation on opacity {
                                 running: root._isRecording; loops: Animation.Infinite
@@ -340,8 +343,8 @@ Item {
                 }
                 Rectangle {
                     visible: root._isSaving
-                    anchors { top: parent.top; left: parent.left; margins: 8 }
-                    width: savingBadge.implicitWidth + 12; height: 22; radius: Style.radiusS
+                    anchors { top: parent.top; left: parent.left; margins: Style.marginXS * 2 }
+                    width: savingBadge.implicitWidth + Style.marginM; height: Style.marginXL + Style.marginXXS; radius: Style.radiusS
                     color: Qt.rgba(0, 0, 0, 0.65); z: 5
                     Row {
                         id: savingBadge
@@ -406,7 +409,7 @@ Item {
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.bottomMargin: Style.marginM
                     width:  ctrlRow.implicitWidth + Style.marginM * 2
-                    height: 44; radius: 22
+                    height: root._ctrlPillH; radius: root._ctrlPillH / 2
                     color:  Qt.rgba(0, 0, 0, 0.55); z: 3
                     opacity: (containerHover.hovered && !root._countdownActive && !root._isSaving) ? 1.0 : 0.0
                     Behavior on opacity { NumberAnimation { duration: 150 } }
@@ -414,7 +417,7 @@ Item {
                         id: ctrlRow
                         anchors.centerIn: parent; spacing: Style.marginS
                         Rectangle {
-                            width: 32; height: 32; radius: 16
+                            width: root._ctrlBtnSize; height: root._ctrlBtnSize; radius: root._ctrlBtnSize / 2
                             visible: !root._isRecording
                             color: sqHover.containsMouse ? Qt.rgba(1,1,1,0.2) : "transparent"
                             NIcon { anchors.centerIn: parent; icon: root.isSquare ? "arrows-maximize" : "crop"; color: "white" }
@@ -436,7 +439,7 @@ Item {
                             }
                         }
                         Rectangle {
-                            width: 32; height: 32; radius: 16
+                            width: root._ctrlBtnSize; height: root._ctrlBtnSize; radius: root._ctrlBtnSize / 2
                             visible: !root._isRecording
                             color: root.isFlipped ? Qt.rgba(1,1,1,0.25) : (flipHover.containsMouse ? Qt.rgba(1,1,1,0.15) : "transparent")
                             NIcon { anchors.centerIn: parent; icon: "flip-horizontal"; color: "white" }
@@ -451,7 +454,7 @@ Item {
                             }
                         }
                         Rectangle {
-                            width: 32; height: 32; radius: 16
+                            width: root._ctrlBtnSize; height: root._ctrlBtnSize; radius: root._ctrlBtnSize / 2
                             color: shotHover.containsMouse ? Qt.rgba(1,1,1,0.25) : "transparent"
                             NIcon { anchors.centerIn: parent; icon: "camera"; color: "white" }
                             MouseArea {
@@ -466,7 +469,7 @@ Item {
                             }
                         }
                         Rectangle {
-                            width: 32; height: 32; radius: 16
+                            width: root._ctrlBtnSize; height: root._ctrlBtnSize; radius: root._ctrlBtnSize / 2
                             color: recHover.containsMouse
                                 ? (root._isRecording ? Qt.rgba(1,0,0,0.55) : Qt.rgba(1,1,1,0.25))
                                 : (root._isRecording ? Qt.rgba(1,0,0,0.30) : "transparent")
@@ -490,7 +493,7 @@ Item {
                             }
                         }
                         Rectangle {
-                            width: 32; height: 32; radius: 16
+                            width: root._ctrlBtnSize; height: root._ctrlBtnSize; radius: root._ctrlBtnSize / 2
                             color: root._audioEnabled
                                 ? Qt.rgba(1,1,1,0.25)
                                 : (micHover.containsMouse ? Qt.rgba(1,1,1,0.15) : "transparent")
@@ -513,7 +516,7 @@ Item {
                             }
                         }
                         Rectangle {
-                            width: 32; height: 32; radius: 16
+                            width: root._ctrlBtnSize; height: root._ctrlBtnSize; radius: root._ctrlBtnSize / 2
                             visible: !root._isRecording
                             color: root._pinOnShot ? Qt.rgba(1,1,1,0.25) : (pinToggleMA.containsMouse ? Qt.rgba(1,1,1,0.15) : "transparent")
                             NIcon { anchors.centerIn: parent; icon: root._pinOnShot ? "pin" : "pinned-off"; color: "white" }
@@ -528,7 +531,7 @@ Item {
                             }
                         }
                         Rectangle {
-                            width: 32; height: 32; radius: 16
+                            width: root._ctrlBtnSize; height: root._ctrlBtnSize; radius: root._ctrlBtnSize / 2
                             visible: mediaDevices.videoInputs.length > 1 && !root._isRecording
                             color: camHover.containsMouse ? Qt.rgba(1,1,1,0.2) : "transparent"
                             NIcon { anchors.centerIn: parent; icon: "camera-rotate"; color: "white" }
@@ -541,7 +544,7 @@ Item {
                             }
                         }
                         Rectangle {
-                            width: 32; height: 32; radius: 16
+                            width: root._ctrlBtnSize; height: root._ctrlBtnSize; radius: root._ctrlBtnSize / 2
                             visible: !root._isRecording
                             color: closeHover.containsMouse ? Qt.rgba(1,1,1,0.2) : "transparent"
                             NIcon { anchors.centerIn: parent; icon: "x"; color: "white" }
@@ -584,7 +587,8 @@ Item {
                         root.xPos = Math.max(0, nx); root.yPos = Math.max(0, ny)
                     }
                     Rectangle {
-                        anchors.centerIn: parent; width: 8; height: 8; radius: 4
+                        anchors.centerIn: parent
+                        width: Style.marginXS * 2; height: Style.marginXS * 2; radius: Style.radiusXXS
                         color: Color.mPrimary
                         opacity: parent.containsMouse || parent.pressed ? 1.0 : 0.4
                         Behavior on opacity { NumberAnimation { duration: 120 } }

@@ -12,6 +12,9 @@ Item {
     property int _nextPinId: 0
     property int _maskVersion: 0
     property bool _dragActive: false
+    // Derived from Style so all sizing scales with the user's UI scale/density settings
+    readonly property int _stripBtnSize: Style.baseWidgetSize - Style.marginXS - Style.borderS
+    readonly property int _stripDivH:    Style.marginXL
     ListModel { id: pinsModel }
     readonly property bool hasPins: pinsModel.count > 0
     readonly property int  maxPins: 16
@@ -179,7 +182,7 @@ Item {
                         }
                         Rectangle {
                             anchors.centerIn: parent
-                            width: 8; height: 8; radius: 2
+                            width: Style.marginXS * 2; height: Style.marginXS * 2; radius: Style.marginXXS
                             color: Qt.rgba(1,1,1,0.9)
                             opacity: rc.containsMouse || rc.pressed ? 1.0 : 0.3
                             Behavior on opacity { NumberAnimation { duration: 120 } }
@@ -240,7 +243,7 @@ Item {
                             anchors.centerIn: parent; spacing: Style.marginS
                             visible: pinDelegate.pinImgPath === ""
                             NIcon { anchors.horizontalCenter: parent.horizontalCenter; icon: "photo-off"; color: Color.mOnSurfaceVariant }
-                            NText { anchors.horizontalCenter: parent.horizontalCenter; text: "No file"; color: Color.mOnSurfaceVariant; pointSize: Style.fontSizeXS }
+                            NText { anchors.horizontalCenter: parent.horizontalCenter; text: root.pluginApi?.tr("pin.noFile"); color: Color.mOnSurfaceVariant; pointSize: Style.fontSizeXS }
                         }
                         HoverHandler { id: cardHover }
                         MouseArea {
@@ -306,7 +309,8 @@ Item {
                                     Rectangle {
                                         id: opTrack
                                         anchors.verticalCenter: parent.verticalCenter
-                                        width: parent.width; height: 5; radius: 3
+                                        width: parent.width
+                                        height: Style.marginXS + Style.marginXXXS; radius: Style.radiusXXXS
                                         color: Qt.rgba(1,1,1,0.25)
                                         Rectangle {
                                             width:  opTrack.width * pinDelegate.pinOpacity
@@ -316,7 +320,8 @@ Item {
                                     }
                                     Rectangle {
                                         anchors.verticalCenter: opTrack.verticalCenter
-                                        width: 13; height: 13; radius: 7; color: "white"
+                                        width: Style.marginL; height: Style.marginL
+                                        radius: Math.round(Style.marginL / 2); color: "white"
                                         border.color: Qt.rgba(0,0,0,0.3); border.width: Style.capsuleBorderWidth
                                         x: opTrack.width * pinDelegate.pinOpacity - width / 2
                                         Behavior on x { NumberAnimation { duration: 50 } }
@@ -337,9 +342,9 @@ Item {
                                         onReleased: root.updatePin(pinDelegate._myIndex, { pinOpacity: pinDelegate.pinOpacity })
                                     }
                                 }
-                                Rectangle { width: 1; height: 18; radius: 1; color: Qt.rgba(1,1,1,0.25); anchors.verticalCenter: parent.verticalCenter }
+                                Rectangle { width: Style.borderS; height: root._stripDivH; radius: Style.borderS; color: Qt.rgba(1,1,1,0.25); anchors.verticalCenter: parent.verticalCenter }
                                 Rectangle {
-                                    width: 28; height: 28; radius: 14
+                                    width: root._stripBtnSize; height: root._stripBtnSize; radius: root._stripBtnSize / 2
                                     visible: pinDelegate.fileType === "video" || pinDelegate.fileType === "gif"
                                     color: playMA.containsMouse ? Qt.rgba(1,1,1,0.2) : "transparent"
                                     anchors.verticalCenter: parent.verticalCenter
@@ -358,7 +363,7 @@ Item {
                                     }
                                 }
                                 Rectangle {
-                                    width: 28; height: 28; radius: 14
+                                    width: root._stripBtnSize; height: root._stripBtnSize; radius: root._stripBtnSize / 2
                                     visible: pinDelegate.fileType === "video"
                                     color: muteMA.containsMouse ? Qt.rgba(1,1,1,0.2) : "transparent"
                                     anchors.verticalCenter: parent.verticalCenter
@@ -370,9 +375,9 @@ Item {
                                         onExited:  TooltipService.hide()
                                     }
                                 }
-                                Rectangle { width: 1; height: 18; radius: 1; color: Qt.rgba(1,1,1,0.25); anchors.verticalCenter: parent.verticalCenter; visible: pinDelegate.fileType === "video" }
+                                Rectangle { width: Style.borderS; height: root._stripDivH; radius: Style.borderS; color: Qt.rgba(1,1,1,0.25); anchors.verticalCenter: parent.verticalCenter; visible: pinDelegate.fileType === "video" }
                                 Rectangle {
-                                    width: 28; height: 28; radius: 14
+                                    width: root._stripBtnSize; height: root._stripBtnSize; radius: root._stripBtnSize / 2
                                     visible: pinDelegate.fileType !== "video"
                                     color: fillMA.containsMouse ? Qt.rgba(1,1,1,0.2) : "transparent"
                                     anchors.verticalCenter: parent.verticalCenter
@@ -396,9 +401,9 @@ Item {
                                         onExited: TooltipService.hide()
                                     }
                                 }
-                                Rectangle { width: 1; height: 18; radius: 1; color: Qt.rgba(1,1,1,0.25); anchors.verticalCenter: parent.verticalCenter; visible: pinDelegate.fileType !== "video" }
+                                Rectangle { width: Style.borderS; height: root._stripDivH; radius: Style.borderS; color: Qt.rgba(1,1,1,0.25); anchors.verticalCenter: parent.verticalCenter; visible: pinDelegate.fileType !== "video" }
                                 Rectangle {
-                                    width: 28; height: 28; radius: 14
+                                    width: root._stripBtnSize; height: root._stripBtnSize; radius: root._stripBtnSize / 2
                                     color: closeMA.containsMouse ? Qt.rgba(1,1,1,0.2) : "transparent"
                                     anchors.verticalCenter: parent.verticalCenter
                                     NIcon { anchors.centerIn: parent; scale: 0.8; icon: "x"; color: "white" }

@@ -100,7 +100,10 @@ Item {
                         onStatusChanged: if (status === Image.Ready) visible = true
                     }
                     Rectangle {
-                        anchors.centerIn: parent; width: 10; height: 10; radius: 5
+                        anchors.centerIn: parent
+                        width: Style.marginS + Style.marginXXS * 2
+                        height: Style.marginS + Style.marginXXS * 2
+                        radius: (Style.marginS + Style.marginXXS * 2) / 2
                         color: "transparent"; border.color: "white"
                         border.width: Style.capsuleBorderWidth || 1
                         visible: pixelImg.status === Image.Ready
@@ -108,7 +111,7 @@ Item {
                     NText {
                         anchors.centerIn: parent
                         visible: pixelImg.status !== Image.Ready
-                        text: "..."; color: Color.mOnSurfaceVariant; pointSize: Style.fontSizeS
+                        text: pluginApi?.tr("panel.loading"); color: Color.mOnSurfaceVariant; pointSize: Style.fontSizeS
                     }
                 }
                 Column {
@@ -124,7 +127,7 @@ Item {
                             anchors.fill: parent; cursorShape: Qt.PointingHandCursor
                             onClicked: {
                                 root._copy(root.pickedHex)
-                                ToastService.showNotice(pluginApi?.tr("panel.formatCopied", { label: "HEX" }))
+                                ToastService.showNotice(pluginApi?.tr("panel.formatCopied", { label: pluginApi?.tr("panel.labelHex") }))
                             }
                         }
                     }
@@ -138,10 +141,10 @@ Item {
             }
             Repeater {
                 model: [
-                    { label: "HEX", value: root.pickedHex },
-                    { label: "RGB", value: root.pickedRgb },
-                    { label: "HSL", value: root.pickedHsl },
-                    { label: "HSV", value: root.pickedHsv }
+                    { label: pluginApi?.tr("panel.labelHex"), value: root.pickedHex },
+                    { label: pluginApi?.tr("panel.labelRgb"), value: root.pickedRgb },
+                    { label: pluginApi?.tr("panel.labelHsl"), value: root.pickedHsl },
+                    { label: pluginApi?.tr("panel.labelHsv"), value: root.pickedHsv }
                 ]
                 delegate: Rectangle {
                     width: root.width; height: 36; radius: Style.radiusM
@@ -279,4 +282,3 @@ Item {
         }
     }
 }
-

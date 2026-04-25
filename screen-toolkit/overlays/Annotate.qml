@@ -1156,7 +1156,7 @@ Variants {
                     ZoomBtn { iconName: "zoom-in"; tip: root.mainInstance?.pluginApi?.tr("annotate.zoomIn"); btnEnabled: root.zoomScale < 5.0; onClicked: overlayWin.requestZoom(Math.min(5.0, root.zoomScale + 1.0)) }
                     ToolbarSeparator {}
                     Rectangle {
-                        width: 18; height: 18; radius: 9; anchors.verticalCenter: parent.verticalCenter
+                        width: Style.marginXL; height: Style.marginXL; radius: Math.round(Style.marginXL / 2); anchors.verticalCenter: parent.verticalCenter
                         color: overlayWin.drawColor
                         border.color: overlayWin.showPopover ? Color.mPrimary : Qt.rgba(0,0,0,0.2)
                         border.width: overlayWin.showPopover ? Style.borderM : Style.borderS
@@ -1215,7 +1215,7 @@ Variants {
                     ZoomBtn { iconName: "zoom-in"; tip: root.mainInstance?.pluginApi?.tr("annotate.zoomIn"); btnEnabled: root.zoomScale < 5.0; onClicked: overlayWin.requestZoom(Math.min(5.0, root.zoomScale + 1.0)) }
                     ToolbarSeparator {}
                     Rectangle {
-                        width: 18; height: 18; radius: 9; anchors.horizontalCenter: parent.horizontalCenter
+                        width: Style.marginXL; height: Style.marginXL; radius: Math.round(Style.marginXL / 2); anchors.horizontalCenter: parent.horizontalCenter
                         color: overlayWin.drawColor
                         border.color: overlayWin.showPopover ? Color.mPrimary : Qt.rgba(0,0,0,0.2)
                         border.width: overlayWin.showPopover ? Style.borderM : Style.borderS
@@ -1306,7 +1306,7 @@ Variants {
                         delegate: Item {
                             width: 32; height: 20
                             Rectangle {
-                                width: 20; height: 20; radius: 10; color: modelData
+                                width: Style.marginXL + Style.marginXXS; height: Style.marginXL + Style.marginXXS; radius: Math.round((Style.marginXL + Style.marginXXS) / 2); color: modelData
                                 anchors.centerIn: parent
                                 border.color: overlayWin.drawColor.toString().toUpperCase() === modelData.toUpperCase() ? Color.mPrimary : Qt.rgba(0,0,0,0.15)
                                 border.width: overlayWin.drawColor.toString().toUpperCase() === modelData.toUpperCase() ? Style.borderM : Style.borderS
@@ -1406,3 +1406,4 @@ Variants {
         }
     }
 }
+
