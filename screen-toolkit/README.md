@@ -28,6 +28,13 @@ Screen Toolkit provides a single integrated panel for advanced screen interactio
 ### Color Picker + Annotation
 You can use the color picker tool to select any color, and it will be automatically applied to annotations.
 
+### Annotation – Sharing
+
+You can quickly upload screenshots and get a shareable link.
+
+- **Default (no setup):** uses uguu.se — links expire after ~3 hours
+- **Want permanent links:** add your Imgur Client ID in settings
+
 ### Recording UI behavior
 When recording is active, the plugin icon shows a red pulsing dot. Clicking the icon stops the recording.
 
@@ -122,7 +129,7 @@ Screen-Toolkit/
 │   ├── ocr.sh
 │   ├── pick-file.sh
 │   └── pick-file.py
-│
+│   └── share-upload.sh
 ├── overlays/
 │   ├── Annotate.qml
 │   ├── Mirror.qml
