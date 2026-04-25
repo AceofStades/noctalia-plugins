@@ -177,7 +177,6 @@ PanelWindow {
     // }
   }
 
-  //
   Rectangle {
     id: background
 
@@ -192,7 +191,6 @@ PanelWindow {
     }
   }
 
-  //
   Item {
     id: content
 
@@ -203,32 +201,26 @@ PanelWindow {
       if (event.modifiers & Qt.ShiftModifier) {
         if (event.key === Qt.Key_H) {
           root.cardHeight = Math.max(root.cardHeight - 10, parent.height * 0.10);
-          root.pluginApi.pluginSettings.card_height = root.cardHeight;
           event.accepted = true;
           return;
         } else if (event.key === Qt.Key_L) {
           root.cardHeight = Math.min(root.cardHeight + 10, parent.height * 0.75);
-          root.pluginApi.pluginSettings.card_height = root.cardHeight;
           event.accepted = true;
           return;
         } else if (event.key === Qt.Key_J) {
           cardDeck.centerWidthRatio = Math.max(cardDeck.centerWidthRatio - 0.01, 0.2);
-          root.pluginApi.pluginSettings.center_width_ratio = cardDeck.centerWidthRatio;
           event.accepted = true;
           return;
         } else if (event.key === Qt.Key_K) {
           cardDeck.centerWidthRatio = Math.min(cardDeck.centerWidthRatio + 0.01, 0.6);
-          root.pluginApi.pluginSettings.center_width_ratio = cardDeck.centerWidthRatio;
           event.accepted = true;
           return;
         } else if (event.key === Qt.Key_N) {
           root.cardsShown = Math.max(root.cardsShown - 2, 5);
-          root.pluginApi.pluginSettings.cards_shown = root.cardsShown;
           event.accepted = true;
           return;
         } else if (event.key === Qt.Key_P) {
           root.cardsShown = Math.min(root.cardsShown + 2, 15);
-          root.pluginApi.pluginSettings.cards_shown = root.cardsShown;
           event.accepted = true;
           return;
         }
@@ -237,25 +229,30 @@ PanelWindow {
       if (event.modifiers & Qt.ControlModifier) {
         if (event.key === Qt.Key_K) {
           root.cardSpacing = Math.max(root.cardSpacing + 2, 0);
-          root.pluginApi.pluginSettings.card_spacing = root.cardSpacing;
           event.accepted = true;
           return;
         } else if (event.key === Qt.Key_J) {
           root.cardSpacing = Math.max(root.cardSpacing - 2, 0);
-          root.pluginApi.pluginSettings.card_spacing = root.cardSpacing;
           event.accepted = true;
           return;
         } else if (event.key === Qt.Key_L) {
           root.cardStripWidth = Math.min(root.cardStripWidth + 5, 300);
-          root.pluginApi.pluginSettings.card_strip_width = root.cardStripWidth;
           event.accepted = true;
           return;
         } else if (event.key === Qt.Key_H) {
           root.cardStripWidth = Math.max(root.cardStripWidth - 5, 20);
-          root.pluginApi.pluginSettings.card_strip_width = root.cardStripWidth;
           event.accepted = true;
           return;
         } else if (event.key === Qt.Key_S) {
+          root.pluginApi.pluginSettings.card_height = root.cardHeight;
+          root.pluginApi.pluginSettings.center_width_ratio = cardDeck.centerWidthRatio;
+          root.pluginApi.pluginSettings.cards_shown = root.cardsShown;
+          root.pluginApi.pluginSettings.card_spacing = root.cardSpacing;
+          root.pluginApi.pluginSettings.card_strip_width = root.cardStripWidth;
+          root.pluginApi.pluginSettings.hide_top_bar = root.hideTopBar;
+          root.pluginApi.pluginSettings.live_preview = root.livePreview;
+          root.pluginApi.pluginSettings.selected_filter = root.selectedFilter;
+          root.pluginApi.pluginSettings.hide_help = root.hideHelp;
           root.pluginApi.saveSettings();
           event.accepted = true;
           return;
@@ -305,7 +302,6 @@ PanelWindow {
       total: thumbnailService.fileCount
     }
 
-    //
     TopBar {
       id: topBar
 
@@ -330,7 +326,6 @@ PanelWindow {
       onShuffleRequested: cardDeck.randomJump()
     }
 
-    //
     BottomBar {
       id: bottomBar
 
@@ -343,7 +338,6 @@ PanelWindow {
       visible: !loadingBar.visible
     }
 
-    //
     CardDeck {
       id: cardDeck
 
