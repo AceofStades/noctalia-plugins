@@ -55,7 +55,7 @@ Item {
           if (mainInstance?.tailscaleRunning ?? false) return Color.mOnPrimary
           return mouseArea.containsMouse ? Color.mOnHover : Color.mOnSurface
         }
-        opacity: (mainInstance?.isRefreshing ?? false) ? 0.5 : 1.0
+        opacity: 1.0
       }
 
       // Show details when not in compact mode and there's something to show
