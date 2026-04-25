@@ -52,7 +52,7 @@ Item {
         applyUiScale: false
         crossed: !(mainInstance?.tailscaleRunning ?? false)
         color: {
-          if (mainInstance?.tailscaleRunning ?? false) return Color.mPrimary
+          if (mainInstance?.tailscaleRunning ?? false) return Color.mOnPrimary
           return mouseArea.containsMouse ? Color.mOnHover : Color.mOnSurface
         }
         opacity: (mainInstance?.isRefreshing ?? false) ? 0.5 : 1.0
