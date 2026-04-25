@@ -1,0 +1,384 @@
+import qs.Commons
+import qs.Widgets
+import QtQuick
+import QtQuick.Layouts
+import Quickshell
+
+ColumnLayout {
+  id: root
+
+  property int editAnimationCardsDuration: pluginApi?.pluginSettings?.animation_cards_duration ?? pluginApi?.manifest?.metadata?.defaultSettings?.animation_cards_duration
+  property int editAnimationDuration: pluginApi?.pluginSettings?.animation_duration ?? pluginApi?.manifest?.metadata?.defaultSettings?.animation_window_duration
+  property int editAnimationWindowDuration: pluginApi?.pluginSettings?.animation_window_duration ?? pluginApi?.manifest?.metadata?.defaultSettings?.animation_window_duration
+  property color editBackgroundColor: pluginApi?.pluginSettings?.background_color ?? pluginApi?.manifest?.metadata?.defaultSettings?.background_color
+  property real editBackgroundOpacity: pluginApi?.pluginSettings?.background_opacity ?? pluginApi?.manifest?.metadata?.defaultSettings?.background_opacity
+  property int editCardHeight: pluginApi?.pluginSettings?.card_height ?? pluginApi?.manifest?.metadata?.defaultSettings?.card_height
+  property int editCardSpacing: pluginApi?.pluginSettings?.card_spacing ?? pluginApi?.manifest?.metadata?.defaultSettings?.card_spacing
+  property int editCardStripWidth: pluginApi?.pluginSettings?.card_strip_width ?? pluginApi?.manifest?.metadata?.defaultSettings?.card_strip_width
+  property int editCardsShown: pluginApi?.pluginSettings?.cards_shown ?? pluginApi?.manifest?.metadata?.defaultSettings?.cards_shown
+  property real editCenterWidthRatio: pluginApi?.pluginSettings?.center_width_ratio ?? pluginApi?.manifest?.metadata?.defaultSettings?.center_width_ratio
+  property bool editHideHelp: pluginApi?.pluginSettings?.hide_help ?? pluginApi?.manifest?.metadata?.defaultSettings?.hide_help
+  property bool editHideTopBar: pluginApi?.pluginSettings?.hide_top_bar ?? pluginApi?.manifest?.metadata?.defaultSettings?.hide_top_bar ?? false
+  property string editIconColor: pluginApi?.pluginSettings?.icon_color ?? "none"
+  property bool editLivePreview: pluginApi?.pluginSettings?.live_preview ?? pluginApi?.manifest?.metadata?.defaultSettings?.live_preview
+  property string editSelectedFilter: pluginApi?.pluginSettings?.selected_filter || pluginApi?.manifest?.metadata?.defaultSettings?.selected_filter
+  property real editShearFactor: pluginApi?.pluginSettings?.shear_factor ?? pluginApi?.manifest?.metadata?.defaultSettings?.shear_factor
+  property int editTopBarHeight: pluginApi?.pluginSettings?.top_bar_height ?? pluginApi?.manifest?.metadata?.defaultSettings?.top_bar_height
+  property string editWallpaperDir: pluginApi?.pluginSettings?.wallpaper_directory || root.pluginApi?.Settings.data.wallpaper.directory
+  property var pluginApi: null
+
+  function saveSettings() {
+    if (!pluginApi || !pluginApi.pluginSettings) {
+      Logger.e("Wallcards", "Cannot save: pluginApi or pluginSettings is null");
+      return;
+    }
+
+    pluginApi.pluginSettings.animation_cards_duration = root.editAnimationCardsDuration;
+    pluginApi.pluginSettings.animation_window_duration = root.editAnimationWindowDuration;
+    pluginApi.pluginSettings.background_color = root.editBackgroundColor.toString();
+    pluginApi.pluginSettings.background_opacity = root.editBackgroundOpacity;
+
+    pluginApi.pluginSettings.center_width_ratio = root.editCenterWidthRatio;
+    pluginApi.pluginSettings.card_height = root.editCardHeight;
+    pluginApi.pluginSettings.card_spacing = root.editCardSpacing;
+    pluginApi.pluginSettings.card_strip_width = root.editCardStripWidth;
+    pluginApi.pluginSettings.cards_shown = root.editCardsShown;
+
+    pluginApi.pluginSettings.shear_factor = root.editShearFactor;
+
+    pluginApi.pluginSettings.top_bar_height = root.editTopBarHeight;
+
+    pluginApi.pluginSettings.iconColor = root.editIconColor;
+    pluginApi.pluginSettings.selected_filter = root.editSelectedFilter;
+    pluginApi.pluginSettings.live_preview = root.editLivePreview;
+    pluginApi.pluginSettings.hide_help = root.editHideHelp;
+    pluginApi.pluginSettings.hide_top_bar = root.editHideTopBar;
+    pluginApi.pluginSettings.directory = root.editWallpaperDir;
+
+    pluginApi.saveSettings();
+    Logger.i("Wallcards", "Settings saved");
+  }
+
+  // spacing: Style.marginL
+  Layout.rightMargin: Style.marginL
+  spacing: Style.marginL
+
+  // ── Icon ──
+  NComboBox {
+    currentKey: root.editIconColor
+    description: I18n.tr("common.select-color-description")
+    label: I18n.tr("common.select-icon-color")
+    minimumWidth: 200
+    model: Color.colorKeyModel
+
+    onSelected: key => root.editIconColor = key
+  }
+  NDivider {
+    Layout.fillWidth: true
+  }
+
+  // ── Wallpaper Directory ──
+  NTextInputButton {
+    buttonIcon: "folder-open"
+    buttonTooltip: "Select wallpaper folder"
+    description: "Folder containing your wallpapers"
+    label: "Wallpaper Directory"
+    placeholderText: Quickshell.env("HOME") + "/Pictures/Wallpapers"
+    text: root.editWallpaperDir
+
+    onButtonClicked: folderPicker.openFilePicker()
+    onInputEditingFinished: root.editWallpaperDir = text
+  }
+  NDivider {
+    Layout.fillWidth: true
+  }
+
+  // ── Behavior ──
+  NToggle {
+    checked: root.editLivePreview
+    defaultValue: pluginApi?.manifest?.metadata?.defaultSettings?.live_preview ?? false
+    description: "Apply wallpaper while browsing cards"
+    label: "Live Preview"
+
+    onToggled: c => root.editLivePreview = c
+  }
+  NComboBox {
+    currentKey: root.editSelectedFilter
+    defaultValue: pluginApi?.manifest?.metadata?.defaultSettings?.selected_filter || "all"
+    description: "Initial file type filter when opening"
+    label: "Default Filter"
+    model: [
+      {
+        "key": "all",
+        "name": "All"
+      },
+      {
+        "key": "images",
+        "name": "Images"
+      },
+      {
+        "key": "videos",
+        "name": "Videos"
+      }
+    ]
+
+    onSelected: key => root.editSelectedFilter = key
+  }
+  NToggle {
+    checked: root.editHideHelp
+    defaultValue: pluginApi?.manifest?.metadata?.defaultSettings?.hide_help ?? false
+    description: "Hide the keyboard shortcuts bar"
+    label: "Hide Shortcuts"
+
+    onToggled: c => root.editHideHelp = c
+  }
+  NToggle {
+    checked: root.editHideTopBar
+    defaultValue: pluginApi?.manifest?.metadata?.defaultSettings?.hide_top_bar ?? false
+    description: "Hide the toolbar above the cards"
+    label: "Hide Top Bar"
+
+    onToggled: c => root.editHideTopBar = c
+  }
+  NDivider {
+    Layout.fillWidth: true
+  }
+
+  // ── Card Layout ──
+  ColumnLayout {
+    Layout.fillWidth: true
+    spacing: Style.marginXXS
+
+    NLabel {
+      description: "Width of the center card as percentage of screen"
+      label: "Center Card Width"
+    }
+    NValueSlider {
+      Layout.fillWidth: true
+      from: 0.20
+      stepSize: 0.01
+      text: (root.editCenterWidthRatio * 100).toFixed(0) + "%"
+      to: 0.60
+      value: root.editCenterWidthRatio
+
+      onMoved: value => root.editCenterWidthRatio = value
+    }
+  }
+  ColumnLayout {
+    Layout.fillWidth: true
+    spacing: Style.marginXXS
+
+    NLabel {
+      description: "Height of the wallpaper cards"
+      label: "Card Height"
+    }
+    NValueSlider {
+      Layout.fillWidth: true
+      from: 100
+      stepSize: 10
+      text: root.editCardHeight + "px"
+      to: 800
+      value: root.editCardHeight
+
+      onMoved: value => root.editCardHeight = value
+    }
+  }
+  ColumnLayout {
+    Layout.fillWidth: true
+    spacing: Style.marginXXS
+
+    NLabel {
+      description: "Width of the side card strips"
+      label: "Strip Width"
+    }
+    NValueSlider {
+      Layout.fillWidth: true
+      from: 20
+      stepSize: 5
+      text: root.editCardStripWidth + "px"
+      to: 150
+      value: root.editCardStripWidth
+
+      onMoved: value => root.editCardStripWidth = value
+    }
+  }
+  ColumnLayout {
+    Layout.fillWidth: true
+    spacing: Style.marginXXS
+
+    NLabel {
+      description: "Gap between cards"
+      label: "Card Spacing"
+    }
+    NValueSlider {
+      Layout.fillWidth: true
+      from: 0
+      stepSize: 1
+      text: root.editCardSpacing + "px"
+      to: 50
+      value: root.editCardSpacing
+
+      onMoved: value => root.editCardSpacing = value
+    }
+  }
+  ColumnLayout {
+    Layout.fillWidth: true
+    spacing: Style.marginXXS
+
+    NLabel {
+      description: "Number of visible cards (odd numbers recommended)"
+      label: "Cards Shown"
+    }
+    NValueSlider {
+      Layout.fillWidth: true
+      from: 5
+      stepSize: 2
+      text: root.editCardsShown
+      to: 15
+      value: root.editCardsShown
+
+      onMoved: value => root.editCardsShown = value
+    }
+  }
+  ColumnLayout {
+    Layout.fillWidth: true
+    spacing: Style.marginXXS
+
+    ColumnLayout {
+      Layout.fillWidth: true
+      spacing: Style.marginXXS
+
+      NLabel {
+        description: "Skew angle of the card layout"
+        label: "Shear Factor"
+      }
+      NValueSlider {
+        Layout.fillWidth: true
+        from: -0.3
+        stepSize: 0.01
+        text: root.editShearFactor.toFixed(2)
+        to: 0.3
+        value: root.editShearFactor
+
+        onMoved: value => root.editShearFactor = value
+      }
+    }
+  }
+  ColumnLayout {
+    Layout.fillWidth: true
+    spacing: Style.marginXXS
+
+    NLabel {
+      description: "Speed of card transitions"
+      label: "Card Animation"
+    }
+    NValueSlider {
+      Layout.fillWidth: true
+      from: 0
+      stepSize: 100
+      text: root.editAnimationCardsDuration + "ms"
+      to: 1500
+      value: root.editAnimationCardsDuration
+
+      onMoved: value => root.editAnimationCardsDuration = value
+    }
+  }
+  NDivider {
+    Layout.fillWidth: true
+  }
+
+  // ── Appearance ──
+  RowLayout {
+    NLabel {
+      Layout.alignment: Qt.AlignTop
+      description: "Color of the dimmed overlay"
+      label: "Background Color"
+    }
+    NColorPicker {
+      selectedColor: root.editBackgroundColor
+
+      onColorSelected: color => root.editBackgroundColor = color
+    }
+  }
+  ColumnLayout {
+    Layout.fillWidth: true
+    spacing: Style.marginXXS
+
+    NLabel {
+      description: "Opacity of the dimmed overlay"
+      label: "Background Opacity"
+    }
+    NValueSlider {
+      Layout.fillWidth: true
+      from: 0
+      stepSize: 0.05
+      text: (root.editBackgroundOpacity * 100).toFixed(0) + "%"
+      to: 1
+      value: root.editBackgroundOpacity
+
+      onMoved: value => root.editBackgroundOpacity = value
+    }
+  }
+  ColumnLayout {
+    Layout.fillWidth: true
+    spacing: Style.marginXXS
+
+    NLabel {
+      description: "Speed of open and close transitions"
+      label: "Window Animation"
+    }
+    NValueSlider {
+      Layout.fillWidth: true
+      from: 0
+      stepSize: 100
+      text: root.editAnimationWindowDuration + "ms"
+      to: 1500
+      value: root.editAnimationWindowDuration
+
+      onMoved: value => root.editAnimationWindowDuration = value
+    }
+  }
+  NDivider {
+    Layout.fillWidth: true
+  }
+
+  // ── Top Bar ──
+  ColumnLayout {
+    Layout.fillWidth: true
+    spacing: Style.marginXXS
+
+    NLabel {
+      description: "Height of the toolbar"
+      label: "Top Bar Height"
+    }
+    NValueSlider {
+      Layout.fillWidth: true
+      from: 10
+      stepSize: 2
+      text: root.editTopBarHeight + "px"
+      to: 80
+      value: root.editTopBarHeight
+
+      onMoved: value => root.editTopBarHeight = value
+    }
+  }
+  ColumnLayout {
+    Layout.fillWidth: true
+    spacing: Style.marginXXS
+  }
+
+  // ── Utils ──
+  NFilePicker {
+    id: folderPicker
+
+    initialPath: root.editWallpaperDir || Quickshell.env("HOME") + "/Pictures/Wallpapers"
+    selectionMode: "folders"
+    title: "Select wallpaper folder"
+
+    onAccepted: paths => {
+      if (paths.length > 0) {
+        root.editWallpaperDir = paths[0];
+      }
+    }
+  }
+}

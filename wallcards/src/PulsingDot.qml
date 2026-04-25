@@ -1,32 +1,43 @@
-import QtQuick
 import qs.Commons
+import QtQuick
 
 Rectangle {
   id: root
 
+  property color dotColor: Color.mError
   property bool pulsing: false
-  property color dotColor: Color.mTertiary
 
-  anchors.verticalCenter: parent.verticalCenter
-  width: Style.marginS
+  color: dotColor
   height: Style.marginS
   radius: Style.marginXXXS
-  color: pulsing ? dotColor : Qt.alpha(Color.mOnSurfaceVariant, Style.opacityLight)
+  width: Style.marginS
 
-  SequentialAnimation on opacity {
-    running: root.pulsing
+  SequentialAnimation {
+    id: pulseAnimation
+
     loops: Animation.Infinite
+    running: root.pulsing
 
-    NumberAnimation {
-      to: Style.opacityLight
-      duration: Style.animationSlowest
-      easing.type: Easing.InOutSine
+    onRunningChanged: {
+      if (!running)
+        root.opacity = 1.0;
     }
 
     NumberAnimation {
-      to: Style.opacityFull
-      duration: Style.animationSlowest
+      duration: 800
       easing.type: Easing.InOutSine
+      from: 1.0
+      property: "opacity"
+      target: root
+      to: 0.3
+    }
+    NumberAnimation {
+      duration: 800
+      easing.type: Easing.InOutSine
+      from: 0.3
+      property: "opacity"
+      target: root
+      to: 1.0
     }
   }
 }
