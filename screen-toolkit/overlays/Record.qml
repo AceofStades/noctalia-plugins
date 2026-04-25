@@ -370,7 +370,7 @@ Item {
                         }
                     }
                     NText {
-                        text: "REC " + root.formatTime(root._elapsed)
+                        text: root.pluginApi?.tr("record.recLabel") + " " + root.formatTime(root._elapsed)
                         color: "white"; font.weight: Font.Bold; pointSize: Style.fontSizeXS
                         anchors.verticalCenter: parent.verticalCenter
                     }
@@ -379,3 +379,4 @@ Item {
         }
     }
 }
+
