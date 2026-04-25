@@ -38,7 +38,7 @@
     {
       "id": "arch-updater",
       "name": "Arch Updater",
-      "version": "2.0.0",
+      "version": "2.0.1",
       "official": false,
       "author": "Ast",
       "description": "A plugin to manage updates on Arch",
@@ -52,7 +52,7 @@
         "System",
         "Utility"
       ],
-      "lastUpdated": "2026-04-22T18:42:20+01:00"
+      "lastUpdated": "2026-04-25T13:14:42+02:00"
     },
     {
       "id": "assistant-panel",
