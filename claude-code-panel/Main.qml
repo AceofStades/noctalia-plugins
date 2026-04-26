@@ -570,7 +570,7 @@ Item {
           var marker = e.status === "completed" ? "[x]" : (e.status === "in_progress" ? "[~]" : "[ ]");
           lines.push(marker + " " + (e.content || ""));
         }
-        pushMessage({ role: "assistant", kind: "text", text: "**" + pluginApi?.tr("panel.planTitle") + "**\n\n" + lines.join("\n") });
+        pushMessage({ role: "assistant", kind: "text", text: `**${pluginApi?.tr("panel.planTitle")}**\n\n${lines.join("\n")}` });
         break;
       case "usage":
       case "available_commands":
