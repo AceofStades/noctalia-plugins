@@ -1,4 +1,5 @@
 import "src"
+import "src/Utils.js" as Utils
 import qs.Commons
 import qs.Widgets
 import qs.Services.UI
@@ -47,24 +48,13 @@ PanelWindow {
 
   function applyCurrentCard() {
     var f = filteredFiles[cardDeck.currentIndex];
-
     if (!f)
       return;
 
-    let wallpaperPath = "";
-    let cmd = "killall -9 mpvpaper || true";
+    applicant.command = ["bash", "-c", Utils.wallpaperCommand(f)];
+    applicant.running = true;
 
-    if (f.isVideo) {
-      wallpaperPath = f.thumbnail;
-      const mpvCmd = `mpvpaper -o 'loop --no-audio --hwdec=auto --profile=high-quality --video-sync=display-resample --interpolation --tscale=oversample' '*' "${f.filePath}"`;
-      cmd = `${cmd}; ${mpvCmd} >/dev/null 2>&1 & disown`;
-    } else {
-      wallpaperPath = f.filePath;
-    }
-
-    applicant.command = cmd;
-    applicant.running;
-
+    var wallpaperPath = f.isVideo ? f.thumbnail : f.filePath;
     WallpaperService.changeWallpaper(wallpaperPath);
   }
 

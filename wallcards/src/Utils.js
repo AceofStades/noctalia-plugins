@@ -13,3 +13,25 @@ function isImage(fileName, filterImages) {
 function nameFilters(filterImages, filterVideos) {
     return (filterImages || []).concat(filterVideos || []).map((ext) => "*." + ext);
 }
+
+var mpvpaperKill = "killall -9 mpvpaper 2>/dev/null || true";
+
+var mpvpaperOptions = [
+    "loop",
+    "--no-audio",
+    "--hwdec=auto",
+    "--profile=high-quality",
+    "--video-sync=display-resample",
+    "--interpolation",
+    "--tscale=oversample"
+].join(" ");
+
+function mpvpaperRun(filePath) {
+    return "mpvpaper -o '" + mpvpaperOptions + "' '*' \"" + filePath + "\" >/dev/null 2>&1 & disown";
+}
+
+function wallpaperCommand(entry) {
+    if (entry.isVideo)
+        return mpvpaperKill + "; " + mpvpaperRun(entry.filePath);
+    return mpvpaperKill;
+}
