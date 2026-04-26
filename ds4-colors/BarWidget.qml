@@ -109,10 +109,10 @@ Item {
 
             onEntered: {
                 let text = controllerCount > 0
-                    ? `DS4: ${controllerCount} controller(s)`
-                    : "DS4: No controllers"
-                if (batteryLevel >= 0) text += `\nBattery: ${batteryLevel}%`
-                if (mainInstance?.lastError) text += `\nError: ${mainInstance.lastError}`
+                    ? pluginApi?.tr("bar.controllers.count", { count: controllerCount })
+                    : pluginApi?.tr("bar.controllers.none")
+                if (batteryLevel >= 0) text += "\n" + pluginApi?.tr("bar.battery", { level: batteryLevel })
+                if (mainInstance?.lastError) text += "\n" + pluginApi?.tr("bar.error", { msg: mainInstance.lastError })
                 TooltipService.show(root, text, BarService.getTooltipDirection(root.screen?.name))
             }
             onExited: TooltipService.hide()
@@ -122,8 +122,8 @@ Item {
     NPopupContextMenu {
         id: contextMenu
         model: [
-            { "label": "Settings", "action": "settings", "icon": "settings" },
-            { "label": "Scan", "action": "scan", "icon": "refresh" }
+            { "label": pluginApi?.tr("menu.settings"), "action": "settings", "icon": "settings" },
+            { "label": pluginApi?.tr("menu.scan"), "action": "scan", "icon": "refresh" }
         ]
         onTriggered: action => {
             contextMenu.close()

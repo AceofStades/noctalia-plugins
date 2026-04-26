@@ -1,0 +1,36 @@
+{
+  "menu": {
+    "settings": "Settings",
+    "scan": "Scan"
+  },
+  "bar": {
+    "controllers": {
+      "count": "DS4: {count} controller(s)",
+      "none": "DS4: No controllers"
+    },
+    "battery": "Battery: {level}%",
+    "error": "Error: {msg}"
+  },
+  "settings": {
+    "lightbar_color": "Lightbar Color",
+    "hex_color": {
+      "label": "Hex Color",
+      "desc": "Enter color code (e.g., #ff0000)"
+    },
+    "presets": {
+      "label": "Presets"
+    },
+    "widget_settings": "Widget Settings",
+    "color_icon": {
+      "label": "Color Widget Icon",
+      "desc": "Use the lightbar color for the bar widget icon"
+    },
+    "hide_empty": {
+      "label": "Hide When Disconnected",
+      "desc": "Hide the bar widget if no controllers are detected"
+    },
+    "info": "Info",
+    "info_desc1": "This plugin controls DS4/DualSense LED colors via sysfs.",
+    "info_desc2": "If colors don't apply, run: sudo ./setup_rules.sh"
+  }
+}

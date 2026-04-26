@@ -17,7 +17,7 @@ ColumnLayout {
     spacing: Style.marginL
 
     NText {
-        text: "Lightbar Color"
+        text: pluginApi?.tr("settings.lightbar_color")
         pointSize: Style.fontSizeM
         font.weight: Font.Bold
         color: Color.mOnSurface
@@ -25,8 +25,8 @@ ColumnLayout {
 
     NTextInput {
         Layout.fillWidth: true
-        label: "Hex Color"
-        description: "Enter color code (e.g., #ff0000)"
+        label: pluginApi?.tr("settings.hex_color.label")
+        description: pluginApi?.tr("settings.hex_color.desc")
         text: root.valueColor
         onTextChanged: root.valueColor = text
     }
@@ -44,7 +44,7 @@ ColumnLayout {
     }
 
     NText {
-        text: "Presets"
+        text: pluginApi?.tr("settings.presets.label")
         pointSize: Style.fontSizeS
         font.weight: Font.Bold
         color: Color.mOnSurface
@@ -90,7 +90,7 @@ ColumnLayout {
     }
 
     NText {
-        text: "Widget Settings"
+        text: pluginApi?.tr("settings.widget_settings")
         pointSize: Style.fontSizeM
         font.weight: Font.Bold
         color: Color.mOnSurface
@@ -98,16 +98,16 @@ ColumnLayout {
 
     NToggle {
         Layout.fillWidth: true
-        label: "Color Widget Icon"
-        description: "Use the lightbar color for the bar widget icon"
+        label: pluginApi?.tr("settings.color_icon.label")
+        description: pluginApi?.tr("settings.color_icon.desc")
         checked: root.valueColorIcon
         onToggled: checked => root.valueColorIcon = checked
     }
 
     NToggle {
         Layout.fillWidth: true
-        label: "Hide When Disconnected"
-        description: "Hide the bar widget if no controllers are detected"
+        label: pluginApi?.tr("settings.hide_empty.label")
+        description: pluginApi?.tr("settings.hide_empty.desc")
         checked: root.valueHideOnEmpty
         onToggled: checked => root.valueHideOnEmpty = checked
     }
@@ -117,7 +117,7 @@ ColumnLayout {
     }
 
     NText {
-        text: "Info"
+        text: pluginApi?.tr("settings.info")
         pointSize: Style.fontSizeM
         font.weight: Font.Bold
         color: Color.mOnSurface
@@ -132,7 +132,7 @@ ColumnLayout {
             spacing: Style.marginS
 
             NText {
-                text: "This plugin controls DS4/DualSense LED colors via sysfs."
+                text: pluginApi?.tr("settings.info_desc1")
                 pointSize: Style.fontSizeS
                 color: Color.mOnSurface
                 wrapMode: Text.Wrap
@@ -140,7 +140,7 @@ ColumnLayout {
             }
 
             NText {
-                text: "If colors don't apply, run: sudo ./setup_rules.sh"
+                text: pluginApi?.tr("settings.info_desc2")
                 pointSize: Style.fontSizeS
                 color: Color.mSecondary
                 wrapMode: Text.Wrap
