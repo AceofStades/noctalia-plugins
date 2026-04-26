@@ -196,7 +196,7 @@ Rectangle {
       color: Color.mOnSurface
       font.bold: true
       font.pointSize: Style.fontSizeS
-      text: topBar.pluginApi?.tr("buttons.color_na")
+      text: topBar.pluginApi?.tr("buttons.color-na")
       visible: !colorBtn.available
     }
 

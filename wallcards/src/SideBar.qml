@@ -28,7 +28,6 @@ Rectangle {
 
   clip: true
 
-  // Collapsed state
   Column {
     id: collapsedColumn
 
@@ -42,7 +41,6 @@ Rectangle {
     }
   }
 
-  // Expanded state
   Column {
     id: shortcutColumn
 

@@ -65,6 +65,7 @@ Row {
       }
     }
   }
+
   NText {
     anchors.verticalCenter: parent.verticalCenter
     color: Qt.alpha(Color.mOnSurface, 0.4)
