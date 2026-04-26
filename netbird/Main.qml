@@ -7,6 +7,7 @@ import qs.Services.UI
 Item {
     id: root
 
+    
     property var pluginApi: null
 
     onPluginApiChanged: {
@@ -115,6 +116,13 @@ Item {
     }
 
     function detectTerminal() {
+        var manualTerm = pluginApi?.pluginSettings?.terminalCommand || "";
+        if (manualTerm !== "") {
+            root.detectedTerminal = manualTerm;
+            Logger.i("NetBird", "Using user-defined terminal: " + root.detectedTerminal);
+            return;
+        }
+
         root.terminalCheckIndex = 0;
         root.detectedTerminal = "";
         if (root.terminalCandidates.length > 0) {

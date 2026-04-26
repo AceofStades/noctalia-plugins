@@ -25,7 +25,7 @@ Item {
 
   Process {
     id: whichZed
-    command: ["sh", "-c", "command -v zeditor >/dev/null 2>&1 && echo zeditor || command -v zed >/dev/null 2>&1 && echo zed || echo notfound"]
+    command: ["sh", "-c", "(command -v zeditor >/dev/null 2>&1 && echo zeditor) || (command -v zed >/dev/null 2>&1 && echo zed) || echo notfound"]
     stdout: SplitParser {
       onRead: data => {
         var bin = data.trim()

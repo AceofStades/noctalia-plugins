@@ -15,22 +15,40 @@ NIconButton {
 
     readonly property var mainInstance: pluginApi?.mainInstance
     property bool keyboardActive: mainInstance?.keyboardActive ?? false
+    property bool available: mainInstance?.available ?? false
 
-    icon: keyboardActive ? "keyboard" : "keyboard-off"
-    tooltipText: keyboardActive ? pluginApi?.tr("tooltip.active") : pluginApi?.tr("tooltip.hidden")
+    readonly property var pluginDefaults: pluginApi?.manifest?.metadata?.defaultSettings ?? ({})
+    readonly property bool hideWhenUnavailable: pluginApi?.pluginSettings?.hideWhenUnavailable ?? pluginDefaults.hideWhenUnavailable ?? false
+    readonly property bool disableHoverIcon: pluginApi?.pluginSettings?.disableHoverIcon ?? pluginDefaults.disableHoverIcon ?? false
+
+    readonly property string barPosition: Settings.getBarPositionForScreen(screen?.name ?? "")
+    readonly property bool flipHoverIcons: barPosition === "bottom"
+    readonly property bool isVerticalBar: barPosition === "left" || barPosition === "right"
+
+    visible: available || !hideWhenUnavailable
+
+    icon: !available ? "alert-circle"
+        : (hovering && !isVerticalBar && !disableHoverIcon
+            ? (keyboardActive
+                ? (flipHoverIcons ? "keyboard-show" : "keyboard-hide")
+                : (flipHoverIcons ? "keyboard-hide" : "keyboard-show"))
+            : (keyboardActive ? "keyboard" : "keyboard-off"))
+    tooltipText: !available
+        ? (!mainInstance?.gsettingsOk ? pluginApi?.tr("tooltip.noGsettings") : pluginApi?.tr("tooltip.noSqueekboard"))
+        : (keyboardActive ? pluginApi?.tr("tooltip.active") : pluginApi?.tr("tooltip.hidden"))
     tooltipDirection: BarService.getTooltipDirection(screen?.name)
     baseSize: Style.getCapsuleHeightForScreen(screen?.name)
     applyUiScale: false
     customRadius: Style.radiusL
     colorBg: Style.capsuleColor
-    colorFg: keyboardActive ? Color.mPrimary : Color.mOnSurfaceVariant
+    colorFg: !available ? Color.mError : (keyboardActive ? Color.mPrimary : Color.mOnSurfaceVariant)
     border.color: Style.capsuleBorderColor
     border.width: Style.capsuleBorderWidth
 
-    onClicked: mainInstance?.toggleKeyboard()
+    onClicked: { if (available) mainInstance?.toggleKeyboard() }
 
     onRightClicked: {
-        PanelService.showContextMenu(contextMenu, root, screen);
+        PanelService.showContextMenu(contextMenu, root, screen)
     }
 
     NPopupContextMenu {
@@ -41,14 +59,14 @@ NIconButton {
                 "label": pluginApi?.tr("menu.settings"),
                 "action": "widget-settings",
                 "icon": "settings"
-            },
+            }
         ]
 
         onTriggered: function(action) {
-            contextMenu.close();
-            PanelService.closeContextMenu(screen);
+            contextMenu.close()
+            PanelService.closeContextMenu(screen)
             if (action === "widget-settings") {
-                BarService.openPluginSettings(root.screen, pluginApi.manifest);
+                BarService.openPluginSettings(root.screen, pluginApi.manifest)
             }
         }
     }

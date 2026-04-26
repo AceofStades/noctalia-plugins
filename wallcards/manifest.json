@@ -4,7 +4,6 @@
   "version": "0.1.0",
   "minNoctaliaVersion": "4.7.0",
   "author": "tonigineer",
-  "official": false,
   "license": "MIT",
   "repository": "https://github.com/noctalia-dev/noctalia-plugins",
   "description": "A `lively` wallpaper selector.",

@@ -5,7 +5,12 @@ import Quickshell.Io
 Item {
     id: root
 
+    property var pluginApi: null
+
     property bool keyboardActive: false
+    property bool gsettingsOk: false
+    property bool squeekboardOk: false
+    property bool available: gsettingsOk && squeekboardOk
 
     // --- Initial state check ---
     Process {
@@ -16,7 +21,58 @@ Item {
                 root.keyboardActive = data.trim() === "true"
             }
         }
+        onExited: (exitCode, exitStatus) => {
+            root.gsettingsOk = exitCode === 0
+        }
         Component.onCompleted: running = true
+    }
+
+    // --- Squeekboard availability: initial check ---
+    Process {
+        id: squeekboardChecker
+        command: ["busctl", "--user", "call",
+                  "org.freedesktop.DBus", "/org/freedesktop/DBus",
+                  "org.freedesktop.DBus", "GetNameOwner",
+                  "s", "sm.puri.OSK0"]
+        onExited: (exitCode, exitStatus) => {
+            root.squeekboardOk = exitCode === 0
+        }
+        Component.onCompleted: running = true
+    }
+
+    // --- Squeekboard availability: live D-Bus monitor ---
+    Process {
+        id: squeekboardMonitor
+        command: ["dbus-monitor", "--session",
+                  "type='signal',sender='org.freedesktop.DBus',member='NameOwnerChanged'"]
+        running: true
+        stdout: SplitParser {
+            property int argCount: 0
+            property bool isOurService: false
+            onRead: data => {
+                const trimmed = data.trim()
+                if (trimmed.startsWith("signal ")) {
+                    argCount = 0
+                    isOurService = false
+                } else if (trimmed.startsWith("string ")) {
+                    argCount++
+                    if (argCount === 1) {
+                        isOurService = trimmed === 'string "sm.puri.OSK0"'
+                    } else if (argCount === 3 && isOurService) {
+                        const nowRunning = trimmed !== 'string ""'
+                        root.squeekboardOk = nowRunning
+                        if (!nowRunning && root.keyboardActive) {
+                            root.keyboardActive = false
+                        } else if (nowRunning) {
+                            stateChecker.running = true
+                        }
+                    }
+                }
+            }
+        }
+        onExited: (exitCode, exitStatus) => {
+            squeekboardMonitor.running = true
+        }
     }
 
     // --- Live monitor ---
@@ -32,11 +88,20 @@ Item {
                 }
             }
         }
+        onExited: (exitCode, exitStatus) => {
+            stateChecker.running = true
+            stateMonitor.running = true
+        }
     }
 
     // --- Toggle ---
     Process {
         id: toggleProcess
+    }
+
+    function recheckState() {
+        squeekboardChecker.running = true
+        stateChecker.running = true
     }
 
     function toggleKeyboard() {

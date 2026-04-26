@@ -136,6 +136,7 @@ Item {
               readonly property string id: modelData.id || "0"
               readonly property string name: modelData.name || "Unknown light"
               readonly property real brightness: modelData.brightness || 0.0
+              readonly property bool dimmable: modelData.dimmable !== undefined ? modelData.dimmable : true
               readonly property bool isOn: modelData.on || false
 
               RowLayout {
@@ -155,6 +156,7 @@ Item {
                   }
 
                   NValueSlider {
+                    visible: lightBox.dimmable
                     Layout.fillWidth: true
                     from: 1
                     to: 100

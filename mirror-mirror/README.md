@@ -27,7 +27,8 @@ Install the following package:
 4. Click **Start mirror**.
 5. Click **Stop mirror** to end mirroring.
 
+## Credits
 
-
-
+- Original plugin by **Mathew-D**
+- Contributor: **sima** (`@kevichi7`) - fixed the monitor source and destination dropdown selection bug
 
