@@ -146,14 +146,13 @@ Rectangle {
     property bool active: false
     property bool available: true
     property bool current: false
-    required property color dotColor
-    required property string unavailableText
+    required property color faceColor
 
     signal clicked
 
     border.color: active ? Color.mOnSurface : Qt.alpha(Color.mOutline, 0.3)
     border.width: Style.borderS
-    color: dotColor
+    color: faceColor
     height: Style.margin2L
     opacity: active ? 1.0 : available ? 0.4 : 0.12
     radius: Style.radiusM
@@ -174,7 +173,7 @@ Rectangle {
       anchors.bottom: parent.bottom
       anchors.bottomMargin: -height - 2
       anchors.horizontalCenter: parent.horizontalCenter
-      color: colorBtn.current ? colorBtn.dotColor : "transparent"
+      color: colorBtn.current ? colorBtn.faceColor : "transparent"
       height: 3
       radius: height / 2
       width: colorBtn.current ? parent.width * 0.6 : 0
@@ -268,6 +267,47 @@ Rectangle {
     }
   }
 
+  component PulsingDot: Rectangle {
+    id: root
+
+    property color dotColor: Color.mError
+    property bool pulsing: false
+
+    color: dotColor
+    height: Style.marginS
+    radius: Style.marginXXXS
+    width: Style.marginS
+
+    SequentialAnimation {
+      id: pulseAnimation
+
+      loops: Animation.Infinite
+      running: root.pulsing
+
+      onRunningChanged: {
+        if (!running)
+          root.opacity = 1.0;
+      }
+
+      NumberAnimation {
+        duration: 800
+        easing.type: Easing.InOutSine
+        from: 1.0
+        property: "opacity"
+        target: root
+        to: 0.3
+      }
+      NumberAnimation {
+        duration: 800
+        easing.type: Easing.InOutSine
+        from: 0.3
+        property: "opacity"
+        target: root
+        to: 1.0
+      }
+    }
+  }
+
   // ── Left ──
 
   NText {
@@ -335,8 +375,7 @@ Rectangle {
         anchors.verticalCenter: parent.verticalCenter
         available: topBar.availableColors.indexOf(modelData) !== -1
         current: topBar.selectedColorFilter === "" && topBar.currentCardColor === modelData
-        dotColor: topBar.colorOrderColors[index]
-        unavailableText: topBar.pluginApi?.tr("buttons.color-na")
+        faceColor: topBar.colorOrderColors[index]
 
         onClicked: {
           if (active)
