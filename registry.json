@@ -1814,7 +1814,7 @@
     {
       "id": "weather-indicator",
       "name": "Weather Indicator",
-      "version": "1.1.6",
+      "version": "1.1.7",
       "official": false,
       "author": "Sovereign",
       "description": "Shows the current weather condition and temperature.",
@@ -1824,7 +1824,7 @@
       "tags": [
         "Bar"
       ],
-      "lastUpdated": "2026-04-25T13:06:08+02:00"
+      "lastUpdated": "2026-04-26T10:17:55-04:00"
     },
     {
       "id": "web-search",
