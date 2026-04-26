@@ -1,14 +1,46 @@
 {
   "buttons": {
-    "live-preview": "Live"
-  },
-  "widget": {
-    "tooltip": "Open Wallcards"
-  },
-  "filters": {
     "all": "All",
     "images": "Images",
-    "videos": "Videos"
+    "videos": "Videos",
+    "shuffle": "Shuffle",
+    "live-preview": "Live",
+    "color-na": "✕"
+  },
+  "shortcuts": {
+    "key-separator": "/",
+    "header": {
+      "navigation": "NAVIGATION",
+      "filters": "FILTERS",
+      "view": "VIEW",
+      "layout": "LAYOUT"
+    },
+    "label": {
+      "help-title": "Shortcuts",
+      "navigate": "Navigate",
+      "jump": "Jump",
+      "shuffle": "Shuffle",
+      "apply-quit": "Apply + Quit",
+      "apply": "Apply",
+      "quit": "Quit",
+      "filter-all": "All",
+      "filter-images": "Images",
+      "filter-videos": "Videos",
+      "filter-colors": "Color Filter",
+      "top-bar": "Toggle Top Bar",
+      "live-preview": "Toggle Live Preview",
+      "center-height": "Center Height",
+      "center-width": "Center Width",
+      "cards-shown": "Cards Shown",
+      "cards-spacing": "Spacing",
+      "cards-width": "Cards Width",
+      "save": "Save Settings",
+      "hide": "Hide"
+    }
+  },
+  "widget": {
+    "generate-thumbs-message": "Generating thumbnails… ",
+    "tooltip": "Open Wallcards"
   },
   "settings": {
     "icon-color": {

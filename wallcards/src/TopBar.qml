@@ -64,19 +64,19 @@ Rectangle {
       model: [
         {
           key: "all",
-          label: "All",
+          label: topBar.pluginApi?.tr("buttons.all"),
           icon: "wallpaper",
           hotkey: "A"
         },
         {
           key: "images",
-          label: "Images",
+          label: topBar.pluginApi?.tr("buttons.images"),
           icon: "image",
           hotkey: "I"
         },
         {
           key: "videos",
-          label: "Videos",
+          label: topBar.pluginApi?.tr("buttons.videos"),
           icon: "video",
           hotkey: "V"
         }
@@ -162,7 +162,7 @@ Rectangle {
           color: Color.mOnSurface
           font.bold: true
           font.pointSize: Style.fontSizeS
-          text: "✕"
+          text: topBar.pluginApi?.tr("buttons.color-na")
           visible: !parent.available
         }
 
@@ -198,7 +198,7 @@ Rectangle {
 
       hotkey: "R"
       icon: "arrows-random"
-      label: "Shuffle"
+      label: topBar.pluginApi?.tr("buttons.shuffle")
       scale: 1.0
 
       onClicked: {

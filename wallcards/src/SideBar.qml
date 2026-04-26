@@ -7,6 +7,7 @@ Rectangle {
 
   property bool expanded: false
   property bool hideHelp: true
+  required property var pluginApi
 
   color: Qt.alpha(Color.mSurface, 0.9)
   radius: Style.radiusS
@@ -38,7 +39,7 @@ Rectangle {
 
     ShortcutHint {
       keys: "?"
-      label: "Shortcuts"
+      label: sideBar.pluginApi?.tr("shortcuts.label.help-title")
     }
   }
 
@@ -55,19 +56,19 @@ Rectangle {
       color: Qt.alpha(Color.mOnSurface, 0.35)
       font.bold: true
       font.pointSize: Style.fontSizeXXS
-      text: "NAVIGATION"
+      text: sideBar.pluginApi?.tr("shortcuts.header.navigation")
     }
     ShortcutHint {
       keys: "J / K"
-      label: "Navigate"
+      label: sideBar.pluginApi?.tr("shortcuts.label.navigate")
     }
     ShortcutHint {
       keys: "H / L"
-      label: "Jump"
+      label: sideBar.pluginApi?.tr("shortcuts.label.jump")
     }
     ShortcutHint {
       keys: "R"
-      label: "Shuffle"
+      label: sideBar.pluginApi?.tr("shortcuts.label.shuffle")
     }
 
     // Separator
@@ -86,15 +87,15 @@ Rectangle {
     }
     ShortcutHint {
       keys: "ENTER"
-      label: "Apply + Quit"
+      label: sideBar.pluginApi?.tr("shortcuts.label.apply-quit")
     }
     ShortcutHint {
       keys: "SPACE"
-      label: "Apply"
+      label: sideBar.pluginApi?.tr("shortcuts.label.apply")
     }
     ShortcutHint {
       keys: "ESC / Q"
-      label: "Quit"
+      label: sideBar.pluginApi?.tr("shortcuts.label.quit")
     }
 
     // Separator
@@ -109,23 +110,23 @@ Rectangle {
       color: Qt.alpha(Color.mOnSurface, 0.35)
       font.bold: true
       font.pointSize: Style.fontSizeXXS
-      text: "FILTERS"
+      text: sideBar.pluginApi?.tr("shortcuts.header.filters")
     }
     ShortcutHint {
       keys: "A"
-      label: "All"
+      label: root.pluginApi?.tr("shortcuts.label.filter-all")
     }
     ShortcutHint {
       keys: "I"
-      label: "Images"
+      label: sideBar.pluginApi?.tr("shortcuts.label.filter-images")
     }
     ShortcutHint {
       keys: "V"
-      label: "Videos"
+      label: sideBar.pluginApi?.tr("shortcuts.label.filter-videos")
     }
     ShortcutHint {
       keys: "F"
-      label: "Color Filter"
+      label: sideBar.pluginApi?.tr("shortcuts.label.filter-colors")
     }
 
     // Separator
@@ -140,15 +141,15 @@ Rectangle {
       color: Qt.alpha(Color.mOnSurface, 0.35)
       font.bold: true
       font.pointSize: Style.fontSizeXXS
-      text: "VIEW"
+      text: sideBar.pluginApi?.tr("shortcuts.header.view")
     }
     ShortcutHint {
       keys: "T"
-      label: "Top Bar"
+      label: sideBar.pluginApi?.tr("shortcuts.label.top-bar")
     }
     ShortcutHint {
       keys: "P"
-      label: "Live Preview"
+      label: sideBar.pluginApi?.tr("shortcuts.label.live-preview")
     }
 
     // Separator
@@ -163,27 +164,27 @@ Rectangle {
       color: Qt.alpha(Color.mOnSurface, 0.35)
       font.bold: true
       font.pointSize: Style.fontSizeXXS
-      text: "LAYOUT"
+      text: sideBar.pluginApi?.tr("shortcuts.header.layout")
     }
     ShortcutHint {
       keys: "SHIFT + H / L"
-      label: "Center Height"
+      label: sideBar.pluginApi?.tr("shortcuts.label.center-height")
     }
     ShortcutHint {
       keys: "SHIFT + J / K"
-      label: "Center Width"
+      label: sideBar.pluginApi?.tr("shortcuts.label.center-width")
     }
     ShortcutHint {
       keys: "SHIFT + N / P"
-      label: "Cards Shown"
+      label: sideBar.pluginApi?.tr("shortcuts.label.cards-shown")
     }
     ShortcutHint {
       keys: "CTRL + J / K"
-      label: "Spacing"
+      label: sideBar.pluginApi?.tr("shortcuts.label.cards-spacing")
     }
     ShortcutHint {
       keys: "CTRL + H / L"
-      label: "Cards Width"
+      label: sideBar.pluginApi?.tr("shortcuts.label.cards-width")
     }
 
     // Separator
@@ -195,11 +196,11 @@ Rectangle {
 
     ShortcutHint {
       keys: "CTRL + S"
-      label: "Save Settings"
+      label: sideBar.pluginApi?.tr("shortcuts.label.save")
     }
     ShortcutHint {
       keys: "?"
-      label: "Hide"
+      label: sideBar.pluginApi?.tr("shortcuts.label.hide")
     }
   }
 }

@@ -29,7 +29,7 @@ Row {
           anchors.verticalCenter: parent.verticalCenter
           color: Qt.alpha(Color.mOnSurface, 0.3)
           font.pointSize: Style.fontSizeXXS
-          text: "/"
+          text: root.pluginApi?.tr("shortcuts.key-separator")
           visible: index > 0
         }
 
@@ -47,7 +47,7 @@ Row {
             anchors.bottomMargin: 2
             anchors.fill: parent
             border.color: Qt.alpha(Color.mOnSurface, 0.15)
-            border.width: 1
+            border.width: Style.borderL
             color: Qt.alpha(Color.mOnSurface, 0.05)
             radius: Style.radiusXS
 

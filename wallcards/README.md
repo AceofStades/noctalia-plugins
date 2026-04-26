@@ -123,6 +123,7 @@ All settings are available through the plugin settings panel in Noctalia. They c
 ## Known Issues
 
 - When a video card is played, the following warning is spamed ` WARN: vaExportSurfaceHandle failed`. Please contact me, if you have a solution for this.
+- Performance for going left or right differs. It is also affected by the total number of cards (is on my todo list)
 
 ## License
 

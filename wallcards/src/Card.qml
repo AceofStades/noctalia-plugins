@@ -45,7 +45,7 @@ Item {
 
     anchors.fill: parent
     border.color: isCenter ? Color.mOutline : Qt.alpha(Color.mOutlineVariant, 0.5)
-    border.width: 1
+    border.width: Style.borderS
     color: "transparent"
     opacity: 0.75
     radius: cardContent.radius

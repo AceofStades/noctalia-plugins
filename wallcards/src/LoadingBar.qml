@@ -71,9 +71,9 @@ Rectangle {
 
     //
     NText {
-      text: "Generating thumbnails… " + String(Math.max(loadingBar.total - loadingBar.pending, 0)).padStart(String(loadingBar.total).length, " ") + " / " + loadingBar.total
+      text: root.pluginApi?.tr("widget.generate-thumbs-message") + String(Math.max(loadingBar.total - loadingBar.pending, 0)).padStart(String(loadingBar.total).length, " ") + " / " + loadingBar.total
     }
-      }
+  }
 
   //
   Rectangle {
@@ -83,7 +83,7 @@ Rectangle {
     anchors.left: parent.left
     anchors.right: parent.right
     color: Qt.alpha(Color.mOnSurface, 0.1)
-        height: Style.marginS
+    height: Style.marginS
     radius: loadingBar.radius
 
     Rectangle {

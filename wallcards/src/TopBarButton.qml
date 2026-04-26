@@ -58,7 +58,7 @@ Rectangle {
     Rectangle {
       anchors.verticalCenter: parent.verticalCenter
       border.color: Qt.alpha(root.accentColor, 0.35)
-      border.width: 1
+      border.width: Style.borderM
       color: Qt.alpha(root.accentColor, 0.12)
       height: Style.marginL + 2
       opacity: 0.25
