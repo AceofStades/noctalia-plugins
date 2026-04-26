@@ -1,14 +1,15 @@
 {
   "buttons": {
-    "live-preview": "Live"
-  },
-  "widget": {
-    "tooltip": "Wallcards öffnen"
-  },
-  "filters": {
     "all": "Alle",
     "images": "Bilder",
-    "videos": "Videos"
+    "videos": "Videos",
+    "shuffle": "Mischen",
+    "live-preview": "Live",
+    "color-na": "✕"
+  },
+  "widget": {
+    "tooltip": "Wallcards öffnen",
+    "generate-thumbs-message": "Miniaturbilder werden erstellt… "
   },
   "settings": {
     "icon-color": {
@@ -86,5 +87,37 @@
       "description": "Höhe der Werkzeugleiste"
     },
     "folder-picker-title": "Hintergrundbilder-Ordner auswählen"
+  },
+  "shortcuts": {
+    "key-separator": "/",
+    "header": {
+      "navigation": "NAVIGATION",
+      "actions": "AKTIONEN",
+      "filters": "FILTER",
+      "view": "ANSICHT",
+      "layout": "LAYOUT"
+    },
+    "label": {
+      "help-title": "Tastenkürzel",
+      "navigate": "Navigieren",
+      "jump": "Springen",
+      "shuffle": "Mischen",
+      "apply-quit": "Anwenden + Schließen",
+      "apply": "Anwenden",
+      "quit": "Schließen",
+      "filter-all": "Alle",
+      "filter-images": "Bilder",
+      "filter-videos": "Videos",
+      "filter-colors": "Farbfilter",
+      "top-bar": "Kopfleiste umschalten",
+      "live-preview": "Live-Vorschau umschalten",
+      "center-height": "Kartenhöhe",
+      "center-width": "Kartenbreite",
+      "cards-shown": "Angezeigte Karten",
+      "cards-spacing": "Abstand",
+      "cards-width": "Kartenbreite",
+      "save": "Einstellungen speichern",
+      "hide": "Ausblenden"
+    }
   }
 }

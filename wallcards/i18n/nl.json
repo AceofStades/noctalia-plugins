@@ -1,14 +1,15 @@
 {
   "buttons": {
-    "live-preview": "Live"
-  },
-  "widget": {
-    "tooltip": "Wallcards openen"
-  },
-  "filters": {
     "all": "Alles",
     "images": "Afbeeldingen",
-    "videos": "Video's"
+    "videos": "Video's",
+    "shuffle": "Willekeurig",
+    "live-preview": "Live",
+    "color-na": "✕"
+  },
+  "widget": {
+    "tooltip": "Wallcards openen",
+    "generate-thumbs-message": "Miniaturen genereren… "
   },
   "settings": {
     "icon-color": {
@@ -86,5 +87,37 @@
       "description": "Hoogte van de werkbalk"
     },
     "folder-picker-title": "Achtergrondmap selecteren"
+  },
+  "shortcuts": {
+    "key-separator": "/",
+    "header": {
+      "navigation": "NAVIGATIE",
+      "actions": "ACTIES",
+      "filters": "FILTERS",
+      "view": "WEERGAVE",
+      "layout": "INDELING"
+    },
+    "label": {
+      "help-title": "Sneltoetsen",
+      "navigate": "Navigeren",
+      "jump": "Springen",
+      "shuffle": "Willekeurig",
+      "apply-quit": "Toepassen + Sluiten",
+      "apply": "Toepassen",
+      "quit": "Sluiten",
+      "filter-all": "Alles",
+      "filter-images": "Afbeeldingen",
+      "filter-videos": "Video's",
+      "filter-colors": "Kleurfilter",
+      "top-bar": "Bovenste balk",
+      "live-preview": "Live voorbeeld",
+      "center-height": "Middenhoogte",
+      "center-width": "Middenbreedte",
+      "cards-shown": "Zichtbare kaarten",
+      "cards-spacing": "Afstand",
+      "cards-width": "Kaartbreedte",
+      "save": "Instellingen opslaan",
+      "hide": "Verbergen"
+    }
   }
 }

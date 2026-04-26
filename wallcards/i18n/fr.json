@@ -1,14 +1,15 @@
 {
   "buttons": {
-    "live-preview": "En direct"
-  },
-  "widget": {
-    "tooltip": "Ouvrir Wallcards"
-  },
-  "filters": {
     "all": "Tous",
     "images": "Images",
-    "videos": "Vidéos"
+    "videos": "Vidéos",
+    "shuffle": "Mélanger",
+    "live-preview": "En direct",
+    "color-na": "✕"
+  },
+  "widget": {
+    "tooltip": "Ouvrir Wallcards",
+    "generate-thumbs-message": "Génération des miniatures… "
   },
   "settings": {
     "icon-color": {
@@ -86,5 +87,37 @@
       "description": "Hauteur de la barre d'outils"
     },
     "folder-picker-title": "Sélectionner le dossier de fonds d'écran"
+  },
+  "shortcuts": {
+    "key-separator": "/",
+    "header": {
+      "navigation": "NAVIGATION",
+      "actions": "ACTIONS",
+      "filters": "FILTRES",
+      "view": "AFFICHAGE",
+      "layout": "DISPOSITION"
+    },
+    "label": {
+      "help-title": "Raccourcis",
+      "navigate": "Naviguer",
+      "jump": "Sauter",
+      "shuffle": "Mélanger",
+      "apply-quit": "Appliquer + Quitter",
+      "apply": "Appliquer",
+      "quit": "Quitter",
+      "filter-all": "Tous",
+      "filter-images": "Images",
+      "filter-videos": "Vidéos",
+      "filter-colors": "Filtre couleur",
+      "top-bar": "Barre supérieure",
+      "live-preview": "Aperçu en direct",
+      "center-height": "Hauteur centrale",
+      "center-width": "Largeur centrale",
+      "cards-shown": "Cartes affichées",
+      "cards-spacing": "Espacement",
+      "cards-width": "Largeur des cartes",
+      "save": "Enregistrer",
+      "hide": "Masquer"
+    }
   }
 }

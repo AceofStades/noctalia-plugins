@@ -1,14 +1,15 @@
 {
   "buttons": {
-    "live-preview": "Наживо"
-  },
-  "widget": {
-    "tooltip": "Відкрити Wallcards"
-  },
-  "filters": {
     "all": "Усі",
     "images": "Зображення",
-    "videos": "Відео"
+    "videos": "Відео",
+    "shuffle": "Перемішати",
+    "live-preview": "Наживо",
+    "color-na": "✕"
+  },
+  "widget": {
+    "tooltip": "Відкрити Wallcards",
+    "generate-thumbs-message": "Створення мініатюр… "
   },
   "settings": {
     "icon-color": {
@@ -86,5 +87,37 @@
       "description": "Висота панелі інструментів"
     },
     "folder-picker-title": "Обрати теку шпалер"
+  },
+  "shortcuts": {
+    "key-separator": "/",
+    "header": {
+      "navigation": "НАВІГАЦІЯ",
+      "actions": "ДІЇ",
+      "filters": "ФІЛЬТРИ",
+      "view": "ВИГЛЯД",
+      "layout": "КОМПОНУВАННЯ"
+    },
+    "label": {
+      "help-title": "Гарячі клавіші",
+      "navigate": "Навігація",
+      "jump": "Перейти",
+      "shuffle": "Перемішати",
+      "apply-quit": "Застосувати + Вийти",
+      "apply": "Застосувати",
+      "quit": "Вийти",
+      "filter-all": "Усі",
+      "filter-images": "Зображення",
+      "filter-videos": "Відео",
+      "filter-colors": "Кольоровий фільтр",
+      "top-bar": "Верхня панель",
+      "live-preview": "Попередній перегляд",
+      "center-height": "Висота центру",
+      "center-width": "Ширина центру",
+      "cards-shown": "Видимі картки",
+      "cards-spacing": "Відстань",
+      "cards-width": "Ширина карток",
+      "save": "Зберегти налаштування",
+      "hide": "Сховати"
+    }
   }
 }

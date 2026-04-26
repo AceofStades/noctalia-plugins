@@ -1,14 +1,15 @@
 {
   "buttons": {
-    "live-preview": "Live"
-  },
-  "widget": {
-    "tooltip": "Apri Wallcards"
-  },
-  "filters": {
     "all": "Tutti",
     "images": "Immagini",
-    "videos": "Video"
+    "videos": "Video",
+    "shuffle": "Mescola",
+    "live-preview": "Live",
+    "color-na": "✕"
+  },
+  "widget": {
+    "tooltip": "Apri Wallcards",
+    "generate-thumbs-message": "Generazione miniature… "
   },
   "settings": {
     "icon-color": {
@@ -86,5 +87,37 @@
       "description": "Altezza della barra degli strumenti"
     },
     "folder-picker-title": "Seleziona cartella sfondi"
+  },
+  "shortcuts": {
+    "key-separator": "/",
+    "header": {
+      "navigation": "NAVIGAZIONE",
+      "actions": "AZIONI",
+      "filters": "FILTRI",
+      "view": "VISTA",
+      "layout": "LAYOUT"
+    },
+    "label": {
+      "help-title": "Scorciatoie",
+      "navigate": "Naviga",
+      "jump": "Salta",
+      "shuffle": "Mescola",
+      "apply-quit": "Applica + Esci",
+      "apply": "Applica",
+      "quit": "Esci",
+      "filter-all": "Tutti",
+      "filter-images": "Immagini",
+      "filter-videos": "Video",
+      "filter-colors": "Filtro colore",
+      "top-bar": "Barra superiore",
+      "live-preview": "Anteprima dal vivo",
+      "center-height": "Altezza centrale",
+      "center-width": "Larghezza centrale",
+      "cards-shown": "Schede visibili",
+      "cards-spacing": "Spaziatura",
+      "cards-width": "Larghezza schede",
+      "save": "Salva impostazioni",
+      "hide": "Nascondi"
+    }
   }
 }

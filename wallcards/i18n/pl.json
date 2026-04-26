@@ -1,14 +1,15 @@
 {
   "buttons": {
-    "live-preview": "Na żywo"
-  },
-  "widget": {
-    "tooltip": "Otwórz Wallcards"
-  },
-  "filters": {
     "all": "Wszystkie",
     "images": "Obrazy",
-    "videos": "Filmy"
+    "videos": "Filmy",
+    "shuffle": "Losuj",
+    "live-preview": "Na żywo",
+    "color-na": "✕"
+  },
+  "widget": {
+    "tooltip": "Otwórz Wallcards",
+    "generate-thumbs-message": "Generowanie miniatur… "
   },
   "settings": {
     "icon-color": {
@@ -86,5 +87,37 @@
       "description": "Wysokość paska narzędzi"
     },
     "folder-picker-title": "Wybierz folder tapet"
+  },
+  "shortcuts": {
+    "key-separator": "/",
+    "header": {
+      "navigation": "NAWIGACJA",
+      "actions": "AKCJE",
+      "filters": "FILTRY",
+      "view": "WIDOK",
+      "layout": "UKŁAD"
+    },
+    "label": {
+      "help-title": "Skróty",
+      "navigate": "Nawiguj",
+      "jump": "Skocz",
+      "shuffle": "Losuj",
+      "apply-quit": "Zastosuj + Zamknij",
+      "apply": "Zastosuj",
+      "quit": "Zamknij",
+      "filter-all": "Wszystkie",
+      "filter-images": "Obrazy",
+      "filter-videos": "Filmy",
+      "filter-colors": "Filtr kolorów",
+      "top-bar": "Górny pasek",
+      "live-preview": "Podgląd na żywo",
+      "center-height": "Wysokość środka",
+      "center-width": "Szerokość środka",
+      "cards-shown": "Widoczne karty",
+      "cards-spacing": "Odstęp",
+      "cards-width": "Szerokość kart",
+      "save": "Zapisz ustawienia",
+      "hide": "Ukryj"
+    }
   }
 }

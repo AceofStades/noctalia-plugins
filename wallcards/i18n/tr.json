@@ -1,14 +1,15 @@
 {
   "buttons": {
-    "live-preview": "Canlı"
-  },
-  "widget": {
-    "tooltip": "Wallcards'ı aç"
-  },
-  "filters": {
     "all": "Tümü",
     "images": "Resimler",
-    "videos": "Videolar"
+    "videos": "Videolar",
+    "shuffle": "Karıştır",
+    "live-preview": "Canlı",
+    "color-na": "✕"
+  },
+  "widget": {
+    "tooltip": "Wallcards'ı aç",
+    "generate-thumbs-message": "Küçük resimler oluşturuluyor… "
   },
   "settings": {
     "icon-color": {
@@ -86,5 +87,37 @@
       "description": "Araç çubuğunun yüksekliği"
     },
     "folder-picker-title": "Duvar kağıdı klasörü seç"
+  },
+  "shortcuts": {
+    "key-separator": "/",
+    "header": {
+      "navigation": "GEZİNME",
+      "actions": "EYLEMLER",
+      "filters": "FİLTRELER",
+      "view": "GÖRÜNÜM",
+      "layout": "DÜZEN"
+    },
+    "label": {
+      "help-title": "Kısayollar",
+      "navigate": "Gezin",
+      "jump": "Atla",
+      "shuffle": "Karıştır",
+      "apply-quit": "Uygula + Kapat",
+      "apply": "Uygula",
+      "quit": "Kapat",
+      "filter-all": "Tümü",
+      "filter-images": "Resimler",
+      "filter-videos": "Videolar",
+      "filter-colors": "Renk filtresi",
+      "top-bar": "Üst çubuk",
+      "live-preview": "Canlı önizleme",
+      "center-height": "Orta yükseklik",
+      "center-width": "Orta genişlik",
+      "cards-shown": "Görünen kartlar",
+      "cards-spacing": "Aralık",
+      "cards-width": "Kart genişliği",
+      "save": "Ayarları kaydet",
+      "hide": "Gizle"
+    }
   }
 }

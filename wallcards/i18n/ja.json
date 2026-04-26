@@ -1,14 +1,15 @@
 {
   "buttons": {
-    "live-preview": "ライブ"
-  },
-  "widget": {
-    "tooltip": "Wallcardsを開く"
-  },
-  "filters": {
     "all": "すべて",
     "images": "画像",
-    "videos": "動画"
+    "videos": "動画",
+    "shuffle": "シャッフル",
+    "live-preview": "ライブ",
+    "color-na": "✕"
+  },
+  "widget": {
+    "tooltip": "Wallcardsを開く",
+    "generate-thumbs-message": "サムネイルを生成中… "
   },
   "settings": {
     "icon-color": {
@@ -86,5 +87,37 @@
       "description": "ツールバーの高さ"
     },
     "folder-picker-title": "壁紙フォルダを選択"
+  },
+  "shortcuts": {
+    "key-separator": "/",
+    "header": {
+      "navigation": "ナビゲーション",
+      "actions": "アクション",
+      "filters": "フィルター",
+      "view": "表示",
+      "layout": "レイアウト"
+    },
+    "label": {
+      "help-title": "ショートカット",
+      "navigate": "移動",
+      "jump": "ジャンプ",
+      "shuffle": "シャッフル",
+      "apply-quit": "適用して終了",
+      "apply": "適用",
+      "quit": "終了",
+      "filter-all": "すべて",
+      "filter-images": "画像",
+      "filter-videos": "動画",
+      "filter-colors": "カラーフィルター",
+      "top-bar": "トップバー切替",
+      "live-preview": "ライブプレビュー切替",
+      "center-height": "中央の高さ",
+      "center-width": "中央の幅",
+      "cards-shown": "表示カード数",
+      "cards-spacing": "間隔",
+      "cards-width": "カード幅",
+      "save": "設定を保存",
+      "hide": "非表示"
+    }
   }
 }

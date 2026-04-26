@@ -1,14 +1,15 @@
 {
   "buttons": {
-    "live-preview": "Ao vivo"
-  },
-  "widget": {
-    "tooltip": "Abrir Wallcards"
-  },
-  "filters": {
     "all": "Todos",
     "images": "Imagens",
-    "videos": "Vídeos"
+    "videos": "Vídeos",
+    "shuffle": "Aleatório",
+    "live-preview": "Ao vivo",
+    "color-na": "✕"
+  },
+  "widget": {
+    "tooltip": "Abrir Wallcards",
+    "generate-thumbs-message": "Gerando miniaturas… "
   },
   "settings": {
     "icon-color": {
@@ -86,5 +87,37 @@
       "description": "Altura da barra de ferramentas"
     },
     "folder-picker-title": "Selecionar pasta de papéis de parede"
+  },
+  "shortcuts": {
+    "key-separator": "/",
+    "header": {
+      "navigation": "NAVEGAÇÃO",
+      "actions": "AÇÕES",
+      "filters": "FILTROS",
+      "view": "VISUALIZAÇÃO",
+      "layout": "LAYOUT"
+    },
+    "label": {
+      "help-title": "Atalhos",
+      "navigate": "Navegar",
+      "jump": "Saltar",
+      "shuffle": "Aleatório",
+      "apply-quit": "Aplicar + Fechar",
+      "apply": "Aplicar",
+      "quit": "Fechar",
+      "filter-all": "Todos",
+      "filter-images": "Imagens",
+      "filter-videos": "Vídeos",
+      "filter-colors": "Filtro de cor",
+      "top-bar": "Barra superior",
+      "live-preview": "Pré-visualização",
+      "center-height": "Altura central",
+      "center-width": "Largura central",
+      "cards-shown": "Cartões visíveis",
+      "cards-spacing": "Espaçamento",
+      "cards-width": "Largura dos cartões",
+      "save": "Salvar configurações",
+      "hide": "Ocultar"
+    }
   }
 }

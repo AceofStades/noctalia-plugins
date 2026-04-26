@@ -1,14 +1,15 @@
 {
   "buttons": {
-    "live-preview": "Zindî"
-  },
-  "widget": {
-    "tooltip": "Wallcards veke"
-  },
-  "filters": {
     "all": "Hemû",
     "images": "Wêne",
-    "videos": "Vîdeo"
+    "videos": "Vîdeo",
+    "shuffle": "Tevlihev",
+    "live-preview": "Zindî",
+    "color-na": "✕"
+  },
+  "widget": {
+    "tooltip": "Wallcards veke",
+    "generate-thumbs-message": "Wêneyên biçûk têne çêkirin… "
   },
   "settings": {
     "icon-color": {
@@ -86,5 +87,37 @@
       "description": "Bilindahiya amûrbarê"
     },
     "folder-picker-title": "Peldanka dîwarê hilbijêre"
+  },
+  "shortcuts": {
+    "key-separator": "/",
+    "header": {
+      "navigation": "NAVÎGASYON",
+      "actions": "ÇALAKÎ",
+      "filters": "PARZÛN",
+      "view": "DÎTIN",
+      "layout": "SÊWIRAN"
+    },
+    "label": {
+      "help-title": "Kurterê",
+      "navigate": "Navîgasyon",
+      "jump": "Bazdan",
+      "shuffle": "Tevlihev",
+      "apply-quit": "Bicîh bîne + Derkeve",
+      "apply": "Bicîh bîne",
+      "quit": "Derkeve",
+      "filter-all": "Hemû",
+      "filter-images": "Wêne",
+      "filter-videos": "Vîdeo",
+      "filter-colors": "Parzûna rengan",
+      "top-bar": "Barê jorîn",
+      "live-preview": "Pêşdîtina zindî",
+      "center-height": "Bilindahiya navendî",
+      "center-width": "Firehiya navendî",
+      "cards-shown": "Kartên xuya",
+      "cards-spacing": "Navber",
+      "cards-width": "Firehiya kartan",
+      "save": "Mîhengan tomar bike",
+      "hide": "Veşêre"
+    }
   }
 }

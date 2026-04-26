@@ -1,14 +1,15 @@
 {
   "buttons": {
-    "live-preview": "Trực tiếp"
-  },
-  "widget": {
-    "tooltip": "Mở Wallcards"
-  },
-  "filters": {
     "all": "Tất cả",
     "images": "Hình ảnh",
-    "videos": "Video"
+    "videos": "Video",
+    "shuffle": "Xáo trộn",
+    "live-preview": "Trực tiếp",
+    "color-na": "✕"
+  },
+  "widget": {
+    "tooltip": "Mở Wallcards",
+    "generate-thumbs-message": "Đang tạo hình thu nhỏ… "
   },
   "settings": {
     "icon-color": {
@@ -86,5 +87,37 @@
       "description": "Chiều cao của thanh công cụ"
     },
     "folder-picker-title": "Chọn thư mục hình nền"
+  },
+  "shortcuts": {
+    "key-separator": "/",
+    "header": {
+      "navigation": "ĐIỀU HƯỚNG",
+      "actions": "HÀNH ĐỘNG",
+      "filters": "BỘ LỌC",
+      "view": "HIỂN THỊ",
+      "layout": "BỐ CỤC"
+    },
+    "label": {
+      "help-title": "Phím tắt",
+      "navigate": "Di chuyển",
+      "jump": "Nhảy",
+      "shuffle": "Xáo trộn",
+      "apply-quit": "Áp dụng + Thoát",
+      "apply": "Áp dụng",
+      "quit": "Thoát",
+      "filter-all": "Tất cả",
+      "filter-images": "Hình ảnh",
+      "filter-videos": "Video",
+      "filter-colors": "Lọc màu",
+      "top-bar": "Thanh trên",
+      "live-preview": "Xem trước trực tiếp",
+      "center-height": "Chiều cao giữa",
+      "center-width": "Chiều rộng giữa",
+      "cards-shown": "Số thẻ hiển thị",
+      "cards-spacing": "Khoảng cách",
+      "cards-width": "Chiều rộng thẻ",
+      "save": "Lưu cài đặt",
+      "hide": "Ẩn"
+    }
   }
 }

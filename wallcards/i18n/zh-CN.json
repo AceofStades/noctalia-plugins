@@ -1,14 +1,15 @@
 {
   "buttons": {
-    "live-preview": "实时"
-  },
-  "widget": {
-    "tooltip": "打开 Wallcards"
-  },
-  "filters": {
     "all": "全部",
     "images": "图片",
-    "videos": "视频"
+    "videos": "视频",
+    "shuffle": "随机",
+    "live-preview": "实时",
+    "color-na": "✕"
+  },
+  "widget": {
+    "tooltip": "打开 Wallcards",
+    "generate-thumbs-message": "正在生成缩略图… "
   },
   "settings": {
     "icon-color": {
@@ -86,5 +87,37 @@
       "description": "工具栏的高度"
     },
     "folder-picker-title": "选择壁纸文件夹"
+  },
+  "shortcuts": {
+    "key-separator": "/",
+    "header": {
+      "navigation": "导航",
+      "actions": "操作",
+      "filters": "筛选",
+      "view": "视图",
+      "layout": "布局"
+    },
+    "label": {
+      "help-title": "快捷键",
+      "navigate": "导航",
+      "jump": "跳转",
+      "shuffle": "随机",
+      "apply-quit": "应用并退出",
+      "apply": "应用",
+      "quit": "退出",
+      "filter-all": "全部",
+      "filter-images": "图片",
+      "filter-videos": "视频",
+      "filter-colors": "颜色筛选",
+      "top-bar": "顶栏",
+      "live-preview": "实时预览",
+      "center-height": "中央高度",
+      "center-width": "中央宽度",
+      "cards-shown": "显示卡片数",
+      "cards-spacing": "间距",
+      "cards-width": "卡片宽度",
+      "save": "保存设置",
+      "hide": "隐藏"
+    }
   }
 }

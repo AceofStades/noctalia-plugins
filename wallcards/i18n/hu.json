@@ -1,14 +1,15 @@
 {
   "buttons": {
-    "live-preview": "Élő"
-  },
-  "widget": {
-    "tooltip": "Wallcards megnyitása"
-  },
-  "filters": {
     "all": "Összes",
     "images": "Képek",
-    "videos": "Videók"
+    "videos": "Videók",
+    "shuffle": "Keverés",
+    "live-preview": "Élő",
+    "color-na": "✕"
+  },
+  "widget": {
+    "tooltip": "Wallcards megnyitása",
+    "generate-thumbs-message": "Miniatűrök létrehozása… "
   },
   "settings": {
     "icon-color": {
@@ -86,5 +87,37 @@
       "description": "Az eszköztár magassága"
     },
     "folder-picker-title": "Háttérképek mappa kiválasztása"
+  },
+  "shortcuts": {
+    "key-separator": "/",
+    "header": {
+      "navigation": "NAVIGÁCIÓ",
+      "actions": "MŰVELETEK",
+      "filters": "SZŰRŐK",
+      "view": "NÉZET",
+      "layout": "ELRENDEZÉS"
+    },
+    "label": {
+      "help-title": "Gyorsbillentyűk",
+      "navigate": "Navigálás",
+      "jump": "Ugrás",
+      "shuffle": "Keverés",
+      "apply-quit": "Alkalmazás + Kilépés",
+      "apply": "Alkalmazás",
+      "quit": "Kilépés",
+      "filter-all": "Összes",
+      "filter-images": "Képek",
+      "filter-videos": "Videók",
+      "filter-colors": "Színszűrő",
+      "top-bar": "Felső sáv",
+      "live-preview": "Élő előnézet",
+      "center-height": "Középső magasság",
+      "center-width": "Középső szélesség",
+      "cards-shown": "Megjelenített kártyák",
+      "cards-spacing": "Térköz",
+      "cards-width": "Kártyák szélessége",
+      "save": "Beállítások mentése",
+      "hide": "Elrejtés"
+    }
   }
 }

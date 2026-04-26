@@ -1,14 +1,15 @@
 {
   "buttons": {
-    "live-preview": "Живой"
-  },
-  "widget": {
-    "tooltip": "Открыть Wallcards"
-  },
-  "filters": {
     "all": "Все",
     "images": "Изображения",
-    "videos": "Видео"
+    "videos": "Видео",
+    "shuffle": "Перемешать",
+    "live-preview": "Живой",
+    "color-na": "✕"
+  },
+  "widget": {
+    "tooltip": "Открыть Wallcards",
+    "generate-thumbs-message": "Создание миниатюр… "
   },
   "settings": {
     "icon-color": {
@@ -86,5 +87,37 @@
       "description": "Высота панели инструментов"
     },
     "folder-picker-title": "Выбрать папку обоев"
+  },
+  "shortcuts": {
+    "key-separator": "/",
+    "header": {
+      "navigation": "НАВИГАЦИЯ",
+      "actions": "ДЕЙСТВИЯ",
+      "filters": "ФИЛЬТРЫ",
+      "view": "ВИД",
+      "layout": "КОМПОНОВКА"
+    },
+    "label": {
+      "help-title": "Горячие клавиши",
+      "navigate": "Навигация",
+      "jump": "Перейти",
+      "shuffle": "Перемешать",
+      "apply-quit": "Применить + Выйти",
+      "apply": "Применить",
+      "quit": "Выйти",
+      "filter-all": "Все",
+      "filter-images": "Изображения",
+      "filter-videos": "Видео",
+      "filter-colors": "Цветовой фильтр",
+      "top-bar": "Верхняя панель",
+      "live-preview": "Предпросмотр",
+      "center-height": "Высота центра",
+      "center-width": "Ширина центра",
+      "cards-shown": "Видимые карточки",
+      "cards-spacing": "Расстояние",
+      "cards-width": "Ширина карточек",
+      "save": "Сохранить настройки",
+      "hide": "Скрыть"
+    }
   }
 }
