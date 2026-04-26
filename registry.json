@@ -38,7 +38,7 @@
     {
       "id": "arch-updater",
       "name": "Arch Updater",
-      "version": "1.2.2",
+      "version": "2.0.1",
       "official": false,
       "author": "Ast",
       "description": "A plugin to manage updates on Arch",
@@ -52,7 +52,7 @@
         "System",
         "Utility"
       ],
-      "lastUpdated": "2026-04-21T22:36:27+01:00"
+      "lastUpdated": "2026-04-25T13:14:42+02:00"
     },
     {
       "id": "assistant-panel",
@@ -92,7 +92,7 @@
     {
       "id": "battery-actions",
       "name": "Battery Actions",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "official": false,
       "author": "itscrystalline",
       "description": "A plugin that allows you to run custom actions when battery state changes.",
@@ -102,12 +102,12 @@
       "tags": [
         "System"
       ],
-      "lastUpdated": "2026-04-20T16:57:44+03:00"
+      "lastUpdated": "2026-04-25T13:10:34+02:00"
     },
     {
       "id": "battery-threshold",
       "name": "Battery Threshold Control",
-      "version": "1.2.2",
+      "version": "1.2.3",
       "official": false,
       "author": "Wilfred Mallawa",
       "description": "Set the battery threshold for laptop batteries to extend battery lifespan",
@@ -119,12 +119,12 @@
         "Panel",
         "System"
       ],
-      "lastUpdated": "2026-03-29T19:05:12-04:00"
+      "lastUpdated": "2026-04-25T13:16:18+02:00"
     },
     {
       "id": "calendar-widget",
       "name": "Desktop Calendar",
-      "version": "1.0.9",
+      "version": "1.0.10",
       "official": false,
       "author": "Simon",
       "description": "Monthly calendar with today highlighted.",
@@ -135,7 +135,7 @@
         "Desktop",
         "Utility"
       ],
-      "lastUpdated": "2026-04-21T07:39:34+02:00"
+      "lastUpdated": "2026-04-25T13:17:01+02:00"
     },
     {
       "id": "calibre-provider",
@@ -256,7 +256,7 @@
     {
       "id": "color-scheme-creator",
       "name": "Color Scheme Creator",
-      "version": "1.0.4",
+      "version": "1.0.5",
       "official": true,
       "author": "Noctalia Team",
       "description": "Create and manage custom predefined color schemes with a visual color editor.",
@@ -267,7 +267,7 @@
         "Theming",
         "Utility"
       ],
-      "lastUpdated": "2026-03-29T19:05:12-04:00"
+      "lastUpdated": "2026-04-25T13:28:18+02:00"
     },
     {
       "id": "cookie-clock",
@@ -319,7 +319,7 @@
     {
       "id": "custom-sticker",
       "name": "Custom Stickers",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "official": false,
       "author": "spiros132",
       "description": "Custom stickers (images) that you can put on the desktop as desktop widgets.",
@@ -330,7 +330,7 @@
         "Desktop",
         "Fun"
       ],
-      "lastUpdated": "2026-03-20T21:37:46+01:00"
+      "lastUpdated": "2026-04-25T13:31:23+02:00"
     },
     {
       "id": "daily-wallpaper",
@@ -1376,7 +1376,7 @@
     {
       "id": "screen-shot-and-record",
       "name": "ScreenShot & Record",
-      "version": "1.0.3",
+      "version": "1.0.4",
       "official": false,
       "author": "Pulsar",
       "description": "A screenshot plugin with OCR, Google Lens integration, and screen recording. Supports Sway, Hyprland and MangoWM.",
@@ -1390,7 +1390,7 @@
         "Hyprland",
         "Sway"
       ],
-      "lastUpdated": "2026-04-16T17:07:27-04:00"
+      "lastUpdated": "2026-04-22T19:11:15-04:00"
     },
     {
       "id": "screen-toolkit",
@@ -1814,7 +1814,7 @@
     {
       "id": "weather-indicator",
       "name": "Weather Indicator",
-      "version": "1.1.5",
+      "version": "1.1.6",
       "official": false,
       "author": "Sovereign",
       "description": "Shows the current weather condition and temperature.",
@@ -1824,7 +1824,7 @@
       "tags": [
         "Bar"
       ],
-      "lastUpdated": "2026-04-18T18:57:53+02:00"
+      "lastUpdated": "2026-04-25T13:06:08+02:00"
     },
     {
       "id": "web-search",

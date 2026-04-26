@@ -16,7 +16,7 @@ ColumnLayout {
 
     NText {
         visible: !service.isAvailable
-        text: pluginApi?.tr("settings.no-battery-device") || "No configurable batteries are available on this system"
+        text: pluginApi?.tr("settings.no-battery-device")
         pointSize: Style.fontSizeM
         color: Color.mOnSurfaceVariant
     }
@@ -24,8 +24,8 @@ ColumnLayout {
     NComboBox {
         Layout.fillWidth: true
         visible: service.isAvailable
-        label: pluginApi?.tr("settings.battery-device") || "Battery Device"
-        description: pluginApi?.tr("settings.battery-device-desc") || "Battery to configure threshold for"
+        label: pluginApi?.tr("settings.battery-device")
+        description: pluginApi?.tr("settings.battery-device-desc")
 
         model: service.batteries.map(path => ({
                     key: path,

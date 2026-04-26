@@ -51,7 +51,7 @@ Item {
                 spacing: 2
 
                 NText {
-                    text: "Battery Threshold"
+                    text: pluginApi?.tr("panel.title")
                     pointSize: Style.fontSizeL
                     font.weight: Font.DemiBold
                     color: Color.mOnSurface
@@ -59,7 +59,7 @@ Item {
 
                 NText {
                     visible: !service.isAvailable || root.batteryModelName !== ""
-                    text: !service.isAvailable ? "Not available on this system" : root.batteryModelName
+                    text: !service.isAvailable ? pluginApi?.tr("panel.not-available") : root.batteryModelName
                     pointSize: Style.fontSizeM
                     color: Color.mOnSurfaceVariant
                 }
@@ -82,7 +82,7 @@ Item {
                     Layout.fillWidth: true
 
                     NText {
-                        text: "Battery Threshold"
+                        text: pluginApi?.tr("panel.title")
                         pointSize: Style.fontSizeM
                         color: Color.mOnSurface
                         Layout.fillWidth: true
@@ -126,7 +126,7 @@ Item {
 
                 NText {
                     Layout.fillWidth: true
-                    text: service.isWritable ? "Drag slider to adjust limit" : "Read-only: Install udev rule for write access"
+                    text: service.isWritable ? pluginApi?.tr("panel.adjust-limit") : pluginApi?.tr("panel.read-only")
                     pointSize: Style.fontSizeXS
                     color: service.isWritable ? Color.mOnSurfaceVariant : Color.mTertiary
                     horizontalAlignment: Text.AlignHCenter
