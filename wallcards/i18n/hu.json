@@ -1,0 +1,90 @@
+{
+  "buttons": {
+    "live-preview": "Élő"
+  },
+  "widget": {
+    "tooltip": "Wallcards megnyitása"
+  },
+  "filters": {
+    "all": "Összes",
+    "images": "Képek",
+    "videos": "Videók"
+  },
+  "settings": {
+    "icon-color": {
+      "label": "Ikon színe",
+      "description": "A sáv widget ikonjának színe"
+    },
+    "wallpaper-directory": {
+      "label": "Háttérképek mappa",
+      "description": "A háttérképeket tartalmazó mappa",
+      "tooltip": "Háttérképek mappa kiválasztása",
+      "placeholder": "~/Képek/Háttérképek"
+    },
+    "live-preview": {
+      "label": "Élő előnézet",
+      "description": "Háttérkép alkalmazása böngészés közben"
+    },
+    "default-filter": {
+      "label": "Alapértelmezett szűrő",
+      "description": "Kezdeti fájltípus-szűrő megnyitáskor"
+    },
+    "hide-shortcuts": {
+      "label": "Gyorsbillentyűk elrejtése",
+      "description": "A gyorsbillentyűk panel elrejtése"
+    },
+    "hide-top-bar": {
+      "label": "Felső sáv elrejtése",
+      "description": "Az eszköztár elrejtése a kártyák felett"
+    },
+    "center-card-width": {
+      "label": "Középső kártya szélessége",
+      "description": "A középső kártya szélessége a képernyő százalékában"
+    },
+    "card-height": {
+      "label": "Kártya magassága",
+      "description": "A háttérkép-kártyák magassága"
+    },
+    "strip-width": {
+      "label": "Csík szélessége",
+      "description": "Az oldalsó kártyacsíkok szélessége"
+    },
+    "card-spacing": {
+      "label": "Kártyák térköze",
+      "description": "Kártyák közötti rés"
+    },
+    "cards-shown": {
+      "label": "Megjelenített kártyák",
+      "description": "Látható kártyák száma (páratlan számok ajánlottak)"
+    },
+    "shear-factor": {
+      "label": "Nyírási tényező",
+      "description": "A kártya-elrendezés döntési szöge"
+    },
+    "card-animation": {
+      "label": "Kártya animáció",
+      "description": "Kártyaátmenetek sebessége"
+    },
+    "background-color": {
+      "label": "Háttérszín",
+      "description": "A sötétített fedőréteg színe"
+    },
+    "background-opacity": {
+      "label": "Háttér átlátszatlansága",
+      "description": "A sötétített fedőréteg átlátszatlansága"
+    },
+    "window-animation-speed": {
+      "label": "Ablak animáció sebessége",
+      "description": "A nyitás és zárás átmenetek sebessége"
+    },
+    "animate-window": {
+      "label": "Ablak animáció",
+      "description": "Nyitás és zárás átmenetek animálása"
+    },
+    "top-bar-height": {
+      "label": "Felső sáv magassága",
+      "description": "Az eszköztár magassága"
+    },
+    "folder-picker-title": "Háttérképek mappa kiválasztása"
+  }
+}

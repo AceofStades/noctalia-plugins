@@ -61,7 +61,6 @@ ColumnLayout {
     Logger.i("Wallcards", "Settings saved");
   }
 
-  // spacing: Style.marginL
   Layout.rightMargin: Style.marginL
   spacing: Style.marginL
 
@@ -82,9 +81,9 @@ ColumnLayout {
   // ── Wallpaper Directory ──
   NTextInputButton {
     buttonIcon: "folder-open"
-    buttonTooltip: "Select wallpaper folder"
-    description: "Folder containing your wallpapers"
-    label: "Wallpaper Directory"
+    buttonTooltip: root.pluginApi?.tr("settings.wallpaper-directory.tooltip")
+    description: root.pluginApi?.tr("settings.wallpaper-directory.description")
+    label: root.pluginApi?.tr("settings.wallpaper-directory.label")
     placeholderText: Quickshell.env("HOME") + "/Pictures/Wallpapers"
     text: root.editWallpaperDir
 
@@ -99,28 +98,28 @@ ColumnLayout {
   NToggle {
     checked: root.editLivePreview
     defaultValue: pluginApi?.manifest?.metadata?.defaultSettings?.live_preview ?? false
-    description: "Apply wallpaper while browsing cards"
-    label: "Live Preview"
+    description: root.pluginApi?.tr("settings.live-preview.description")
+    label: root.pluginApi?.tr("settings.live-preview.label")
 
     onToggled: c => root.editLivePreview = c
   }
   NComboBox {
     currentKey: root.editSelectedFilter
     defaultValue: pluginApi?.manifest?.metadata?.defaultSettings?.selected_filter || "all"
-    description: "Initial file type filter when opening"
-    label: "Default Filter"
+    description: root.pluginApi?.tr("settings.default-filter.description")
+    label: root.pluginApi?.tr("settings.default-filter.label")
     model: [
       {
         "key": "all",
-        "name": "All"
+        "name": root.pluginApi?.tr("filters.all")
       },
       {
         "key": "images",
-        "name": "Images"
+        "name": root.pluginApi?.tr("filters.images")
       },
       {
         "key": "videos",
-        "name": "Videos"
+        "name": root.pluginApi?.tr("filters.videos")
       }
     ]
 
@@ -129,16 +128,16 @@ ColumnLayout {
   NToggle {
     checked: root.editHideHelp
     defaultValue: pluginApi?.manifest?.metadata?.defaultSettings?.hide_help ?? false
-    description: "Hide the keyboard shortcuts bar"
-    label: "Hide Shortcuts"
+    description: root.pluginApi?.tr("settings.hide-shortcuts.description")
+    label: root.pluginApi?.tr("settings.hide-shortcuts.label")
 
     onToggled: c => root.editHideHelp = c
   }
   NToggle {
     checked: root.editHideTopBar
     defaultValue: pluginApi?.manifest?.metadata?.defaultSettings?.hide_top_bar ?? false
-    description: "Hide the toolbar above the cards"
-    label: "Hide Top Bar"
+    description: root.pluginApi?.tr("settings.hide-top-bar.description")
+    label: root.pluginApi?.tr("settings.hide-top-bar.label")
 
     onToggled: c => root.editHideTopBar = c
   }
@@ -152,8 +151,8 @@ ColumnLayout {
     spacing: Style.marginXXS
 
     NLabel {
-      description: "Width of the center card as percentage of screen"
-      label: "Center Card Width"
+      description: root.pluginApi?.tr("settings.center-card-width.description")
+      label: root.pluginApi?.tr("settings.center-card-width.label")
     }
     NValueSlider {
       Layout.fillWidth: true
@@ -171,8 +170,8 @@ ColumnLayout {
     spacing: Style.marginXXS
 
     NLabel {
-      description: "Height of the wallpaper cards"
-      label: "Card Height"
+      description: root.pluginApi?.tr("settings.card-height.description")
+      label: root.pluginApi?.tr("settings.card-height.label")
     }
     NValueSlider {
       Layout.fillWidth: true
@@ -190,8 +189,8 @@ ColumnLayout {
     spacing: Style.marginXXS
 
     NLabel {
-      description: "Width of the side card strips"
-      label: "Strip Width"
+      description: root.pluginApi?.tr("settings.strip-width.description")
+      label: root.pluginApi?.tr("settings.strip-width.label")
     }
     NValueSlider {
       Layout.fillWidth: true
@@ -209,8 +208,8 @@ ColumnLayout {
     spacing: Style.marginXXS
 
     NLabel {
-      description: "Gap between cards"
-      label: "Card Spacing"
+      description: root.pluginApi?.tr("settings.card-spacing.description")
+      label: root.pluginApi?.tr("settings.card-spacing.label")
     }
     NValueSlider {
       Layout.fillWidth: true
@@ -228,8 +227,8 @@ ColumnLayout {
     spacing: Style.marginXXS
 
     NLabel {
-      description: "Number of visible cards (odd numbers recommended)"
-      label: "Cards Shown"
+      description: root.pluginApi?.tr("settings.cards-shown.description")
+      label: root.pluginApi?.tr("settings.cards-shown.label")
     }
     NValueSlider {
       Layout.fillWidth: true
@@ -251,8 +250,8 @@ ColumnLayout {
       spacing: Style.marginXXS
 
       NLabel {
-        description: "Skew angle of the card layout"
-        label: "Shear Factor"
+        description: root.pluginApi?.tr("settings.shear-factor.description")
+        label: root.pluginApi?.tr("settings.shear-factor.label")
       }
       NValueSlider {
         Layout.fillWidth: true
@@ -271,8 +270,8 @@ ColumnLayout {
     spacing: Style.marginXXS
 
     NLabel {
-      description: "Speed of card transitions"
-      label: "Card Animation"
+      description: root.pluginApi?.tr("settings.card-animation.description")
+      label: root.pluginApi?.tr("settings.card-animation.label")
     }
     NValueSlider {
       Layout.fillWidth: true
@@ -293,8 +292,8 @@ ColumnLayout {
   RowLayout {
     NLabel {
       Layout.alignment: Qt.AlignTop
-      description: "Color of the dimmed overlay"
-      label: "Background Color"
+      description: root.pluginApi?.tr("settings.background-color.description")
+      label: root.pluginApi?.tr("settings.background-color.label")
     }
     NColorPicker {
       selectedColor: root.editBackgroundColor
@@ -307,8 +306,8 @@ ColumnLayout {
     spacing: Style.marginXXS
 
     NLabel {
-      description: "Opacity of the dimmed overlay"
-      label: "Background Opacity"
+      description: root.pluginApi?.tr("settings.background-opacity.description")
+      label: root.pluginApi?.tr("settings.background-opacity.label")
     }
     NValueSlider {
       Layout.fillWidth: true
@@ -326,8 +325,8 @@ ColumnLayout {
     spacing: Style.marginXXS
 
     NLabel {
-      description: "descrip here"
-      label: "Card Animation Speed"
+      description: root.pluginApi?.tr("settings.window-animation-speed.description")
+      label: root.pluginApi?.tr("settings.window-animation-speed.label")
     }
     NValueSlider {
       Layout.fillWidth: true
@@ -343,8 +342,8 @@ ColumnLayout {
   NToggle {
     checked: root.editAnimateWindow
     defaultValue: pluginApi?.manifest?.metadata?.defaultSettings?.animate_window ?? true
-    description: "Animate the open and close transitions. Based on Card animation speed"
-    label: "Window Animation"
+    description: root.pluginApi?.tr("settings.animate-window.description")
+    label: root.pluginApi?.tr("settings.animate-window.label")
 
     onToggled: c => root.editAnimateWindow = c
   }
@@ -358,8 +357,8 @@ ColumnLayout {
     spacing: Style.marginXXS
 
     NLabel {
-      description: "Height of the toolbar"
-      label: "Top Bar Height"
+      description: root.pluginApi?.tr("settings.top-bar-height.description")
+      label: root.pluginApi?.tr("settings.top-bar-height.label")
     }
     NValueSlider {
       Layout.fillWidth: true
@@ -383,7 +382,7 @@ ColumnLayout {
 
     initialPath: root.editWallpaperDir || Quickshell.env("HOME") + "/Pictures/Wallpapers"
     selectionMode: "folders"
-    title: "Select wallpaper folder"
+    title: root.pluginApi?.tr("settings.folder-picker-title")
 
     onAccepted: paths => {
       if (paths.length > 0) {

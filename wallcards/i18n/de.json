@@ -3,6 +3,88 @@
     "live-preview": "Live"
   },
   "widget": {
-    "tooltip": "Öffne Wallcards"
+    "tooltip": "Wallcards öffnen"
+  },
+  "filters": {
+    "all": "Alle",
+    "images": "Bilder",
+    "videos": "Videos"
+  },
+  "settings": {
+    "icon-color": {
+      "label": "Symbolfarbe",
+      "description": "Farbe des Leistensymbols"
+    },
+    "wallpaper-directory": {
+      "label": "Hintergrundbilder-Ordner",
+      "description": "Ordner mit deinen Hintergrundbildern",
+      "tooltip": "Hintergrundbilder-Ordner auswählen",
+      "placeholder": "~/Bilder/Hintergrundbilder"
+    },
+    "live-preview": {
+      "label": "Live-Vorschau",
+      "description": "Hintergrundbild beim Durchblättern anwenden"
+    },
+    "default-filter": {
+      "label": "Standardfilter",
+      "description": "Anfänglicher Dateitypfilter beim Öffnen"
+    },
+    "hide-shortcuts": {
+      "label": "Tastenkürzel ausblenden",
+      "description": "Tastenkürzel-Leiste ausblenden"
+    },
+    "hide-top-bar": {
+      "label": "Kopfleiste ausblenden",
+      "description": "Werkzeugleiste über den Karten ausblenden"
+    },
+    "center-card-width": {
+      "label": "Breite der mittleren Karte",
+      "description": "Breite der mittleren Karte in Prozent des Bildschirms"
+    },
+    "card-height": {
+      "label": "Kartenhöhe",
+      "description": "Höhe der Hintergrundbilder-Karten"
+    },
+    "strip-width": {
+      "label": "Streifenbreite",
+      "description": "Breite der seitlichen Kartenstreifen"
+    },
+    "card-spacing": {
+      "label": "Kartenabstand",
+      "description": "Abstand zwischen den Karten"
+    },
+    "cards-shown": {
+      "label": "Angezeigte Karten",
+      "description": "Anzahl sichtbarer Karten (ungerade Zahlen empfohlen)"
+    },
+    "shear-factor": {
+      "label": "Scherungsfaktor",
+      "description": "Neigungswinkel des Kartenlayouts"
+    },
+    "card-animation": {
+      "label": "Kartenanimation",
+      "description": "Geschwindigkeit der Kartenübergänge"
+    },
+    "background-color": {
+      "label": "Hintergrundfarbe",
+      "description": "Farbe der abgedunkelten Überblendung"
+    },
+    "background-opacity": {
+      "label": "Hintergrund-Deckkraft",
+      "description": "Deckkraft der abgedunkelten Überblendung"
+    },
+    "window-animation-speed": {
+      "label": "Fensteranimation-Geschwindigkeit",
+      "description": "Geschwindigkeit der Öffnen- und Schließen-Übergänge"
+    },
+    "animate-window": {
+      "label": "Fensteranimation",
+      "description": "Öffnen- und Schließen-Übergänge animieren"
+    },
+    "top-bar-height": {
+      "label": "Kopfleistenhöhe",
+      "description": "Höhe der Werkzeugleiste"
+    },
+    "folder-picker-title": "Hintergrundbilder-Ordner auswählen"
   }
 }

@@ -1,7 +1,7 @@
 {
   "id": "wallcards2",
   "name": "Wallcards2",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "minNoctaliaVersion": "4.7.0",
   "author": "tonigineer",
   "official": false,
@@ -19,8 +19,8 @@
   },
   "metadata": {
     "defaultSettings": {
-      "animation_cards_duration": 1000,
-      "animation_window_duration": 1000,
+      "animation_cards_duration": 750,
+      "animation_window_duration": 500,
       "animate_window": true,
       "background_color": null,
       "background_opacity": null,

@@ -1,0 +1,90 @@
+{
+  "buttons": {
+    "live-preview": "Trực tiếp"
+  },
+  "widget": {
+    "tooltip": "Mở Wallcards"
+  },
+  "filters": {
+    "all": "Tất cả",
+    "images": "Hình ảnh",
+    "videos": "Video"
+  },
+  "settings": {
+    "icon-color": {
+      "label": "Màu biểu tượng",
+      "description": "Màu của biểu tượng widget thanh"
+    },
+    "wallpaper-directory": {
+      "label": "Thư mục hình nền",
+      "description": "Thư mục chứa hình nền của bạn",
+      "tooltip": "Chọn thư mục hình nền",
+      "placeholder": "~/Ảnh/HìnhNền"
+    },
+    "live-preview": {
+      "label": "Xem trước trực tiếp",
+      "description": "Áp dụng hình nền khi duyệt thẻ"
+    },
+    "default-filter": {
+      "label": "Bộ lọc mặc định",
+      "description": "Bộ lọc loại tệp ban đầu khi mở"
+    },
+    "hide-shortcuts": {
+      "label": "Ẩn phím tắt",
+      "description": "Ẩn bảng phím tắt bàn phím"
+    },
+    "hide-top-bar": {
+      "label": "Ẩn thanh trên",
+      "description": "Ẩn thanh công cụ phía trên các thẻ"
+    },
+    "center-card-width": {
+      "label": "Chiều rộng thẻ giữa",
+      "description": "Chiều rộng thẻ giữa tính theo phần trăm màn hình"
+    },
+    "card-height": {
+      "label": "Chiều cao thẻ",
+      "description": "Chiều cao của các thẻ hình nền"
+    },
+    "strip-width": {
+      "label": "Chiều rộng dải",
+      "description": "Chiều rộng các dải thẻ bên"
+    },
+    "card-spacing": {
+      "label": "Khoảng cách thẻ",
+      "description": "Khoảng cách giữa các thẻ"
+    },
+    "cards-shown": {
+      "label": "Số thẻ hiển thị",
+      "description": "Số lượng thẻ hiển thị (khuyến nghị số lẻ)"
+    },
+    "shear-factor": {
+      "label": "Hệ số nghiêng",
+      "description": "Góc nghiêng của bố cục thẻ"
+    },
+    "card-animation": {
+      "label": "Hoạt ảnh thẻ",
+      "description": "Tốc độ chuyển đổi thẻ"
+    },
+    "background-color": {
+      "label": "Màu nền",
+      "description": "Màu của lớp phủ tối"
+    },
+    "background-opacity": {
+      "label": "Độ mờ nền",
+      "description": "Độ mờ của lớp phủ tối"
+    },
+    "window-animation-speed": {
+      "label": "Tốc độ hoạt ảnh cửa sổ",
+      "description": "Tốc độ chuyển đổi mở và đóng"
+    },
+    "animate-window": {
+      "label": "Hoạt ảnh cửa sổ",
+      "description": "Tạo hoạt ảnh cho chuyển đổi mở và đóng"
+    },
+    "top-bar-height": {
+      "label": "Chiều cao thanh trên",
+      "description": "Chiều cao của thanh công cụ"
+    },
+    "folder-picker-title": "Chọn thư mục hình nền"
+  }
+}

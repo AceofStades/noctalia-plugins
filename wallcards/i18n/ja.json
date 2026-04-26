@@ -1,0 +1,90 @@
+{
+  "buttons": {
+    "live-preview": "ライブ"
+  },
+  "widget": {
+    "tooltip": "Wallcardsを開く"
+  },
+  "filters": {
+    "all": "すべて",
+    "images": "画像",
+    "videos": "動画"
+  },
+  "settings": {
+    "icon-color": {
+      "label": "アイコンの色",
+      "description": "バーウィジェットのアイコンの色"
+    },
+    "wallpaper-directory": {
+      "label": "壁紙フォルダ",
+      "description": "壁紙が含まれるフォルダ",
+      "tooltip": "壁紙フォルダを選択",
+      "placeholder": "~/画像/壁紙"
+    },
+    "live-preview": {
+      "label": "ライブプレビュー",
+      "description": "カードを閲覧しながら壁紙を適用"
+    },
+    "default-filter": {
+      "label": "デフォルトフィルター",
+      "description": "起動時のファイルタイプフィルター"
+    },
+    "hide-shortcuts": {
+      "label": "ショートカットを非表示",
+      "description": "キーボードショートカットパネルを非表示"
+    },
+    "hide-top-bar": {
+      "label": "トップバーを非表示",
+      "description": "カード上部のツールバーを非表示"
+    },
+    "center-card-width": {
+      "label": "中央カードの幅",
+      "description": "画面に対する中央カードの幅の割合"
+    },
+    "card-height": {
+      "label": "カードの高さ",
+      "description": "壁紙カードの高さ"
+    },
+    "strip-width": {
+      "label": "ストリップ幅",
+      "description": "サイドカードストリップの幅"
+    },
+    "card-spacing": {
+      "label": "カード間隔",
+      "description": "カード間のスペース"
+    },
+    "cards-shown": {
+      "label": "表示カード数",
+      "description": "表示するカードの数（奇数推奨）"
+    },
+    "shear-factor": {
+      "label": "せん断係数",
+      "description": "カードレイアウトの傾斜角度"
+    },
+    "card-animation": {
+      "label": "カードアニメーション",
+      "description": "カード遷移の速度"
+    },
+    "background-color": {
+      "label": "背景色",
+      "description": "暗転オーバーレイの色"
+    },
+    "background-opacity": {
+      "label": "背景の不透明度",
+      "description": "暗転オーバーレイの不透明度"
+    },
+    "window-animation-speed": {
+      "label": "ウィンドウアニメーション速度",
+      "description": "開閉時の遷移速度"
+    },
+    "animate-window": {
+      "label": "ウィンドウアニメーション",
+      "description": "開閉時の遷移をアニメーション化"
+    },
+    "top-bar-height": {
+      "label": "トップバーの高さ",
+      "description": "ツールバーの高さ"
+    },
+    "folder-picker-title": "壁紙フォルダを選択"
+  }
+}

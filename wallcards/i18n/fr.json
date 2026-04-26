@@ -1,0 +1,90 @@
+{
+  "buttons": {
+    "live-preview": "Direct"
+  },
+  "widget": {
+    "tooltip": "Ouvrir Wallcards"
+  },
+  "filters": {
+    "all": "Tous",
+    "images": "Images",
+    "videos": "Vidéos"
+  },
+  "settings": {
+    "icon-color": {
+      "label": "Couleur de l'icône",
+      "description": "Couleur de l'icône du widget de barre"
+    },
+    "wallpaper-directory": {
+      "label": "Dossier de fonds d'écran",
+      "description": "Dossier contenant vos fonds d'écran",
+      "tooltip": "Sélectionner le dossier de fonds d'écran",
+      "placeholder": "~/Images/Fonds"
+    },
+    "live-preview": {
+      "label": "Aperçu en direct",
+      "description": "Appliquer le fond d'écran en parcourant les cartes"
+    },
+    "default-filter": {
+      "label": "Filtre par défaut",
+      "description": "Filtre de type de fichier initial à l'ouverture"
+    },
+    "hide-shortcuts": {
+      "label": "Masquer les raccourcis",
+      "description": "Masquer le panneau des raccourcis clavier"
+    },
+    "hide-top-bar": {
+      "label": "Masquer la barre supérieure",
+      "description": "Masquer la barre d'outils au-dessus des cartes"
+    },
+    "center-card-width": {
+      "label": "Largeur de la carte centrale",
+      "description": "Largeur de la carte centrale en pourcentage de l'écran"
+    },
+    "card-height": {
+      "label": "Hauteur des cartes",
+      "description": "Hauteur des cartes de fond d'écran"
+    },
+    "strip-width": {
+      "label": "Largeur des bandes",
+      "description": "Largeur des bandes latérales"
+    },
+    "card-spacing": {
+      "label": "Espacement des cartes",
+      "description": "Espace entre les cartes"
+    },
+    "cards-shown": {
+      "label": "Cartes affichées",
+      "description": "Nombre de cartes visibles (nombres impairs recommandés)"
+    },
+    "shear-factor": {
+      "label": "Facteur de cisaillement",
+      "description": "Angle d'inclinaison de la disposition des cartes"
+    },
+    "card-animation": {
+      "label": "Animation des cartes",
+      "description": "Vitesse des transitions de cartes"
+    },
+    "background-color": {
+      "label": "Couleur de fond",
+      "description": "Couleur de la superposition assombrie"
+    },
+    "background-opacity": {
+      "label": "Opacité du fond",
+      "description": "Opacité de la superposition assombrie"
+    },
+    "window-animation-speed": {
+      "label": "Vitesse d'animation de la fenêtre",
+      "description": "Vitesse des transitions d'ouverture et de fermeture"
+    },
+    "animate-window": {
+      "label": "Animation de la fenêtre",
+      "description": "Animer les transitions d'ouverture et de fermeture"
+    },
+    "top-bar-height": {
+      "label": "Hauteur de la barre supérieure",
+      "description": "Hauteur de la barre d'outils"
+    },
+    "folder-picker-title": "Sélectionner le dossier de fonds d'écran"
+  }
+}
