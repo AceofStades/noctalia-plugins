@@ -208,7 +208,7 @@
     {
       "id": "clipper",
       "name": "Clipper",
-      "version": "2.4.3",
+      "version": "2.4.4",
       "official": false,
       "author": "blackbartblues",
       "description": "Advanced clipboard manager with history, search, keyboard navigation, ToDo integration, pinned items, notecards/sticky notes, and selection-to-notecard feature. Fully translated with comprehensive i18n support.",
@@ -220,7 +220,7 @@
         "Bar",
         "Panel"
       ],
-      "lastUpdated": "2026-04-22T00:30:10+02:00"
+      "lastUpdated": "2026-04-26T19:41:25+02:00"
     },
     {
       "id": "cloudflare-warp",
