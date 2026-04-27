@@ -4,10 +4,6 @@
       "desc": "Set the activity threshold in bytes per second (B/s).",
       "label": "Show Active Threshold"
     },
-    "colorBackground": {
-      "desc": "Set the background color for the widget.",
-      "label": "Background"
-    },
     "colorRx": {
       "desc": "Set the download (RX) icon color when above the threshold.",
       "label": "RX Active"
@@ -46,10 +42,6 @@
       "desc": "Scale the text size relative to the default.",
       "label": "Font Size Modifier"
     },
-    "forceMegabytes": {
-      "desc": "Show all traffic values in MB instead of switching to KB for low usage.",
-      "label": "Force megabytes (MB)"
-    },
     "horizontalLayout": {
       "desc": "Place TX and RX values side by side instead of stacked.",
       "label": "Horizontal Layout"
@@ -61,10 +53,6 @@
     "iconType": {
       "desc": "Choose the icon style used for the TX/RX indicators.",
       "label": "Icon Type"
-    },
-    "minWidth": {
-      "desc": "Set a minimum width for the widget to prevent resizing when values change.",
-      "label": "Minimum Width"
     },
     "showNumbers": {
       "desc": "Display the current RX/TX speeds as numbers.",

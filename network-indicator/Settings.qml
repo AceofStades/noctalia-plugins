@@ -16,11 +16,9 @@ ColumnLayout {
 
     property string editArrowType: cfg.arrowType ?? defaults.arrowType
     property int editByteThresholdActive: cfg.byteThresholdActive ?? defaults.byteThresholdActive
-    property bool editForceMegabytes: cfg.forceMegabytes ?? defaults.forceMegabytes
     property real editFontSizeModifier: cfg.fontSizeModifier ?? defaults.fontSizeModifier
     property bool editHorizontalLayout: cfg.horizontalLayout ?? defaults.horizontalLayout ?? false
     property real editIconSizeModifier: cfg.iconSizeModifier ?? defaults.iconSizeModifier
-    property int editMinWidth: cfg.minWidth ?? defaults.minWidth
     property bool editShowNumbers: cfg.showNumbers ?? defaults.showNumbers
     property real editSpacingInbetween: cfg.spacingInbetween ?? defaults.spacingInbetween
     property real editContentMargin: cfg.contentMargin ?? defaults.contentMargin ?? Style.marginS
@@ -59,10 +57,8 @@ ColumnLayout {
         }
 
         pluginApi.pluginSettings.arrowType = root.editArrowType;
-        pluginApi.pluginSettings.minWidth = root.editMinWidth;
         pluginApi.pluginSettings.byteThresholdActive = root.editByteThresholdActive;
         pluginApi.pluginSettings.showNumbers = root.editShowNumbers;
-        pluginApi.pluginSettings.forceMegabytes = root.editForceMegabytes;
         pluginApi.pluginSettings.horizontalLayout = root.editHorizontalLayout;
         pluginApi.pluginSettings.fontSizeModifier = root.editFontSizeModifier;
         pluginApi.pluginSettings.iconSizeModifier = root.editIconSizeModifier;
@@ -122,16 +118,6 @@ ColumnLayout {
     }
 
     NToggle {
-        checked: root.editForceMegabytes
-        defaultValue: defaults.forceMegabytes ?? false
-        description: root.tr("settings.forceMegabytes.desc")
-        label: root.tr("settings.forceMegabytes.label")
-        visible: root.barIsSpacious && !root.barIsVertical
-
-        onToggled: c => root.editForceMegabytes = c
-    }
-
-    NToggle {
         checked: root.editHorizontalLayout
         defaultValue: defaults.horizontalLayout ?? false
         description: root.tr("settings.horizontalLayout.desc")
@@ -146,27 +132,6 @@ ColumnLayout {
     }
 
     // ── Layout ──
-
-    ColumnLayout {
-        Layout.fillWidth: true
-        spacing: Style.marginXXS
-
-        NLabel {
-            description: root.tr("settings.minWidth.desc")
-            label: root.tr("settings.minWidth.label")
-        }
-
-        NValueSlider {
-            Layout.fillWidth: true
-            from: 0
-            stepSize: 5
-            text: root.editMinWidth + "px"
-            to: 200
-            value: root.editMinWidth
-
-            onMoved: value => root.editMinWidth = value
-        }
-    }
 
     ColumnLayout {
         Layout.fillWidth: true
@@ -384,34 +349,6 @@ ColumnLayout {
                 selectedColor: root.editColorText
 
                 onColorSelected: color => root.editColorText = color
-            }
-        }
-
-        RowLayout {
-            NLabel {
-                Layout.alignment: Qt.AlignTop
-                description: root.tr("settings.colorFont.desc")
-                label: root.tr("settings.colorFont.label")
-            }
-
-            NColorPicker {
-                selectedColor: root.editColorFont
-
-                onColorSelected: color => root.editColorFont = color
-            }
-        }
-
-        RowLayout {
-            NLabel {
-                Layout.alignment: Qt.AlignTop
-                description: root.tr("settings.colorBackground.desc")
-                label: root.tr("settings.colorBackground.label")
-            }
-
-            NColorPicker {
-                selectedColor: root.editColorBackground
-
-                onColorSelected: color => root.editColorBackground = color
             }
         }
     }

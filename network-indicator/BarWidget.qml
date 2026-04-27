@@ -23,11 +23,9 @@ Item {
     property var defaults: pluginApi?.manifest?.metadata?.defaultSettings || ({})
 
     property string arrowType: cfg.arrowType ?? defaults.arrowType
-    property int minWidth: cfg.minWidth ?? defaults.minWidth
 
     property bool useCustomColors: cfg.useCustomColors ?? defaults.useCustomColors
     property bool showNumbers: cfg.showNumbers ?? defaults.showNumbers
-    property bool forceMegabytes: cfg.forceMegabytes ?? defaults.forceMegabytes
 
     property color colorSilent: root.useCustomColors && cfg.colorSilent || Color.mSurfaceVariant
     property color colorTx: root.useCustomColors && cfg.colorTx || Color.mSecondary
@@ -68,8 +66,7 @@ Item {
     property bool barIsSpacious: barDensity != "mini"
     property bool barIsVertical: barPosition === "left" || barPosition === "right"
 
-    readonly property real naturalWidth: contentRow.implicitWidth + root.contentMargin * 2
-    readonly property real contentWidth: barIsVertical ? Style.capsuleHeight : Math.max(naturalWidth, minWidth)
+    readonly property real contentWidth: barIsVertical ? Style.capsuleHeight : contentRow.implicitWidth + root.contentMargin * 2
     readonly property real contentHeight: barIsVertical ? Math.round(contentRow.implicitHeight + Style.marginM * 2) : Style.capsuleHeight
 
     implicitWidth: contentWidth
@@ -77,28 +74,8 @@ Item {
 
     // ── Widget ──
 
-    property real txSpeed: SystemStatService.txSpeed
-    property real rxSpeed: SystemStatService.rxSpeed
-
-    readonly property real maxTextWidth: Math.max(txTextMetrics.width, rxTextMetrics.width)
-
-    TextMetrics {
-        id: txTextMetrics
-        text: convertBytes(root.txSpeed)
-        font.family: root.resolvedFontFamily
-        font.weight: root.resolvedFontWeight
-        font.italic: root.resolvedFontItalic
-        font.pointSize: Style.barFontSize * root.fontSizeModifier
-    }
-
-    TextMetrics {
-        id: rxTextMetrics
-        text: convertBytes(root.rxSpeed)
-        font.family: root.resolvedFontFamily
-        font.weight: root.resolvedFontWeight
-        font.italic: root.resolvedFontItalic
-        font.pointSize: Style.barFontSize * root.fontSizeModifier
-    }
+    property string txSpeed: (SystemStatService.formatSpeed(SystemStatService.txSpeed).replace(/([0-9.]+)([A-Za-z]+)/, "$1 $2") + "/s").padStart(8, " ")
+    property string rxSpeed: (SystemStatService.formatSpeed(SystemStatService.rxSpeed).replace(/([0-9.]+)([A-Za-z]+)/, "$1 $2") + "/s").padStart(8, " ")
 
     Rectangle {
         id: visualCapsule
@@ -106,7 +83,7 @@ Item {
         y: Style.pixelAlignCenter(parent.height, height)
         width: root.contentWidth
         height: root.contentHeight
-        color: root.useCustomColors && cfg.colorBackground || Style.capsuleColor
+        color: Style.capsuleColor
         radius: Style.radiusM
         border.color: Style.capsuleBorderColor
         border.width: Style.capsuleBorderWidth
@@ -122,9 +99,8 @@ Item {
                 spacing: root.spacingInbetween
 
                 NText {
-                    width: root.maxTextWidth
                     horizontalAlignment: Text.AlignRight
-                    text: convertBytes(root.txSpeed)
+                    text: root.txSpeed
                     color: root.colorText
                     pointSize: Style.barFontSize * root.fontSizeModifier
                     font.family: root.resolvedFontFamily
@@ -133,9 +109,8 @@ Item {
                 }
 
                 NText {
-                    width: root.maxTextWidth
                     horizontalAlignment: Text.AlignRight
-                    text: convertBytes(root.rxSpeed)
+                    text: root.rxSpeed
                     color: root.colorText
                     pointSize: Style.barFontSize * root.fontSizeModifier
                     font.family: root.resolvedFontFamily
@@ -147,9 +122,8 @@ Item {
             // Horizontal layout: TX value left
             NText {
                 visible: root.numbersVisible && root.horizontalNumbers
-                Layout.preferredWidth: root.maxTextWidth
                 horizontalAlignment: Text.AlignRight
-                text: convertBytes(root.txSpeed)
+                text: root.rxSpeed
                 color: root.colorText
                 pointSize: Style.barFontSize * root.fontSizeModifier
                 font.family: root.resolvedFontFamily
@@ -163,13 +137,13 @@ Item {
 
                 NIcon {
                     icon: arrowType + "-up"
-                    color: root.txSpeed >= root.byteThresholdActive ? root.colorTx : root.colorSilent
+                    color: SystemStatService.txSpeed >= root.byteThresholdActive ? root.colorTx : root.colorSilent
                     pointSize: Style.fontSizeL * root.iconSizeModifier
                 }
 
                 NIcon {
                     icon: arrowType + "-down"
-                    color: root.rxSpeed >= root.byteThresholdActive ? root.colorRx : root.colorSilent
+                    color: SystemStatService.rxSpeed >= root.byteThresholdActive ? root.colorRx : root.colorSilent
                     pointSize: Style.fontSizeL * root.iconSizeModifier
                 }
             }
@@ -177,9 +151,8 @@ Item {
             // Horizontal layout: RX value right
             NText {
                 visible: root.numbersVisible && root.horizontalNumbers
-                Layout.preferredWidth: root.maxTextWidth
                 horizontalAlignment: Text.AlignLeft
-                text: convertBytes(root.rxSpeed)
+                text: root.txSpeed
                 color: root.colorText
                 pointSize: Style.barFontSize * root.fontSizeModifier
                 font.family: root.resolvedFontFamily
@@ -190,6 +163,37 @@ Item {
     }
 
     // ── Interaction ──
+
+    HoverHandler {
+        id: hoverHandler
+        onHoveredChanged: {
+            if (hovered) {
+                closeTimer.stop();
+                hoverTimer.start();
+            } else {
+                hoverTimer.stop();
+                closeTimer.start();
+            }
+        }
+    }
+
+    Timer {
+        id: hoverTimer
+        interval: 500
+        onTriggered: {
+            if (hoverHandler.hovered && root.pluginApi && !pluginApi.panelOpenScreen)
+                pluginApi.openPanel(root.screen, root);
+        }
+    }
+
+    Timer {
+        id: closeTimer
+        interval: 250
+        onTriggered: {
+            if (!hoverHandler.hovered && root.pluginApi && pluginApi.panelOpenScreen)
+                pluginApi.togglePanel(root.screen, root);
+        }
+    }
 
     MouseArea {
         anchors.fill: parent
@@ -220,17 +224,5 @@ Item {
                 }
             }
         }
-    }
-
-    // ── Utilities ──
-
-    function convertBytes(bytesPerSecond) {
-        const KB = 1024;
-        const MB = KB * 1024;
-
-        if (bytesPerSecond < MB && !root.forceMegabytes)
-            return (bytesPerSecond / KB).toFixed(1) + " KB";
-
-        return (bytesPerSecond / MB).toFixed(1) + " MB";
     }
 }

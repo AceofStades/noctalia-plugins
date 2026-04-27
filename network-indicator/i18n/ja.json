@@ -1,16 +1,15 @@
 {
+  "actions": {
+    "widget-settings": "ウィジェット設定"
+  },
   "settings": {
     "byteThresholdActive": {
       "desc": "アクティビティの閾値をバイト毎秒 (B/s) で設定します。",
-      "label": "アクティブなしきい値を表示"
-    },
-    "colorBackground": {
-      "desc": "ウィジェットの背景色を設定します。",
-      "label": "背景"
+      "label": "アクティブ閾値を表示"
     },
     "colorRx": {
       "desc": "閾値を超えた場合のダウンロード (RX) アイコンの色を設定します。",
-      "label": "RXアクティブ"
+      "label": "RX アクティブ"
     },
     "colorSilent": {
       "desc": "トラフィックが閾値を下回った場合に、アイコンの色を設定します。",
@@ -18,19 +17,37 @@
     },
     "colorText": {
       "desc": "RX と TX の両方の値に使用するテキストの色を設定します。",
-      "label": "申し訳ありませんが、翻訳するテキストが提供されていません。テキストを入力してください。"
+      "label": "テキスト"
     },
     "colorTx": {
       "desc": "閾値を超えた場合のアップロード (TX) アイコンの色を設定します。",
-      "label": "TXアクティブ"
+      "label": "TX アクティブ"
+    },
+    "contentMargin": {
+      "desc": "ウィジェットコンテンツの両サイドの水平パディング。",
+      "label": "コンテンツマージン"
+    },
+    "customFontBold": {
+      "desc": "速度値を太字で表示。",
+      "label": "太字"
+    },
+    "customFontFamily": {
+      "desc": "速度値に使用するフォントを選択してください。",
+      "label": "フォント",
+      "placeholder": "フォントを選択",
+      "searchPlaceholder": "フォントを検索…"
+    },
+    "customFontItalic": {
+      "desc": "速度値を斜体で表示。",
+      "label": "斜体"
     },
     "fontSizeModifier": {
       "desc": "テキストのサイズをデフォルトを基準に調整します。",
       "label": "フォントサイズ変更"
     },
-    "forceMegabytes": {
-      "desc": "低い使用量でもKBに切り替えずに、すべてのトラフィック値をMBで表示する。",
-      "label": "メガバイトを強制的に実行する"
+    "horizontalLayout": {
+      "desc": "TXとRXの値を縦並びではなく横並びで表示。",
+      "label": "水平レイアウト"
     },
     "iconSizeModifier": {
       "desc": "デフォルトに対するアイコンのサイズを調整します。",
@@ -40,21 +57,21 @@
       "desc": "TX/RXインジケーターに使用するアイコンのスタイルを選択してください。",
       "label": "アイコンの種類"
     },
-    "minWidth": {
-      "desc": "ウィジェットの最小幅を（pxで）設定します。",
-      "label": "ウィジェットの最小幅"
-    },
     "showNumbers": {
-      "desc": "現在のRX/TX速度を数値で表示する。",
+      "desc": "現在のRX/TX速度を数値で表示。",
       "label": "値を表示"
     },
     "spacingInbetween": {
       "desc": "RX/TX要素間の間隔を調整してください。",
-      "label": "垂直方向の間隔"
+      "label": "垂直間隔"
     },
     "useCustomColors": {
       "desc": "テーマのデフォルトの代わりにカスタムカラーを有効にする。",
       "label": "カスタムカラー"
+    },
+    "useCustomFont": {
+      "desc": "速度値のデフォルトフォントを上書き。",
+      "label": "カスタムフォント"
     }
   }
 }

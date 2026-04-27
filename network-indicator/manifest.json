@@ -1,7 +1,7 @@
 {
   "id": "network-indicator",
   "name": "Network Indicator",
-  "version": "1.0.8",
+  "version": "1.1.0",
   "minNoctaliaVersion": "4.7.6",
   "author": "tonigineer",
   "license": "MIT",
@@ -14,6 +14,7 @@
   ],
   "entryPoints": {
     "barWidget": "BarWidget.qml",
+    "panel": "Panel.qml",
     "settings": "Settings.qml"
   },
   "dependencies": {
@@ -22,11 +23,9 @@
   "metadata": {
     "defaultSettings": {
       "arrowType": "caret",
-      "byteThresholdActive": 1024,
+      "byteThresholdActive": 5000,
       "fontSizeModifier": 0.75,
-      "forceMegabytes": false,
       "iconSizeModifier": 1.0,
-      "minWidth": 0,
       "showNumbers": true,
       "spacingInbetween": 0,
       "useCustomColors": false,
