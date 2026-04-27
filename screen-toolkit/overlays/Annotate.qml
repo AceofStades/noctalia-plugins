@@ -445,15 +445,28 @@ Variants {
             stdout: StdioCollector {}
             onExited: (code) => {
                 overlayWin.isUploading = false
-                var url = uploadProc.stdout.text.trim()
+                var url     = uploadProc.stdout.text.trim()
+                var skipPop = root.mainInstance?.pluginApi?.pluginSettings?.shareSkipPopover ?? false
                 if (code === 0 && url.startsWith("http")) {
                     overlayWin.shareUrl     = url
                     overlayWin.uploadFailed = false
-                    wlCopyUrlProc.exec({ command: ["bash", "-c",
+                    if (skipPop) {
+                        overlayWin.showSharePopover = false
+                        wlCopyUrlProc.exec({ command: ["bash", "-c",
                         "printf '%s' " + U.shellEscape(url) + " | wl-copy"] })
+                        ToastService.showNotice(
+                            root.mainInstance?.pluginApi?.tr("annotate.shareUrl"),
+                            url, "link")
+                    }
+                    // if !skipPop the popover already visible shows success state
                 } else {
                     overlayWin.uploadFailed = true
                     overlayWin.shareUrl     = ""
+                    if (skipPop) {
+                        overlayWin.showSharePopover = false
+                        ToastService.showError(
+                            root.mainInstance?.pluginApi?.tr("annotate.shareFailed"))
+                    }
                 }
             }
         }
@@ -545,6 +558,8 @@ Variants {
                : (toolbar.spaceAbove >= height + Style.marginS
                   ? toolbar.y - height - Style.marginXS
                   : toolbar.y + toolbar.height + Style.marginXS)
+
+            // ── Uploading ──────────────────────────────────────────────────
             Row {
                 id: _spLoadRow
                 anchors.centerIn: parent
@@ -561,6 +576,8 @@ Variants {
                     anchors.verticalCenter: parent.verticalCenter
                 }
             }
+
+            // ── Success ────────────────────────────────────────────────────
             Row {
                 id: _spSuccRow
                 anchors.centerIn: parent
@@ -603,6 +620,8 @@ Variants {
                     }
                 }
             }
+
+            // ── Error ──────────────────────────────────────────────────────
             Row {
                 id: _spErrRow
                 anchors.centerIn: parent
@@ -684,6 +703,7 @@ Variants {
             border.width: Style.borderM
             opacity:      0.8
         }
+        // Zoom badge — Color.mPrimary background guarantees contrast against any image content
         Rectangle {
             visible: overlayWin.isPrimary && root.zoomScale > 1.0
             x:      overlayWin.localX + root.regionW - width - Style.marginXS
@@ -691,7 +711,7 @@ Variants {
             width:  zoomBadgeRow.implicitWidth + Style.marginS * 2
             height: 22
             radius: Style.radiusS
-            color:  Qt.rgba(0, 0, 0, 0.6)
+            color:  Color.mPrimary
             Row {
                 id: zoomBadgeRow
                 anchors.centerIn: parent
@@ -1324,21 +1344,21 @@ Variants {
                     }
                     ToolbarSeparator {}
                     ActionBtn {
-                        iconName: "corner-up-left"
-                        tip:      root.mainInstance?.pluginApi?.tr("annotate.undo")
-                        disabled: overlayWin.strokes.length === 0
+                        iconName:  "corner-up-left"
+                        tip:       root.mainInstance?.pluginApi?.tr("annotate.undo")
+                        disabled:  overlayWin.strokes.length === 0
                         onClicked: toolbar.doUndo()
                     }
                     ActionBtn {
-                        iconName: "corner-up-right"
-                        tip:      root.mainInstance?.pluginApi?.tr("annotate.redo")
-                        disabled: overlayWin._redoStack.length === 0
+                        iconName:  "corner-up-right"
+                        tip:       root.mainInstance?.pluginApi?.tr("annotate.redo")
+                        disabled:  overlayWin._redoStack.length === 0
                         onClicked: toolbar.doRedo()
                     }
                     ActionBtn {
-                        iconName: "trash"
-                        tip:      root.mainInstance?.pluginApi?.tr("annotate.clearAll")
-                        danger:   true
+                        iconName:  "trash"
+                        tip:       root.mainInstance?.pluginApi?.tr("annotate.clearAll")
+                        danger:    true
                         onClicked: toolbar.doClear()
                     }
                     SaveBtn {
@@ -1587,16 +1607,18 @@ Variants {
             }
         }
         function _doUpload(file) {
-            var clientId   = (root.mainInstance?.pluginApi?.pluginSettings?.imgurClientId ?? "").trim()
+            var apiKey     = (root.mainInstance?.pluginApi?.pluginSettings?.x02ApiKey ?? "").trim()
+            var expiry     = (root.mainInstance?.pluginApi?.pluginSettings?.x02Expiry ?? "7d").trim()
             var scriptPath = Qt.resolvedUrl("../scripts/share-upload.sh").toString().replace("file://", "")
-            uploadProc.exec({ command: ["bash", scriptPath, file, clientId] })
+            uploadProc.exec({ command: ["bash", scriptPath, file, apiKey, expiry] })
         }
         function flattenAndShare() {
             if (overlayWin.isUploading || overlayWin.isSaving) return
+            var skipPop = root.mainInstance?.pluginApi?.pluginSettings?.shareSkipPopover ?? false
             overlayWin.isUploading      = true
             overlayWin.shareUrl         = ""
             overlayWin.uploadFailed     = false
-            overlayWin.showSharePopover = true
+            overlayWin.showSharePopover = !skipPop
             if (root.zoomScale > 1.0) {
                 _doUpload(root.imagePath)
             } else {

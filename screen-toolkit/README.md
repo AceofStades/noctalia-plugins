@@ -32,8 +32,8 @@ You can use the color picker tool to select any color, and it will be automatica
 
 You can quickly upload screenshots and get a shareable link.
 
-- **Default (no setup):** uses uguu.se — links expire after ~3 hours
-- **Want permanent links:** add your Imgur Client ID in settings
+- **Default (no setup):** uses https://uguu.se/ — links expire after ~3 hours
+- **Want more control:** get a free API key from https://up.x02.me/ to increase upload limits and choose expiry from settings: `1h | 1d | 7d | 30d | permanent` (default: 7d).
 
 ### Recording UI behavior
 When recording is active, the plugin icon shows a red pulsing dot. Clicking the icon stops the recording.

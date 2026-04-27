@@ -2,49 +2,62 @@ import QtQuick
 import QtQuick.Layouts
 import qs.Commons
 import qs.Widgets
+
 ColumnLayout {
     id: root
     property var pluginApi: null
     spacing: Style.marginL
+
     property string screenshotPath:         ""
     property string videoPath:              ""
     property string filenameFormat:         ""
-    property string imgurClientId:          ""
+    property string x02ApiKey:             ""
+    property string x02Expiry:             "7d"
+    property bool   shareSkipPopover:      false
     property bool   recordSkipConfirmation: false
     property bool   recordCopyToClipboard:  false
     property int    gifMaxSeconds:          30
     property bool   _loaded: false
     property string _previewNow: ""
+
     Timer {
         id: previewClock
         interval: 1000; repeat: true; running: root.visible
         onTriggered: root._previewNow = new Date().toString()
     }
+
     function _load() {
         if (!pluginApi?.pluginSettings) return
         _loaded = false
         screenshotPath         = pluginApi.pluginSettings.screenshotPath         || ""
         videoPath              = pluginApi.pluginSettings.videoPath              || ""
         filenameFormat         = pluginApi.pluginSettings.filenameFormat         || ""
-        imgurClientId          = pluginApi.pluginSettings.imgurClientId          || ""
+        x02ApiKey              = pluginApi.pluginSettings.x02ApiKey              || ""
+        x02Expiry              = pluginApi.pluginSettings.x02Expiry              || "7d"
+        shareSkipPopover       = pluginApi.pluginSettings.shareSkipPopover       ?? false
         recordSkipConfirmation = pluginApi.pluginSettings.recordSkipConfirmation ?? false
         recordCopyToClipboard  = pluginApi.pluginSettings.recordCopyToClipboard  ?? false
         gifMaxSeconds          = pluginApi.pluginSettings.gifMaxSeconds          ?? 30
         _loaded = true
     }
+
     Component.onCompleted: _load()
     onPluginApiChanged:    _load()
+
     function saveSettings() {
         if (!pluginApi || !_loaded) return
         pluginApi.pluginSettings.screenshotPath         = root.screenshotPath
         pluginApi.pluginSettings.videoPath              = root.videoPath
         pluginApi.pluginSettings.filenameFormat         = root.filenameFormat
-        pluginApi.pluginSettings.imgurClientId          = root.imgurClientId
+        pluginApi.pluginSettings.x02ApiKey              = root.x02ApiKey
+        pluginApi.pluginSettings.x02Expiry              = root.x02Expiry
+        pluginApi.pluginSettings.shareSkipPopover       = root.shareSkipPopover
         pluginApi.pluginSettings.recordSkipConfirmation = root.recordSkipConfirmation
         pluginApi.pluginSettings.recordCopyToClipboard  = root.recordCopyToClipboard
         pluginApi.pluginSettings.gifMaxSeconds          = root.gifMaxSeconds
         pluginApi.saveSettings()
     }
+
     function buildPreview(fmt) {
         var _ = root._previewNow
         var now = new Date()
@@ -58,6 +71,8 @@ ColumnLayout {
             .replace(/%M/g, Qt.formatDateTime(now, "mm"))
             .replace(/%S/g, Qt.formatDateTime(now, "ss"))
     }
+
+    // ── Paths ─────────────────────────────────────────────────────────────────
     NTextInput {
         Layout.fillWidth: true
         label:           pluginApi?.tr("settings.screenshotPath")
@@ -66,6 +81,7 @@ ColumnLayout {
         text:            root.screenshotPath
         onTextChanged:   { root.screenshotPath = text; saveSettings() }
     }
+
     NTextInput {
         Layout.fillWidth: true
         label:           pluginApi?.tr("settings.videoPath")
@@ -74,18 +90,14 @@ ColumnLayout {
         text:            root.videoPath
         onTextChanged:   { root.videoPath = text; saveSettings() }
     }
-    NTextInput {
-        Layout.fillWidth: true
-        label:           pluginApi?.tr("settings.imgurClientId")
-        description:     pluginApi?.tr("settings.imgurClientIdDesc")
-        placeholderText: "xxxxxxxxxxxxxxx"
-        text:            root.imgurClientId
-        onTextChanged:   { root.imgurClientId = text; saveSettings() }
-    }
+
     NDivider { Layout.fillWidth: true; Layout.topMargin: Style.marginM; Layout.bottomMargin: Style.marginM }
+
+    // ── Filename format ───────────────────────────────────────────────────────
     ColumnLayout {
         Layout.fillWidth: true
         spacing: Style.marginS
+
         ColumnLayout {
             spacing: Style.marginXS
             NLabel { label: pluginApi?.tr("settings.filenameFormat") }
@@ -97,6 +109,7 @@ ColumnLayout {
                 Layout.fillWidth: true
             }
         }
+
         Flow {
             Layout.fillWidth: true
             spacing: Style.marginS
@@ -121,10 +134,10 @@ ColumnLayout {
                         anchors.centerIn: parent
                         spacing: Style.marginXS
                         NText {
-                            text:       modelData.label
-                            pointSize:  Style.fontSizeXS
+                            text:        modelData.label
+                            pointSize:   Style.fontSizeXS
                             font.weight: Font.Medium
-                            color:      tokenMA.containsMouse ? Color.mOnPrimary : Color.mOnSurface
+                            color:       tokenMA.containsMouse ? Color.mOnPrimary : Color.mOnSurface
                             anchors.verticalCenter: parent.verticalCenter
                         }
                         NText {
@@ -140,8 +153,8 @@ ColumnLayout {
                         onClicked: {
                             if (!filenameInput.inputItem) return
                             var input = filenameInput.inputItem
-                            var cur = input.cursorPosition
-                            var txt = input.text
+                            var cur   = input.cursorPosition
+                            var txt   = input.text
                             input.text = txt.substring(0, cur) + modelData.value + txt.substring(cur)
                             input.cursorPosition = cur + modelData.value.length
                             input.forceActiveFocus()
@@ -150,6 +163,7 @@ ColumnLayout {
                 }
             }
         }
+
         NTextInput {
             id: filenameInput
             Layout.fillWidth: true
@@ -157,6 +171,7 @@ ColumnLayout {
             text:            root.filenameFormat
             onTextChanged:   { root.filenameFormat = text; saveSettings() }
         }
+
         Rectangle {
             Layout.fillWidth: true
             height:  previewRow.implicitHeight + Style.marginM * 2
@@ -187,8 +202,106 @@ ColumnLayout {
             }
         }
     }
+
     NDivider { Layout.fillWidth: true; Layout.topMargin: Style.marginM; Layout.bottomMargin: Style.marginM }
+
+        // ── Share ─────────────────────────────────────────────────────────────────
+    ColumnLayout {
+        Layout.fillWidth: true
+        spacing: Style.marginM
+
+        RowLayout {
+            spacing: Style.marginS
+            NIcon  { icon: "share"; color: Color.mPrimary }
+            NLabel { label: pluginApi?.tr("settings.shareSection") }
+        }
+
+        NTextInput {
+            Layout.fillWidth: true
+            label:           pluginApi?.tr("settings.x02ApiKey")
+            description:     pluginApi?.tr("settings.x02ApiKeyDesc")
+            placeholderText: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            text:            root.x02ApiKey
+            onTextChanged:   { root.x02ApiKey = text; saveSettings() }
+        }
+
+        // Expiry — only relevant when API key is set
+        ColumnLayout {
+            Layout.fillWidth: true
+            spacing:  Style.marginXS
+            opacity:  root.x02ApiKey.trim() !== "" ? 1.0 : 0.4
+
+            NLabel { label: pluginApi?.tr("settings.x02Expiry") }
+
+            NText {
+                text:      pluginApi?.tr("settings.x02ExpiryDesc")
+                pointSize: Style.fontSizeXS
+                color:     Color.mOnSurfaceVariant
+                wrapMode:  Text.WordWrap
+                Layout.fillWidth: true
+            }
+
+            Flow {
+                Layout.fillWidth: true
+                spacing: Style.marginS
+
+                readonly property var expiryDefs: [
+                    { id: "1h",        label: pluginApi?.tr("settings.expiry1h")        },
+                    { id: "1d",        label: pluginApi?.tr("settings.expiry1d")        },
+                    { id: "7d",        label: pluginApi?.tr("settings.expiry7d")        },
+                    { id: "30d",       label: pluginApi?.tr("settings.expiry30d")       },
+                    { id: "permanent", label: pluginApi?.tr("settings.expiryPermanent") },
+                ]
+
+                Repeater {
+                    model: parent.expiryDefs
+                    delegate: Rectangle {
+                        height:  28
+                        width:   _expLabel.implicitWidth + Style.marginM * 2
+                        radius:  Style.radiusM
+                        enabled: root.x02ApiKey.trim() !== ""
+                        color:   root.x02Expiry === modelData.id
+                            ? Color.mPrimary
+                            : (_expMA.containsMouse ? Color.mHover : Color.mSurfaceVariant)
+                        Behavior on color { ColorAnimation { duration: 120 } }
+                        NText {
+                            id: _expLabel
+                            anchors.centerIn: parent
+                            text:        modelData.label
+                            pointSize:   Style.fontSizeXS
+                            font.weight: root.x02Expiry === modelData.id ? Font.Bold : Font.Normal
+                            color:       root.x02Expiry === modelData.id
+                                ? Color.mOnPrimary
+                                : (_expMA.containsMouse ? Color.mOnHover : Color.mOnSurface)
+                        }
+                        MouseArea {
+                            id: _expMA
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape:  parent.enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+                            enabled:      parent.enabled
+                            onClicked:    { root.x02Expiry = modelData.id; saveSettings() }
+                        }
+                    }
+                }
+            }
+        }
+
+        SettingToggle {
+            Layout.fillWidth: true
+            labelText: pluginApi?.tr("settings.shareSkipPopover")
+            descText:  pluginApi?.tr("settings.shareSkipPopoverDesc")
+            checked:   root.shareSkipPopover
+            onToggled: (v) => { root.shareSkipPopover = v; saveSettings() }
+        }
+    }
+
+    NDivider { Layout.fillWidth: true; Layout.topMargin: Style.marginM; Layout.bottomMargin: Style.marginM }
+
+
+    // ── Recording ─────────────────────────────────────────────────────────────
     NLabel { label: pluginApi?.tr("settings.recordingSection") }
+
     SettingToggle {
         Layout.fillWidth: true
         labelText: pluginApi?.tr("settings.recordSkipConfirmation")
@@ -196,6 +309,7 @@ ColumnLayout {
         checked:   root.recordSkipConfirmation
         onToggled: (v) => { root.recordSkipConfirmation = v; saveSettings() }
     }
+
     SettingToggle {
         Layout.fillWidth: true
         labelText: pluginApi?.tr("settings.recordCopyToClipboard")
@@ -203,6 +317,7 @@ ColumnLayout {
         checked:   root.recordCopyToClipboard
         onToggled: (v) => { root.recordCopyToClipboard = v; saveSettings() }
     }
+
     NTextInput {
         Layout.fillWidth: true
         label:           pluginApi?.tr("settings.gifMaxSeconds")
@@ -217,6 +332,7 @@ ColumnLayout {
             }
         }
     }
+
     component SettingToggle: RowLayout {
         id: _tog
         property string labelText: ""
