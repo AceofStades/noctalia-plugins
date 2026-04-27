@@ -41,10 +41,6 @@ ColumnLayout {
     property bool barIsSpacious: barDensity !== "mini"
     property bool barIsVertical: barPosition === "left" || barPosition === "right"
 
-    function tr(key) {
-        return root.pluginApi?.tr(key) ?? key;
-    }
-
     function toIntOr(defaultValue, text) {
         const v = parseInt(String(text).trim(), 10);
         return isNaN(v) ? defaultValue : v;
@@ -91,8 +87,8 @@ ColumnLayout {
 
     NComboBox {
         currentKey: root.editArrowType
-        description: root.tr("settings.iconType.desc")
-        label: root.tr("settings.iconType.label")
+        description: root.pluginApi?.tr("settings.iconType.desc")
+        label: root.pluginApi?.tr("settings.iconType.label")
         model: root.iconNames.map(n => ({
                     key: n,
                     name: n
@@ -110,8 +106,8 @@ ColumnLayout {
     NToggle {
         checked: root.editShowNumbers
         defaultValue: defaults.showNumbers ?? true
-        description: root.tr("settings.showNumbers.desc")
-        label: root.tr("settings.showNumbers.label")
+        description: root.pluginApi?.tr("settings.showNumbers.desc")
+        label: root.pluginApi?.tr("settings.showNumbers.label")
         visible: root.barIsSpacious && !root.barIsVertical
 
         onToggled: c => root.editShowNumbers = c
@@ -120,8 +116,8 @@ ColumnLayout {
     NToggle {
         checked: root.editHorizontalLayout
         defaultValue: defaults.horizontalLayout ?? false
-        description: root.tr("settings.horizontalLayout.desc")
-        label: root.tr("settings.horizontalLayout.label")
+        description: root.pluginApi?.tr("settings.horizontalLayout.desc")
+        label: root.pluginApi?.tr("settings.horizontalLayout.label")
         visible: root.barIsSpacious && !root.barIsVertical
 
         onToggled: c => root.editHorizontalLayout = c
@@ -138,8 +134,8 @@ ColumnLayout {
         spacing: Style.marginXXS
 
         NLabel {
-            description: root.tr("settings.contentMargin.desc")
-            label: root.tr("settings.contentMargin.label")
+            description: root.pluginApi?.tr("settings.contentMargin.desc")
+            label: root.pluginApi?.tr("settings.contentMargin.label")
         }
 
         NValueSlider {
@@ -167,8 +163,8 @@ ColumnLayout {
         spacing: Style.marginXXS
 
         NLabel {
-            description: root.tr("settings.spacingInbetween.desc")
-            label: root.tr("settings.spacingInbetween.label")
+            description: root.pluginApi?.tr("settings.spacingInbetween.desc")
+            label: root.pluginApi?.tr("settings.spacingInbetween.label")
         }
 
         NValueSlider {
@@ -188,8 +184,8 @@ ColumnLayout {
         spacing: Style.marginXXS
 
         NLabel {
-            description: root.tr("settings.fontSizeModifier.desc")
-            label: root.tr("settings.fontSizeModifier.label")
+            description: root.pluginApi?.tr("settings.fontSizeModifier.desc")
+            label: root.pluginApi?.tr("settings.fontSizeModifier.label")
         }
 
         NValueSlider {
@@ -209,8 +205,8 @@ ColumnLayout {
         spacing: Style.marginXXS
 
         NLabel {
-            description: root.tr("settings.iconSizeModifier.desc")
-            label: root.tr("settings.iconSizeModifier.label")
+            description: root.pluginApi?.tr("settings.iconSizeModifier.desc")
+            label: root.pluginApi?.tr("settings.iconSizeModifier.label")
         }
 
         NValueSlider {
@@ -234,8 +230,8 @@ ColumnLayout {
     NToggle {
         checked: root.editUseCustomFont
         defaultValue: defaults.useCustomFont ?? false
-        description: root.tr("settings.useCustomFont.desc")
-        label: root.tr("settings.useCustomFont.label")
+        description: root.pluginApi?.tr("settings.useCustomFont.desc")
+        label: root.pluginApi?.tr("settings.useCustomFont.label")
 
         onToggled: c => root.editUseCustomFont = c
     }
@@ -246,12 +242,12 @@ ColumnLayout {
         spacing: Style.marginL
 
         NSearchableComboBox {
-            label: root.tr("settings.customFontFamily.label")
-            description: root.tr("settings.customFontFamily.desc")
+            label: root.pluginApi?.tr("settings.customFontFamily.label")
+            description: root.pluginApi?.tr("settings.customFontFamily.desc")
             model: FontService.availableFonts
             currentKey: root.editCustomFontFamily || Qt.application.font.family
-            placeholder: root.tr("settings.customFontFamily.placeholder")
-            searchPlaceholder: root.tr("settings.customFontFamily.searchPlaceholder")
+            placeholder: root.pluginApi?.tr("settings.customFontFamily.placeholder")
+            searchPlaceholder: root.pluginApi?.tr("settings.customFontFamily.searchPlaceholder")
             popupHeight: 420
 
             onSelected: key => {
@@ -262,8 +258,8 @@ ColumnLayout {
         NToggle {
             checked: root.editCustomFontBold
             defaultValue: defaults.customFontBold ?? false
-            description: root.tr("settings.customFontBold.desc")
-            label: root.tr("settings.customFontBold.label")
+            description: root.pluginApi?.tr("settings.customFontBold.desc")
+            label: root.pluginApi?.tr("settings.customFontBold.label")
 
             onToggled: c => root.editCustomFontBold = c
         }
@@ -271,8 +267,8 @@ ColumnLayout {
         NToggle {
             checked: root.editCustomFontItalic
             defaultValue: defaults.customFontItalic ?? false
-            description: root.tr("settings.customFontItalic.desc")
-            label: root.tr("settings.customFontItalic.label")
+            description: root.pluginApi?.tr("settings.customFontItalic.desc")
+            label: root.pluginApi?.tr("settings.customFontItalic.label")
 
             onToggled: c => root.editCustomFontItalic = c
         }
@@ -287,8 +283,8 @@ ColumnLayout {
     NToggle {
         checked: root.editUseCustomColors
         defaultValue: defaults.useCustomColors ?? false
-        description: root.tr("settings.useCustomColors.desc")
-        label: root.tr("settings.useCustomColors.label")
+        description: root.pluginApi?.tr("settings.useCustomColors.desc")
+        label: root.pluginApi?.tr("settings.useCustomColors.label")
 
         onToggled: c => root.editUseCustomColors = c
     }
@@ -299,8 +295,8 @@ ColumnLayout {
         RowLayout {
             NLabel {
                 Layout.alignment: Qt.AlignTop
-                description: root.tr("settings.colorTx.desc")
-                label: root.tr("settings.colorTx.label")
+                description: root.pluginApi?.tr("settings.colorTx.desc")
+                label: root.pluginApi?.tr("settings.colorTx.label")
             }
 
             NColorPicker {
@@ -313,8 +309,8 @@ ColumnLayout {
         RowLayout {
             NLabel {
                 Layout.alignment: Qt.AlignTop
-                description: root.tr("settings.colorRx.desc")
-                label: root.tr("settings.colorRx.label")
+                description: root.pluginApi?.tr("settings.colorRx.desc")
+                label: root.pluginApi?.tr("settings.colorRx.label")
             }
 
             NColorPicker {
@@ -327,8 +323,8 @@ ColumnLayout {
         RowLayout {
             NLabel {
                 Layout.alignment: Qt.AlignTop
-                description: root.tr("settings.colorSilent.desc")
-                label: root.tr("settings.colorSilent.label")
+                description: root.pluginApi?.tr("settings.colorSilent.desc")
+                label: root.pluginApi?.tr("settings.colorSilent.label")
             }
 
             NColorPicker {
@@ -341,8 +337,8 @@ ColumnLayout {
         RowLayout {
             NLabel {
                 Layout.alignment: Qt.AlignTop
-                description: root.tr("settings.colorText.desc")
-                label: root.tr("settings.colorText.label")
+                description: root.pluginApi?.tr("settings.colorText.desc")
+                label: root.pluginApi?.tr("settings.colorText.label")
             }
 
             NColorPicker {
