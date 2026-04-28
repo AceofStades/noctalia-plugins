@@ -418,7 +418,7 @@
     {
       "id": "file-search",
       "name": "File Search",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "official": false,
       "author": "ericbreh",
       "description": "File search from the launcher.",
@@ -429,7 +429,7 @@
         "Launcher",
         "Productivity"
       ],
-      "lastUpdated": "2026-04-21T17:25:24+02:00"
+      "lastUpdated": "2026-04-27T17:37:09-07:00"
     },
     {
       "id": "giphy-search",
