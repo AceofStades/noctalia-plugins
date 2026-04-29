@@ -29,11 +29,11 @@ qs ipc call plugin:ds4-colors scan
 
 ## Setup (Required)
 
-This plugin requires write access to the controller's LED sysfs files. The included `setup_rules.sh` script configures an udev rule that grants write permission to members of the `ds4_colors` group:
+This plugin requires write access to the controller's LED sysfs files. The included `scripts/setup_rules.sh` script configures an udev rule that grants write permission to members of the `ds4_colors` group:
 
 ```bash
 cd ds4-colors
-sudo ./setup_rules.sh
+sudo ./scripts/setup_rules.sh
 ```
 
 This script will:
@@ -46,7 +46,7 @@ This script will:
 
 ## NixOS Instructions
 
-If you are on NixOS, manual udev rule installation via `setup_rules.sh` will not work.
+If you are on NixOS, manual udev rule installation via `scripts/setup_rules.sh` will not work.
 
 The plugin will automatically try to use `pkexec` to prompt for your password when you change colors. However, for a seamless experience without password prompts, add the following to your `configuration.nix`:
 

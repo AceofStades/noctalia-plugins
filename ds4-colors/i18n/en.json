@@ -25,6 +25,6 @@
     },
     "info": "Info",
     "info_desc1": "This plugin controls DS4/DualSense LED colors via sysfs.",
-    "info_desc2": "If colors don't apply, run: sudo ./setup_rules.sh"
+    "info_desc2": "If colors don't apply, run: sudo ./scripts/setup_rules.sh"
   }
 }

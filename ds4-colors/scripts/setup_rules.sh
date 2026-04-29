@@ -13,7 +13,7 @@
 # ------------------------------
 set -e
 
-RULE_FILE="99-ds4-colors.rules"
+RULE_FILE="$(dirname "$0")/99-ds4-colors.rules"
 GROUP_NAME="ds4_colors"
 
 # Check if running as root

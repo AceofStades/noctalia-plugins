@@ -184,7 +184,7 @@ Item {
             String(root.currentB)
         ]
         colorWriter.controllerPath = basePath
-        colorWriter.scriptPath = pluginDir + "/set_ds4_color.sh"
+        colorWriter.scriptPath = pluginDir + "/scripts/set_ds4_color.sh"
         colorWriter.controller = controller
         colorWriter.running = true
     }
