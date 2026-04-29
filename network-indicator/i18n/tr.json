@@ -1,12 +1,11 @@
 {
+  "actions": {
+    "widget-settings": "Widget Ayarları"
+  },
   "settings": {
     "byteThresholdActive": {
       "desc": "Etkinlik eşiğini saniye başına bayt (B/s) cinsinden ayarlayın.",
       "label": "Aktif Eşiği Göster"
-    },
-    "colorBackground": {
-      "desc": "Araç için arka plan rengini ayarla.",
-      "label": "Arka plan"
     },
     "colorRx": {
       "desc": "Eşiğin üzerindeyken indirme (RX) simge rengini ayarla.",
@@ -24,13 +23,31 @@
       "desc": "Eşik değerinin üzerindeyken yükleme (TX) simge rengini ayarla.",
       "label": "TX Aktif"
     },
+    "contentMargin": {
+      "desc": "Widget içeriğinin her iki tarafında yatay dolgu.",
+      "label": "İçerik Kenar Boşluğu"
+    },
+    "customFontBold": {
+      "desc": "Hız değerlerini kalın olarak oluştur.",
+      "label": "Kalın"
+    },
+    "customFontFamily": {
+      "desc": "Hız değerleri için bir yazı tipi seçin.",
+      "label": "Yazı Tipi",
+      "placeholder": "Yazı tipi seçin",
+      "searchPlaceholder": "Yazı tipleri ara…"
+    },
+    "customFontItalic": {
+      "desc": "Hız değerlerini italik olarak oluştur.",
+      "label": "İtalik"
+    },
     "fontSizeModifier": {
       "desc": "Metin boyutunu varsayılana göre ölçekle.",
       "label": "Yazı Boyutu Değiştirici"
     },
-    "forceMegabytes": {
-      "desc": "Düşük kullanımda KB'a geçmek yerine tüm trafik değerlerini MB olarak göster.",
-      "label": "Megabayt (MB) zorla"
+    "horizontalLayout": {
+      "desc": "TX ve RX değerlerini üst üste yerine yan yana yerleştir.",
+      "label": "Yatay Düzen"
     },
     "iconSizeModifier": {
       "desc": "Simge boyutunu varsayılan değere göre ölçekle.",
@@ -39,10 +56,6 @@
     "iconType": {
       "desc": "TX/RX göstergeleri için kullanılan simge stilini seçin.",
       "label": "Simge Türü"
-    },
-    "minWidth": {
-      "desc": "Araç için minimum genişlik (piksel cinsinden) belirleyin.",
-      "label": "Minimum Widget Genişliği"
     },
     "showNumbers": {
       "desc": "Mevcut RX/TX hızlarını sayı olarak görüntüle.",
@@ -55,6 +68,10 @@
     "useCustomColors": {
       "desc": "Tema varsayılanları yerine özel renkleri etkinleştir.",
       "label": "Özel Renkler"
+    },
+    "useCustomFont": {
+      "desc": "Hız değerleri için varsayılan yazı tipini geçersiz kıl.",
+      "label": "Özel Yazı Tipi"
     }
   }
 }

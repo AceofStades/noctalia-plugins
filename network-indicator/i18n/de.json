@@ -1,12 +1,11 @@
 {
+  "actions": {
+    "widget-settings": "Widget-Einstellungen"
+  },
   "settings": {
     "byteThresholdActive": {
       "desc": "Aktivitätsschwellwert in Byte pro Sekunde (B/s) festlegen.",
       "label": "Aktivitätsschwellwert anzeigen"
-    },
-    "colorBackground": {
-      "desc": "Hintergrundfarbe festlegen.",
-      "label": "Hintergrund"
     },
     "colorRx": {
       "desc": "Symbolfarbe für Download (RX), wenn der Schwellwert überschritten ist.",
@@ -24,25 +23,39 @@
       "desc": "Symbolfarbe für Upload (TX), wenn der Schwellwert überschritten ist.",
       "label": "TX aktiv"
     },
+    "contentMargin": {
+      "desc": "Horizontaler Abstand auf beiden Seiten des Widget-Inhalts.",
+      "label": "Inhaltsrand"
+    },
+    "customFontBold": {
+      "desc": "Geschwindigkeitswerte fett darstellen.",
+      "label": "Fett"
+    },
+    "customFontFamily": {
+      "desc": "Schriftart für die Geschwindigkeitswerte wählen.",
+      "label": "Schriftart",
+      "placeholder": "Schriftart auswählen",
+      "searchPlaceholder": "Schriften suchen…"
+    },
+    "customFontItalic": {
+      "desc": "Geschwindigkeitswerte kursiv darstellen.",
+      "label": "Kursiv"
+    },
     "fontSizeModifier": {
       "desc": "Schriftgröße relativ zum Standard skalieren.",
       "label": "Schriftgrößen-Faktor"
     },
-    "forceMegabytes": {
-      "desc": "Alle Verkehrs­werte in MB anzeigen, statt bei geringer Nutzung auf KB zu wechseln.",
-      "label": "Immer Megabyte (MB) verwenden"
+    "horizontalLayout": {
+      "desc": "TX- und RX-Werte nebeneinander statt übereinander anzeigen.",
+      "label": "Horizontales Layout"
     },
     "iconSizeModifier": {
       "desc": "Symbolgröße relativ zum Standard skalieren.",
       "label": "Symbolgrößen-Faktor"
     },
     "iconType": {
-      "desc": "Symbolstil auswählen",
+      "desc": "Symbolstil für die TX/RX-Anzeigen auswählen.",
       "label": "Symboltyp"
-    },
-    "minWidth": {
-      "desc": "Mindestbreite für das Widget festlegen (in px).",
-      "label": "Minimale Widget-Breite"
     },
     "showNumbers": {
       "desc": "Aktuelle RX/TX-Geschwindigkeiten als Zahlen anzeigen.",
@@ -55,6 +68,10 @@
     "useCustomColors": {
       "desc": "Eigene Farben statt der Standard-Themefarben verwenden.",
       "label": "Eigene Farben"
+    },
+    "useCustomFont": {
+      "desc": "Standardschriftart für Geschwindigkeitswerte überschreiben.",
+      "label": "Eigene Schriftart"
     }
   }
 }

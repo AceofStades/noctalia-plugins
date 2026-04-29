@@ -1,20 +1,19 @@
 {
+  "actions": {
+    "widget-settings": "小组件设置"
+  },
   "settings": {
     "byteThresholdActive": {
       "desc": "设置活动阈值，单位为字节/秒 (B/s)。",
       "label": "显示活动阈值"
     },
-    "colorBackground": {
-      "desc": "设置小部件的背景颜色。",
-      "label": "背景"
-    },
     "colorRx": {
       "desc": "设置高于阈值时的下载（RX）图标颜色。",
-      "label": "RX Active"
+      "label": "RX 活跃"
     },
     "colorSilent": {
       "desc": "当流量低于阈值时，设置图标颜色。",
-      "label": "RX/TX 无活动"
+      "label": "RX/TX 非活跃"
     },
     "colorText": {
       "desc": "设置用于RX和TX值的文本颜色。",
@@ -22,27 +21,41 @@
     },
     "colorTx": {
       "desc": "设置上传（TX）图标颜色，当高于阈值时。",
-      "label": "TX Active"
+      "label": "TX 活跃"
+    },
+    "contentMargin": {
+      "desc": "小组件内容两侧的水平内边距。",
+      "label": "内容边距"
+    },
+    "customFontBold": {
+      "desc": "以粗体显示速度值。",
+      "label": "粗体"
+    },
+    "customFontFamily": {
+      "desc": "为速度值选择字体。",
+      "label": "字体",
+      "placeholder": "选择字体",
+      "searchPlaceholder": "搜索字体…"
+    },
+    "customFontItalic": {
+      "desc": "以斜体显示速度值。",
+      "label": "斜体"
     },
     "fontSizeModifier": {
       "desc": "相对于默认值缩放文本大小。",
-      "label": "字体大小调整器"
+      "label": "字体大小调整"
     },
-    "forceMegabytes": {
-      "desc": "显示所有流量值，以MB为单位，而不是在低使用量时切换到KB。",
-      "label": "强制兆字节 (MB)"
+    "horizontalLayout": {
+      "desc": "将TX和RX值并排显示，而不是堆叠。",
+      "label": "水平布局"
     },
     "iconSizeModifier": {
       "desc": "相对于默认值缩放图标大小。",
-      "label": "图标大小修改器"
+      "label": "图标大小调整"
     },
     "iconType": {
       "desc": "选择用于 TX/RX 指示器的图标样式。",
       "label": "图标类型"
-    },
-    "minWidth": {
-      "desc": "设置小部件的最小宽度（以像素为单位）。",
-      "label": "最小部件宽度"
     },
     "showNumbers": {
       "desc": "以数字形式显示当前的 RX/TX 速度。",
@@ -55,6 +68,10 @@
     "useCustomColors": {
       "desc": "启用自定义颜色，而非主题默认颜色。",
       "label": "自定义颜色"
+    },
+    "useCustomFont": {
+      "desc": "覆盖速度值的默认字体。",
+      "label": "自定义字体"
     }
   }
 }

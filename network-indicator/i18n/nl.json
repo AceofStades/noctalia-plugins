@@ -1,12 +1,11 @@
 {
+  "actions": {
+    "widget-settings": "Widget-instellingen"
+  },
   "settings": {
     "byteThresholdActive": {
       "desc": "Stel de activiteitsdrempel in bytes per seconde (B/s) in.",
       "label": "Actieve drempel weergeven"
-    },
-    "colorBackground": {
-      "desc": "Stel de achtergrondkleur voor de widget in.",
-      "label": "Achtergrond"
     },
     "colorRx": {
       "desc": "Stel de kleur van het download (RX) pictogram in wanneer deze boven de drempelwaarde ligt.",
@@ -22,15 +21,33 @@
     },
     "colorTx": {
       "desc": "Stel de kleur van het upload (TX) icoon in wanneer boven de drempelwaarde.",
-      "label": "TX Active"
+      "label": "TX Actief"
+    },
+    "contentMargin": {
+      "desc": "Horizontale padding aan beide zijden van de widget-inhoud.",
+      "label": "Inhoudmarge"
+    },
+    "customFontBold": {
+      "desc": "Geef snelheidswaarden vetgedrukt weer.",
+      "label": "Vet"
+    },
+    "customFontFamily": {
+      "desc": "Kies een lettertype voor de snelheidswaarden.",
+      "label": "Lettertype",
+      "placeholder": "Selecteer lettertype",
+      "searchPlaceholder": "Lettertypen zoeken…"
+    },
+    "customFontItalic": {
+      "desc": "Geef snelheidswaarden scheefgedrukt weer.",
+      "label": "Schuin"
     },
     "fontSizeModifier": {
       "desc": "Schaal de tekstgrootte ten opzichte van de standaard.",
       "label": "Lettergrootte aanpassing"
     },
-    "forceMegabytes": {
-      "desc": "Toon alle verkeerswaarden in MB in plaats van over te schakelen naar KB bij laag gebruik.",
-      "label": "Forceer megabytes (MB)"
+    "horizontalLayout": {
+      "desc": "Plaats TX en RX waarden naast elkaar in plaats van gestapeld.",
+      "label": "Horizontale lay-out"
     },
     "iconSizeModifier": {
       "desc": "Schaal de pictogramgrootte ten opzichte van de standaard.",
@@ -39,10 +56,6 @@
     "iconType": {
       "desc": "Kies de pictogramstijl die gebruikt wordt voor de TX/RX-indicatoren.",
       "label": "Icoontype"
-    },
-    "minWidth": {
-      "desc": "Stel een minimale breedte in voor de widget (in px).",
-      "label": "Minimale widgetbreedte"
     },
     "showNumbers": {
       "desc": "Toon de huidige RX/TX snelheden als getallen.",
@@ -55,6 +68,10 @@
     "useCustomColors": {
       "desc": "Schakel aangepaste kleuren in in plaats van de standaard themakleuren.",
       "label": "Aangepaste kleuren"
+    },
+    "useCustomFont": {
+      "desc": "Overschrijf het standaard lettertype voor snelheidswaarden.",
+      "label": "Aangepast lettertype"
     }
   }
 }

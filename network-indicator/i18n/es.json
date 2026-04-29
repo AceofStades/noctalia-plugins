@@ -1,12 +1,11 @@
 {
+  "actions": {
+    "widget-settings": "Configuración del widget"
+  },
   "settings": {
     "byteThresholdActive": {
       "desc": "Establecer el umbral de actividad en bytes por segundo (B/s).",
       "label": "Mostrar umbral activo"
-    },
-    "colorBackground": {
-      "desc": "Establecer el color de fondo para el widget.",
-      "label": "Antecedentes"
     },
     "colorRx": {
       "desc": "Establecer el color del icono de descarga (RX) cuando esté por encima del umbral.",
@@ -24,13 +23,31 @@
       "desc": "Establecer el color del icono de carga (TX) cuando esté por encima del umbral.",
       "label": "TX Activo"
     },
+    "contentMargin": {
+      "desc": "Relleno horizontal en ambos lados del contenido del widget.",
+      "label": "Margen del contenido"
+    },
+    "customFontBold": {
+      "desc": "Mostrar los valores de velocidad en negrita.",
+      "label": "Negrita"
+    },
+    "customFontFamily": {
+      "desc": "Elegir una fuente para los valores de velocidad.",
+      "label": "Fuente",
+      "placeholder": "Seleccionar fuente",
+      "searchPlaceholder": "Buscar fuentes…"
+    },
+    "customFontItalic": {
+      "desc": "Mostrar los valores de velocidad en cursiva.",
+      "label": "Cursiva"
+    },
     "fontSizeModifier": {
       "desc": "Escalar el tamaño del texto en relación con el predeterminado.",
       "label": "Modificador de tamaño de fuente"
     },
-    "forceMegabytes": {
-      "desc": "Mostrar todos los valores de tráfico en MB en lugar de cambiar a KB para bajo uso.",
-      "label": "Forzar megabytes (MB)"
+    "horizontalLayout": {
+      "desc": "Colocar los valores TX y RX uno al lado del otro en lugar de apilados.",
+      "label": "Diseño horizontal"
     },
     "iconSizeModifier": {
       "desc": "Escalar el tamaño del icono en relación con el tamaño predeterminado.",
@@ -39,10 +56,6 @@
     "iconType": {
       "desc": "Elige el estilo de icono utilizado para los indicadores TX/RX.",
       "label": "Tipo de icono"
-    },
-    "minWidth": {
-      "desc": "Establecer un ancho mínimo para el widget (en px).",
-      "label": "Ancho mínimo del widget"
     },
     "showNumbers": {
       "desc": "Mostrar las velocidades actuales de RX/TX como números.",
@@ -55,6 +68,10 @@
     "useCustomColors": {
       "desc": "Activar colores personalizados en lugar de los predeterminados del tema.",
       "label": "Colores personalizados"
+    },
+    "useCustomFont": {
+      "desc": "Reemplazar la fuente predeterminada para los valores de velocidad.",
+      "label": "Fuente personalizada"
     }
   }
 }

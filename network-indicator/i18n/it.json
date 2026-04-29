@@ -1,60 +1,77 @@
 {
+  "actions": {
+    "widget-settings": "Impostazioni widget"
+  },
   "settings": {
     "byteThresholdActive": {
       "desc": "Imposta la soglia di attività in byte al secondo (B/s).",
-      "label": "Zeige Aktive Schwelle"
-    },
-    "colorBackground": {
-      "desc": "Imposta il colore di sfondo per il widget.",
-      "label": "Hintergrund"
+      "label": "Mostra soglia attiva"
     },
     "colorRx": {
-      "desc": "Imposta il colore dell'icona di download (RX) quando è sopra la soglia.",
-      "label": "RX Aktiv"
+      "desc": "Imposta il colore dell'icona di download (RX) quando sopra la soglia.",
+      "label": "RX Attivo"
     },
     "colorSilent": {
-      "desc": "Imposta il colore dell'icona quando il traffico è al di sotto della soglia.",
-      "label": "RX/TX Neaktivan"
+      "desc": "Imposta il colore dell'icona quando il traffico è sotto la soglia.",
+      "label": "RX/TX Inattivo"
     },
     "colorText": {
-      "desc": "Imposta il colore del testo utilizzato sia per i valori RX che TX.",
-      "label": "Please provide the English text you would like me to translate. I need the text to be able to provide the translation."
+      "desc": "Imposta il colore del testo utilizzato per i valori RX e TX.",
+      "label": "Testo"
     },
     "colorTx": {
-      "desc": "Määritä lähetyskuvakkeen (TX) väri, kun raja-arvo ylittyy.",
-      "label": "TX Aktibo"
+      "desc": "Imposta il colore dell'icona di upload (TX) quando sopra la soglia.",
+      "label": "TX Attivo"
+    },
+    "contentMargin": {
+      "desc": "Padding orizzontale su entrambi i lati del contenuto del widget.",
+      "label": "Margine contenuto"
+    },
+    "customFontBold": {
+      "desc": "Visualizza i valori di velocità in grassetto.",
+      "label": "Grassetto"
+    },
+    "customFontFamily": {
+      "desc": "Scegli un font per i valori di velocità.",
+      "label": "Font",
+      "placeholder": "Seleziona un font",
+      "searchPlaceholder": "Cerca font…"
+    },
+    "customFontItalic": {
+      "desc": "Visualizza i valori di velocità in corsivo.",
+      "label": "Corsivo"
     },
     "fontSizeModifier": {
-      "desc": "Skala textstorleken relativt standardstorleken.",
-      "label": "Modifikator veličine fonta"
+      "desc": "Scala la dimensione del testo rispetto al valore predefinito.",
+      "label": "Modificatore dimensione font"
     },
-    "forceMegabytes": {
-      "desc": "Zeigen Sie alle Verkehrswerte in MB an, anstatt bei geringer Nutzung auf KB umzuschalten.",
-      "label": "Megabajtów siłą (MB)"
+    "horizontalLayout": {
+      "desc": "Posiziona i valori TX e RX fianco a fianco invece che impilati.",
+      "label": "Layout orizzontale"
     },
     "iconSizeModifier": {
-      "desc": "Mérje a ikon méretét a alapértelmezetthez képest.",
-      "label": "Modifikator za veličinu ikone"
+      "desc": "Scala la dimensione dell'icona rispetto al valore predefinito.",
+      "label": "Modificatore dimensione icona"
     },
     "iconType": {
-      "desc": "Alege stilul pictogramei folosit pentru indicatorii TX/RX.",
-      "label": "Tip ikonë"
-    },
-    "minWidth": {
-      "desc": "Imposta una larghezza minima per il widget (in px).",
-      "label": "Breite des minimalen Widgets"
+      "desc": "Scegli lo stile dell'icona usata per gli indicatori TX/RX.",
+      "label": "Tipo icona"
     },
     "showNumbers": {
-      "desc": "Zeige die aktuellen RX/TX-Geschwindigkeiten als Zahlen an.",
-      "label": "Ipakita ang mga Halaga"
+      "desc": "Visualizza le velocità RX/TX attuali come numeri.",
+      "label": "Mostra valori"
     },
     "spacingInbetween": {
-      "desc": "Rregulloje hapësirën midis elementeve RX/TX.",
-      "label": "Vertikaler Abstand"
+      "desc": "Regola lo spazio tra gli elementi RX/TX.",
+      "label": "Spaziatura verticale"
     },
     "useCustomColors": {
-      "desc": "Aktiviere benutzerdefinierte Farben anstelle der Standardfarben des Designs.",
-      "label": "Ngjyra të personalizuara"
+      "desc": "Attiva i colori personalizzati invece dei colori predefiniti del tema.",
+      "label": "Colori personalizzati"
+    },
+    "useCustomFont": {
+      "desc": "Sovrascrivi il font predefinito per i valori di velocità.",
+      "label": "Font personalizzato"
     }
   }
 }

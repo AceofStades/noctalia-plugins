@@ -1,7 +1,8 @@
-import QtQuick
-import QtQuick.Layouts
 import qs.Commons
 import qs.Widgets
+import qs.Services.System
+import QtQuick
+import QtQuick.Layouts
 
 ColumnLayout {
     id: root
@@ -13,294 +14,338 @@ ColumnLayout {
     property var cfg: pluginApi?.pluginSettings || ({})
     property var defaults: pluginApi?.manifest?.metadata?.defaultSettings || ({})
 
-    property string arrowType: cfg.arrowType || defaults.arrowType
-    property int minWidth: cfg.minWidth || defaults.minWidth
+    property string editArrowType: cfg.arrowType ?? defaults.arrowType
+    property int editByteThresholdActive: cfg.byteThresholdActive ?? defaults.byteThresholdActive
+    property real editFontSizeModifier: cfg.fontSizeModifier ?? defaults.fontSizeModifier
+    property bool editHorizontalLayout: cfg.horizontalLayout ?? defaults.horizontalLayout ?? false
+    property real editIconSizeModifier: cfg.iconSizeModifier ?? defaults.iconSizeModifier
+    property bool editShowNumbers: cfg.showNumbers ?? defaults.showNumbers
+    property real editSpacingInbetween: cfg.spacingInbetween ?? defaults.spacingInbetween
+    property real editContentMargin: cfg.contentMargin ?? defaults.contentMargin ?? Style.marginS
 
-    property bool useCustomColors: cfg.useCustomColors ?? defaults.useCustomColors
-    property bool showNumbers: cfg.showNumbers ?? defaults.showNumbers
-    property bool forceMegabytes: cfg.forceMegabytes ?? defaults.forceMegabytes
+    property bool editUseCustomFont: cfg.useCustomFont ?? defaults.useCustomFont ?? false
+    property string editCustomFontFamily: cfg.customFontFamily ?? defaults.customFontFamily ?? ""
+    property bool editCustomFontBold: cfg.customFontBold ?? defaults.customFontBold ?? false
+    property bool editCustomFontItalic: cfg.customFontItalic ?? defaults.customFontItalic ?? false
 
-    property color colorSilent: root.useCustomColors && cfg.colorSilent || Color.mSurfaceVariant
-    property color colorTx: root.useCustomColors && cfg.colorTx || Color.mSecondary
-    property color colorRx: root.useCustomColors && cfg.colorRx || Color.mPrimary
-    property color colorText: root.useCustomColors && cfg.colorText || Qt.alpha(Color.mOnSurfaceVariant, 0.3)
-    property color colorBackground: root.useCustomColors && cfg.colorBackground || Style.capsuleColor
-
-    property int byteThresholdActive: cfg.byteThresholdActive || defaults.byteThresholdActive
-    property real fontSizeModifier: cfg.fontSizeModifier || defaults.fontSizeModifier
-    property real iconSizeModifier: cfg.iconSizeModifier || defaults.iconSizeModifier
-    property real spacingInbetween: cfg.spacingInbetween || defaults.spacingInbetween
+    property bool editUseCustomColors: cfg.useCustomColors ?? defaults.useCustomColors ?? false
+    property color editColorBackground: editUseCustomColors && cfg.colorBackground || Style.capsuleColor
+    property color editColorFont: editUseCustomColors && cfg.colorFont || Color.mOnSurface
+    property color editColorRx: editUseCustomColors && cfg.colorRx || Color.mPrimary
+    property color editColorSilent: editUseCustomColors && cfg.colorSilent || Color.mSurfaceVariant
+    property color editColorText: editUseCustomColors && cfg.colorText || Qt.alpha(Color.mOnSurfaceVariant, 0.3)
+    property color editColorTx: editUseCustomColors && cfg.colorTx || Color.mSecondary
 
     property string barPosition: Settings.data.bar.position || "top"
     property string barDensity: Settings.data.bar.density || "compact"
-    property bool barIsSpacious: root.barDensity != "mini"
-    property bool barIsVertical: root.barPosition === "left" || barPosition === "right"
-
-    spacing: Style.marginL
-
-    Component.onCompleted: {
-        Logger.i("NetworkIndicator", "Settings UI loaded");
-    }
+    property bool barIsSpacious: barDensity !== "mini"
+    property bool barIsVertical: barPosition === "left" || barPosition === "right"
 
     function toIntOr(defaultValue, text) {
         const v = parseInt(String(text).trim(), 10);
         return isNaN(v) ? defaultValue : v;
     }
 
-    // ---------- General ----------
-
-    RowLayout {
-        NComboBox {
-            label: pluginApi?.tr("settings.iconType.label")
-            description: pluginApi?.tr("settings.iconType.desc")
-
-            model: root.iconNames.map(function (n) {
-                return {
-                    key: n,
-                    name: n
-                };
-            })
-
-            currentKey: root.arrowType
-            onSelected: key => root.arrowType = key
+    function saveSettings() {
+        if (!pluginApi || !pluginApi.pluginSettings) {
+            Logger.e("NetworkIndicator", "Cannot save: pluginApi or pluginSettings is null");
+            return;
         }
 
-        ColumnLayout {
-            spacing: -10.0 + root.spacingInbetween
+        pluginApi.pluginSettings.arrowType = root.editArrowType;
+        pluginApi.pluginSettings.byteThresholdActive = root.editByteThresholdActive;
+        pluginApi.pluginSettings.showNumbers = root.editShowNumbers;
+        pluginApi.pluginSettings.horizontalLayout = root.editHorizontalLayout;
+        pluginApi.pluginSettings.fontSizeModifier = root.editFontSizeModifier;
+        pluginApi.pluginSettings.iconSizeModifier = root.editIconSizeModifier;
+        pluginApi.pluginSettings.spacingInbetween = root.editSpacingInbetween;
+        pluginApi.pluginSettings.contentMargin = root.editContentMargin;
 
-            NIcon {
-                icon: arrowType + "-up"
-                color: Color.mSecondary
-                pointSize: Style.fontSizeL * root.iconSizeModifier
-            }
+        pluginApi.pluginSettings.useCustomFont = root.editUseCustomFont;
+        pluginApi.pluginSettings.customFontFamily = root.editCustomFontFamily;
+        pluginApi.pluginSettings.customFontBold = root.editCustomFontBold;
+        pluginApi.pluginSettings.customFontItalic = root.editCustomFontItalic;
 
-            NIcon {
-                icon: arrowType + "-down"
-                color: Color.mPrimary
-                pointSize: Style.fontSizeL * root.iconSizeModifier
-            }
+        pluginApi.pluginSettings.useCustomColors = root.editUseCustomColors;
+        if (root.editUseCustomColors) {
+            pluginApi.pluginSettings.colorSilent = root.editColorSilent.toString();
+            pluginApi.pluginSettings.colorTx = root.editColorTx.toString();
+            pluginApi.pluginSettings.colorRx = root.editColorRx.toString();
+            pluginApi.pluginSettings.colorText = root.editColorText.toString();
+            pluginApi.pluginSettings.colorFont = root.editColorFont.toString();
+            pluginApi.pluginSettings.colorBackground = root.editColorBackground.toString();
         }
+
+        pluginApi.saveSettings();
+        Logger.i("NetworkIndicator", "Settings saved");
     }
 
-    NTextInput {
-        label: pluginApi?.tr("settings.minWidth.label")
-        description: pluginApi?.tr("settings.minWidth.desc")
-        placeholderText: String(root.minWidth)
-        text: String(root.minWidth)
-        onTextChanged: root.minWidth = root.toIntOr(0, text)
+    Layout.rightMargin: Style.marginL
+    spacing: Style.marginL
+
+    // ── Icon ──
+
+    NComboBox {
+        currentKey: root.editArrowType
+        description: root.pluginApi?.tr("settings.iconType.desc")
+        label: root.pluginApi?.tr("settings.iconType.label")
+        model: root.iconNames.map(n => ({
+                    key: n,
+                    name: n
+                }))
+
+        onSelected: key => root.editArrowType = key
+    }
+
+    NDivider {
+        Layout.fillWidth: true
+    }
+
+    // ── General ──
+
+    NToggle {
+        checked: root.editShowNumbers
+        defaultValue: defaults.showNumbers ?? true
+        description: root.pluginApi?.tr("settings.showNumbers.desc")
+        label: root.pluginApi?.tr("settings.showNumbers.label")
+        visible: root.barIsSpacious && !root.barIsVertical
+
+        onToggled: c => root.editShowNumbers = c
+    }
+
+    NToggle {
+        checked: root.editHorizontalLayout
+        defaultValue: defaults.horizontalLayout ?? false
+        description: root.pluginApi?.tr("settings.horizontalLayout.desc")
+        label: root.pluginApi?.tr("settings.horizontalLayout.label")
+        visible: root.barIsSpacious && !root.barIsVertical
+
+        onToggled: c => root.editHorizontalLayout = c
+    }
+
+    NDivider {
+        Layout.fillWidth: true
+    }
+
+    // ── Layout ──
+
+    ColumnLayout {
+        Layout.fillWidth: true
+        spacing: Style.marginXXS
+
+        NLabel {
+            description: root.pluginApi?.tr("settings.contentMargin.desc")
+            label: root.pluginApi?.tr("settings.contentMargin.label")
+        }
+
+        NValueSlider {
+            Layout.fillWidth: true
+            from: 0
+            stepSize: 1
+            text: root.editContentMargin + "px"
+            to: 20
+            value: root.editContentMargin
+
+            onMoved: value => root.editContentMargin = value
+        }
     }
 
     NTextInput {
         label: pluginApi?.tr("settings.byteThresholdActive.label")
         description: pluginApi?.tr("settings.byteThresholdActive.desc")
-        placeholderText: root.byteThresholdActive + " bytes"
-        text: String(root.byteThresholdActive)
-        onTextChanged: root.byteThresholdActive = root.toIntOr(0, text)
+        placeholderText: root.editByteThresholdActive + " bytes"
+        text: String(root.editByteThresholdActive)
+        onTextChanged: root.editByteThresholdActive = root.toIntOr(0, text)
     }
-
-    NToggle {
-        label: pluginApi?.tr("settings.showNumbers.label")
-        description: pluginApi?.tr("settings.showNumbers.desc")
-        visible: barIsSpacious && !barIsVertical
-
-        checked: root.showNumbers
-        onToggled: function (checked) {
-            root.showNumbers = checked;
-        }
-    }
-
-    NToggle {
-        label: pluginApi?.tr("settings.forceMegabytes.label")
-        description: pluginApi?.tr("settings.forceMegabytes.desc")
-        visible: barIsSpacious && !barIsVertical
-
-        checked: root.forceMegabytes
-        onToggled: function (checked) {
-            root.forceMegabytes = checked;
-        }
-    }
-
-    NDivider {
-        visible: true
-        Layout.fillWidth: true
-        Layout.topMargin: Style.marginL
-        Layout.bottomMargin: Style.marginL
-    }
-
-    // ---------- Slider ----------
 
     ColumnLayout {
-        spacing: Style.marginXXS
         Layout.fillWidth: true
+        spacing: Style.marginXXS
 
         NLabel {
-            label: pluginApi?.tr("settings.spacingInbetween.label")
-            description: pluginApi?.tr("settings.spacingInbetween.desc")
+            description: root.pluginApi?.tr("settings.spacingInbetween.desc")
+            label: root.pluginApi?.tr("settings.spacingInbetween.label")
         }
 
         NValueSlider {
             Layout.fillWidth: true
             from: -5
-            to: 5
             stepSize: 1
-            value: root.spacingInbetween
-            onMoved: value => root.spacingInbetween = value
-            text: root.spacingInbetween.toFixed(0)
+            text: root.editSpacingInbetween.toFixed(0)
+            to: 5
+            value: root.editSpacingInbetween
+
+            onMoved: value => root.editSpacingInbetween = value
         }
     }
 
     ColumnLayout {
-        spacing: Style.marginXXS
         Layout.fillWidth: true
+        spacing: Style.marginXXS
 
         NLabel {
-            label: pluginApi?.tr("settings.fontSizeModifier.label")
-            description: pluginApi?.tr("settings.fontSizeModifier.desc")
+            description: root.pluginApi?.tr("settings.fontSizeModifier.desc")
+            label: root.pluginApi?.tr("settings.fontSizeModifier.label")
         }
 
         NValueSlider {
             Layout.fillWidth: true
             from: 0.5
-            to: 1.5
             stepSize: 0.05
-            value: root.fontSizeModifier
-            onMoved: value => root.fontSizeModifier = value
-            text: fontSizeModifier.toFixed(2)
+            text: root.editFontSizeModifier.toFixed(2)
+            to: 1.5
+            value: root.editFontSizeModifier
+
+            onMoved: value => root.editFontSizeModifier = value
         }
     }
 
     ColumnLayout {
-        spacing: Style.marginXXS
         Layout.fillWidth: true
+        spacing: Style.marginXXS
 
         NLabel {
-            label: pluginApi?.tr("settings.iconSizeModifier.label")
-            description: pluginApi?.tr("settings.iconSizeModifier.desc")
+            description: root.pluginApi?.tr("settings.iconSizeModifier.desc")
+            label: root.pluginApi?.tr("settings.iconSizeModifier.label")
         }
 
         NValueSlider {
             Layout.fillWidth: true
             from: 0.5
-            to: 1.5
             stepSize: 0.05
-            value: root.iconSizeModifier
-            onMoved: value => root.iconSizeModifier = value
-            text: root.iconSizeModifier.toFixed(2)
+            text: root.editIconSizeModifier.toFixed(2)
+            to: 1.5
+            value: root.editIconSizeModifier
+
+            onMoved: value => root.editIconSizeModifier = value
         }
     }
 
     NDivider {
-        visible: true
         Layout.fillWidth: true
-        Layout.topMargin: Style.marginL
-        Layout.bottomMargin: Style.marginL
     }
 
-    // ---------- Colors ----------
+    // ── Font ──
 
     NToggle {
-        label: pluginApi?.tr("settings.useCustomColors.label")
-        description: pluginApi?.tr("settings.useCustomColors.desc")
-        checked: root.useCustomColors
-        onToggled: function (checked) {
-            root.useCustomColors = checked;
-        }
+        checked: root.editUseCustomFont
+        defaultValue: defaults.useCustomFont ?? false
+        description: root.pluginApi?.tr("settings.useCustomFont.desc")
+        label: root.pluginApi?.tr("settings.useCustomFont.label")
+
+        onToggled: c => root.editUseCustomFont = c
     }
 
     ColumnLayout {
-        visible: root.useCustomColors
+        visible: root.editUseCustomFont
+        Layout.fillWidth: true
+        spacing: Style.marginL
 
-        RowLayout {
-            NLabel {
-                label: pluginApi?.tr("settings.colorTx.label")
-                description: pluginApi?.tr("settings.colorTx.desc")
-                Layout.alignment: Qt.AlignTop
-            }
+        NSearchableComboBox {
+            label: root.pluginApi?.tr("settings.customFontFamily.label")
+            description: root.pluginApi?.tr("settings.customFontFamily.desc")
+            model: FontService.availableFonts
+            currentKey: root.editCustomFontFamily || Qt.application.font.family
+            placeholder: root.pluginApi?.tr("settings.customFontFamily.placeholder")
+            searchPlaceholder: root.pluginApi?.tr("settings.customFontFamily.searchPlaceholder")
+            popupHeight: 420
 
-            NColorPicker {
-                selectedColor: root.colorTx
-                onColorSelected: color => root.colorTx = color
-            }
-        }
-
-        RowLayout {
-            NLabel {
-                label: pluginApi?.tr("settings.colorRx.label")
-                description: pluginApi?.tr("settings.colorRx.desc")
-            }
-
-            NColorPicker {
-                selectedColor: root.colorRx
-                onColorSelected: color => root.colorRx = color
+            onSelected: key => {
+                root.editCustomFontFamily = (key === Qt.application.font.family) ? "" : key;
             }
         }
 
-        RowLayout {
-            NLabel {
-                label: pluginApi?.tr("settings.colorSilent.label")
-                description: pluginApi?.tr("settings.colorSilent.desc")
-            }
+        NToggle {
+            checked: root.editCustomFontBold
+            defaultValue: defaults.customFontBold ?? false
+            description: root.pluginApi?.tr("settings.customFontBold.desc")
+            label: root.pluginApi?.tr("settings.customFontBold.label")
 
-            NColorPicker {
-                selectedColor: root.colorSilent
-                onColorSelected: color => root.colorSilent = color
-            }
+            onToggled: c => root.editCustomFontBold = c
         }
 
-        RowLayout {
-            NLabel {
-                label: pluginApi?.tr("settings.colorText.label")
-                description: pluginApi?.tr("settings.colorText.desc")
-            }
+        NToggle {
+            checked: root.editCustomFontItalic
+            defaultValue: defaults.customFontItalic ?? false
+            description: root.pluginApi?.tr("settings.customFontItalic.desc")
+            label: root.pluginApi?.tr("settings.customFontItalic.label")
 
-            NColorPicker {
-                selectedColor: root.colorText
-                onColorSelected: color => root.colorText = color
-            }
-        }
-
-        RowLayout {
-            NLabel {
-                label: pluginApi?.tr("settings.colorBackground.label")
-                description: pluginApi?.tr("settings.colorBackground.desc")
-            }
-
-            NColorPicker {
-                selectedColor: root.colorBackground
-                onColorSelected: color => root.colorBackground = color
-            }
+            onToggled: c => root.editCustomFontItalic = c
         }
     }
 
-    // ---------- Saving ----------
+    NDivider {
+        Layout.fillWidth: true
+    }
 
-    function saveSettings() {
-        if (!pluginApi) {
-            Logger.e("NetworkIndicator", "Cannot save settings: pluginApi is null");
-            return;
+    // ── Colors ──
+
+    NToggle {
+        checked: root.editUseCustomColors
+        defaultValue: defaults.useCustomColors ?? false
+        description: root.pluginApi?.tr("settings.useCustomColors.desc")
+        label: root.pluginApi?.tr("settings.useCustomColors.label")
+
+        onToggled: c => root.editUseCustomColors = c
+    }
+
+    ColumnLayout {
+        visible: root.editUseCustomColors
+
+        RowLayout {
+            NLabel {
+                Layout.alignment: Qt.AlignTop
+                description: root.pluginApi?.tr("settings.colorTx.desc")
+                label: root.pluginApi?.tr("settings.colorTx.label")
+            }
+
+            NColorPicker {
+                selectedColor: root.editColorTx
+
+                onColorSelected: color => root.editColorTx = color
+            }
         }
 
-        pluginApi.pluginSettings.useCustomColors = root.useCustomColors;
-        pluginApi.pluginSettings.showNumbers = root.showNumbers;
-        pluginApi.pluginSettings.forceMegabytes = root.forceMegabytes;
+        RowLayout {
+            NLabel {
+                Layout.alignment: Qt.AlignTop
+                description: root.pluginApi?.tr("settings.colorRx.desc")
+                label: root.pluginApi?.tr("settings.colorRx.label")
+            }
 
-        pluginApi.pluginSettings.arrowType = root.arrowType;
-        pluginApi.pluginSettings.minWidth = root.minWidth;
-        pluginApi.pluginSettings.byteThresholdActive = root.byteThresholdActive;
-        pluginApi.pluginSettings.fontSizeModifier = root.fontSizeModifier;
-        pluginApi.pluginSettings.iconSizeModifier = root.iconSizeModifier;
-        pluginApi.pluginSettings.spacingInbetween = root.spacingInbetween;
+            NColorPicker {
+                selectedColor: root.editColorRx
 
-        if (root.useCustomColors) {
-            pluginApi.pluginSettings.colorSilent = root.colorSilent.toString();
-            pluginApi.pluginSettings.colorTx = root.colorTx.toString();
-            pluginApi.pluginSettings.colorRx = root.colorRx.toString();
-            pluginApi.pluginSettings.colorText = root.colorText.toString();
-            pluginApi.pluginSettings.colorBackground = root.colorBackground.toString();
+                onColorSelected: color => root.editColorRx = color
+            }
         }
 
-        pluginApi.saveSettings();
+        RowLayout {
+            NLabel {
+                Layout.alignment: Qt.AlignTop
+                description: root.pluginApi?.tr("settings.colorSilent.desc")
+                label: root.pluginApi?.tr("settings.colorSilent.label")
+            }
 
-        Logger.i("NetworkIndicator", "Settings saved successfully");
+            NColorPicker {
+                selectedColor: root.editColorSilent
+
+                onColorSelected: color => root.editColorSilent = color
+            }
+        }
+
+        RowLayout {
+            NLabel {
+                Layout.alignment: Qt.AlignTop
+                description: root.pluginApi?.tr("settings.colorText.desc")
+                label: root.pluginApi?.tr("settings.colorText.label")
+            }
+
+            NColorPicker {
+                selectedColor: root.editColorText
+
+                onColorSelected: color => root.editColorText = color
+            }
+        }
     }
 }
