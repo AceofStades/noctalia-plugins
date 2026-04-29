@@ -1,4 +1,10 @@
 {
+  "errors": {
+    "no_controllers": "No controllers detected",
+    "controller_data_missing": "Controller data missing",
+    "plugin_dir_not_found": "Plugin dir not found",
+    "auth_failed": "Authentication failed or no permission"
+  },
   "menu": {
     "settings": "Settings",
     "scan": "Scan"

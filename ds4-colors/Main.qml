@@ -145,7 +145,7 @@ Item {
 
         const controllerPaths = Object.keys(controllers)
         if (controllerPaths.length === 0) {
-            lastError = "No controllers detected"
+            lastError = pluginApi?.tr("errors.no_controllers")
             return false
         }
 
@@ -163,14 +163,14 @@ Item {
 
     function applyColorToController(basePath, controller) {
         if (!controller) {
-            lastError = "Controller data missing"
+            lastError = pluginApi?.tr("errors.controller_data_missing")
             isApplying = false
             return
         }
 
         const pluginDir = pluginApi?.pluginDir ?? ""
         if (!pluginDir) {
-            lastError = "Plugin dir not found"
+            lastError = pluginApi?.tr("errors.plugin_dir_not_found")
             isApplying = false
             return
         }
@@ -232,7 +232,7 @@ Item {
         onExited: function(exitCode, exitStatus) {
             if (exitCode !== 0) {
                 Logger.e("DS4 Colors", "pkexec failed (exit " + exitCode + "): " + (pkexecStderr.text || ""))
-                root.lastError = "Authentication failed or no permission"
+                root.lastError = pluginApi?.tr("errors.auth_failed")
             } else {
                 Logger.d("DS4 Colors", "Color applied via pkexec")
                 root.saveCurrentColor()
