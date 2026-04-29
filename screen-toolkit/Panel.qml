@@ -51,7 +51,7 @@ Item {
             _attempts++
             root._resolveMainInstance()
             if (_attempts >= _maxAttempts && root.mainInstance === null) {
-                console.warn("ScreenToolkit: mainInstance not resolved after 5s")
+                Logger.w("ScreenToolkit", "mainInstance not resolved after 5s")
                 stop()
             }
         }
@@ -268,12 +268,12 @@ Item {
             Rectangle {
                 visible: root.viewedTool === "record" && root.isRecording
                 width: parent.width; height: 38; radius: Style.radiusM
-                color: recPanelStopBtn.containsMouse ? Color.mError || "#f44336" : Color.mSurfaceVariant
+                color: recPanelStopBtn.containsMouse ? Color.mError : Color.mSurfaceVariant
                 Row {
                     anchors.centerIn: parent; spacing: Style.marginS
                     Rectangle {
                         width: Style.marginM; height: Style.marginM; radius: Style.radiusXXXS
-                        color: recPanelStopBtn.containsMouse ? "white" : (Color.mError || "#f44336")
+                        color: recPanelStopBtn.containsMouse ? "white" : Color.mError
                         anchors.verticalCenter: parent.verticalCenter
                     }
                     NText { text: pluginApi?.tr("record.stop"); color: recPanelStopBtn.containsMouse ? "white" : Color.mOnSurface; font.weight: Font.Bold; pointSize: Style.fontSizeS }
@@ -322,16 +322,29 @@ Item {
                         Row {
                             anchors.centerIn: parent; spacing: Style.marginS
                             NIcon { icon: "device-floppy"; color: recSaveBtn.containsMouse ? Color.mOnPrimary : Color.mOnSurface; anchors.verticalCenter: parent.verticalCenter }
-                            NText { text: root.recordFormat === "mp4" ? pluginApi?.tr("record.saveMp4") : pluginApi?.tr("record.saveGif"); color: recSaveBtn.containsMouse ? Color.mOnPrimary : Color.mOnSurface; font.weight: Font.Bold; pointSize: Style.fontSizeS; anchors.verticalCenter: parent.verticalCenter }
+                            NText {
+                                text: root.recordFormat === "mp4" ? pluginApi?.tr("record.saveMp4") : pluginApi?.tr("record.saveGif")
+                                color: recSaveBtn.containsMouse ? Color.mOnPrimary : Color.mOnSurface
+                                font.weight: Font.Bold; pointSize: Style.fontSizeS; anchors.verticalCenter: parent.verticalCenter
+                            }
                         }
                         MouseArea { id: recSaveBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.mainInstance?.runRecordSave() }
                     }
                     Rectangle {
                         width: 38; height: 38; radius: Style.radiusM
-                        color: recDiscardBtn.containsMouse ? Color.mErrorContainer || "#ffcdd2" : Color.mSurface
-                        border.color: recDiscardBtn.containsMouse ? Color.mError || "#f44336" : (Style.capsuleBorderColor || "transparent"); border.width: Style.capsuleBorderWidth || 1
-                        NIcon { anchors.centerIn: parent; icon: "trash"; color: recDiscardBtn.containsMouse ? Color.mError || "#f44336" : Color.mOnSurfaceVariant }
-                        MouseArea { id: recDiscardBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.mainInstance?.runRecordDiscard(); onEntered: TooltipService.show(recDiscardBtn, pluginApi?.tr("record.discard")); onExited: TooltipService.hide() }
+                        color: recDiscardBtn.containsMouse ? Color.mErrorContainer : Color.mSurface
+                        border.color: recDiscardBtn.containsMouse ? Color.mError : Style.capsuleBorderColor
+                        border.width: Style.capsuleBorderWidth
+                        NIcon { anchors.centerIn: parent; icon: "trash"; color: recDiscardBtn.containsMouse ? Color.mError : Color.mOnSurfaceVariant }
+                        MouseArea {
+                            id: recDiscardBtn
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.mainInstance?.runRecordDiscard()
+                            onEntered: TooltipService.show(recDiscardBtn, pluginApi?.tr("record.discard"))
+                            onExited: TooltipService.hide()
+                        }
                     }
                 }
             }
@@ -346,7 +359,15 @@ Item {
                         NIcon { icon: "crop"; color: annotRegionBtn.containsMouse ? Color.mOnPrimary : Color.mPrimary; scale: 0.85 }
                         NText { text: pluginApi?.tr("annotate.region"); color: annotRegionBtn.containsMouse ? Color.mOnPrimary : Color.mPrimary; font.weight: Font.Bold; pointSize: Style.fontSizeXS }
                     }
-                    MouseArea { id: annotRegionBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.mainInstance?.runAnnotate(); onEntered: TooltipService.show(annotRegionBtn, pluginApi?.tr("annotate.regionTooltip")); onExited: TooltipService.hide() }
+                    MouseArea {
+                        id: annotRegionBtn
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: root.mainInstance?.runAnnotate()
+                        onEntered: TooltipService.show(annotRegionBtn, pluginApi?.tr("annotate.regionTooltip"))
+                        onExited: TooltipService.hide()
+                    }
                 }
                 Rectangle {
                     width: (parent.width - Style.marginS * 2) / 3; height: 38; radius: Style.radiusM
@@ -354,10 +375,26 @@ Item {
                     color: !enabled ? Color.mSurfaceVariant : (annotWinBtn.containsMouse ? Color.mSurfaceVariant : Color.mSurface)
                     border.color: Style.capsuleBorderColor; border.width: Style.capsuleBorderWidth; opacity: enabled ? 1.0 : 0.5
                     Row { anchors.centerIn: parent; spacing: Style.marginXS
-                        NIcon { icon: "app-window"; color: !parent.parent.enabled ? Color.mOnSurfaceVariant : (annotWinBtn.containsMouse ? Color.mOnSurface : Color.mOnSurfaceVariant); scale: 0.85 }
-                        NText { text: pluginApi?.tr("annotate.window"); color: !parent.parent.enabled ? Color.mOnSurfaceVariant : (annotWinBtn.containsMouse ? Color.mOnSurface : Color.mOnSurfaceVariant); font.weight: Font.Bold; pointSize: Style.fontSizeXS }
+                        NIcon {
+                            icon: "app-window"
+                            color: !parent.parent.enabled ? Color.mOnSurfaceVariant : (annotWinBtn.containsMouse ? Color.mOnSurface : Color.mOnSurfaceVariant)
+                            scale: 0.85
+                        }
+                        NText {
+                            text: pluginApi?.tr("annotate.window")
+                            color: !parent.parent.enabled ? Color.mOnSurfaceVariant : (annotWinBtn.containsMouse ? Color.mOnSurface : Color.mOnSurfaceVariant)
+                            font.weight: Font.Bold; pointSize: Style.fontSizeXS
+                        }
                     }
-                    MouseArea { id: annotWinBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: parent.enabled ? Qt.PointingHandCursor : Qt.ArrowCursor; onClicked: if (parent.enabled) root.mainInstance?.runAnnotateActiveWindow(); onEntered: TooltipService.show(annotWinBtn, parent.enabled ? pluginApi?.tr("annotate.windowTooltip") : pluginApi?.tr("annotate.windowHyprlandOnly")); onExited: TooltipService.hide() }
+                    MouseArea {
+                        id: annotWinBtn
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: parent.enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+                        onClicked: if (parent.enabled) root.mainInstance?.runAnnotateActiveWindow()
+                        onEntered: TooltipService.show(annotWinBtn, parent.enabled ? pluginApi?.tr("annotate.windowTooltip") : pluginApi?.tr("annotate.windowHyprlandOnly"))
+                        onExited: TooltipService.hide()
+                    }
                 }
                 Rectangle {
                     width: (parent.width - Style.marginS * 2) / 3; height: 38; radius: Style.radiusM
@@ -367,7 +404,15 @@ Item {
                         NIcon { icon: "maximize"; color: annotFsBtn.containsMouse ? Color.mOnSurface : Color.mOnSurfaceVariant; scale: 0.85 }
                         NText { text: pluginApi?.tr("annotate.fullscreen"); color: annotFsBtn.containsMouse ? Color.mOnSurface : Color.mOnSurfaceVariant; font.weight: Font.Bold; pointSize: Style.fontSizeXS }
                     }
-                    MouseArea { id: annotFsBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.mainInstance?.runAnnotateFullscreen(); onEntered: TooltipService.show(annotFsBtn, pluginApi?.tr("annotate.fullscreenTooltip")); onExited: TooltipService.hide() }
+                    MouseArea {
+                        id: annotFsBtn
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: root.mainInstance?.runAnnotateFullscreen()
+                        onEntered: TooltipService.show(annotFsBtn, pluginApi?.tr("annotate.fullscreenTooltip"))
+                        onExited: TooltipService.hide()
+                    }
                 }
             }
             Column {
@@ -400,7 +445,7 @@ Item {
                     Rectangle {
                         id: scanBtnInline; height: 26; width: _scanRow.implicitWidth + Style.marginM * 2; radius: Style.radiusS
                         color: scanBtn.containsMouse ? Color.mPrimary : Color.mSurface
-                        border.color: Color.mPrimary; border.width: Style.capsuleBorderWidth || 1
+                        border.color: Color.mPrimary; border.width: Style.capsuleBorderWidth
                         anchors.verticalCenter: parent.verticalCenter
                         Row { id: _scanRow; anchors.centerIn: parent; spacing: Style.marginXS
                             NIcon { icon: "scan"; color: scanBtn.containsMouse ? Color.mOnPrimary : Color.mPrimary; scale: 0.8 }
@@ -416,22 +461,38 @@ Item {
                 Rectangle {
                     width: (parent.width - Style.marginS) / 2; height: 38; radius: Style.radiusM
                     color: pinScreenBtn.containsMouse ? Color.mPrimary : Color.mSurface
-                    border.color: Color.mPrimary; border.width: Style.capsuleBorderWidth || 1
+                    border.color: Color.mPrimary; border.width: Style.capsuleBorderWidth
                     Row { anchors.centerIn: parent; spacing: Style.marginS
                         NIcon { icon: "crosshair"; color: pinScreenBtn.containsMouse ? Color.mOnPrimary : Color.mPrimary }
                         NText { text: pluginApi?.tr("panel.pinCapture"); color: pinScreenBtn.containsMouse ? Color.mOnPrimary : Color.mPrimary; font.weight: Font.Bold; pointSize: Style.fontSizeS }
                     }
-                    MouseArea { id: pinScreenBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.mainInstance?.runPin(); onEntered: TooltipService.show(pinScreenBtn, pluginApi?.tr("tooltips.pinRegion")); onExited: TooltipService.hide() }
+                    MouseArea {
+                        id: pinScreenBtn
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: root.mainInstance?.runPin()
+                        onEntered: TooltipService.show(pinScreenBtn, pluginApi?.tr("tooltips.pinRegion"))
+                        onExited: TooltipService.hide()
+                    }
                 }
                 Rectangle {
                     width: (parent.width - Style.marginS) / 2; height: 38; radius: Style.radiusM
                     color: pinFileBtn.containsMouse ? Color.mSurfaceVariant : Color.mSurface
-                    border.color: Style.capsuleBorderColor || "transparent"; border.width: Style.capsuleBorderWidth || 1
+                    border.color: Style.capsuleBorderColor; border.width: Style.capsuleBorderWidth
                     Row { anchors.centerIn: parent; spacing: Style.marginS
                         NIcon { icon: "folder-open"; color: pinFileBtn.containsMouse ? Color.mOnSurface : Color.mOnSurfaceVariant }
                         NText { text: pluginApi?.tr("panel.pinFile"); color: pinFileBtn.containsMouse ? Color.mOnSurface : Color.mOnSurfaceVariant; font.weight: Font.Bold; pointSize: Style.fontSizeS }
                     }
-                    MouseArea { id: pinFileBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.mainInstance?.runPinFromFile(); onEntered: TooltipService.show(pinFileBtn, pluginApi?.tr("tooltips.pinImage")); onExited: TooltipService.hide() }
+                    MouseArea {
+                        id: pinFileBtn
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: root.mainInstance?.runPinFromFile()
+                        onEntered: TooltipService.show(pinFileBtn, pluginApi?.tr("tooltips.pinImage"))
+                        onExited: TooltipService.hide()
+                    }
                 }
             }
             Column {
@@ -441,7 +502,10 @@ Item {
                     width: parent.width; spacing: Style.marginS
                     NText { text: pluginApi?.tr("panel.format"); color: Color.mOnSurfaceVariant; pointSize: Style.fontSizeXS; height: 26; verticalAlignment: Text.AlignVCenter }
                     Repeater {
-                        model: [{ id: "gif", label: "GIF", hint: "· " + (pluginApi?.pluginSettings?.gifMaxSeconds ?? 30) + "s" }, { id: "mp4", label: "MP4", hint: "" }]
+                        model: [
+                            { id: "gif", label: "GIF", hint: "· " + (pluginApi?.pluginSettings?.gifMaxSeconds ?? 30) + "s" },
+                            { id: "mp4", label: "MP4", hint: "" }
+                        ]
                         delegate: Rectangle {
                             height: 26; width: fmtLabel.implicitWidth + (modelData.hint !== "" ? fmtHint.implicitWidth + Style.marginXS : 0) + Style.marginM * 2 + Style.marginS; radius: Style.radiusS
                             color: root.selectedRecordFormat === modelData.id ? Color.mPrimary : (fmtArea.containsMouse ? Color.mHover : Color.mSurfaceVariant)
@@ -463,7 +527,15 @@ Item {
                             NIcon { id: audioOutIcon; icon: root.recordAudioOutput ? "volume" : "volume-off"; color: root.recordAudioOutput ? Color.mOnPrimary : Color.mOnSurface; scale: 0.8 }
                             NText { id: audioOutLabel; text: pluginApi?.tr("panel.system"); color: root.recordAudioOutput ? Color.mOnPrimary : Color.mOnSurface; pointSize: Style.fontSizeXS; font.weight: root.recordAudioOutput ? Font.Bold : Font.Normal }
                         }
-                        MouseArea { id: audioOutArea; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.recordAudioOutput = !root.recordAudioOutput; onEntered: TooltipService.show(audioOutArea, pluginApi?.tr("tooltips.systemAudio")); onExited: TooltipService.hide() }
+                        MouseArea {
+                            id: audioOutArea
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.recordAudioOutput = !root.recordAudioOutput
+                            onEntered: TooltipService.show(audioOutArea, pluginApi?.tr("tooltips.systemAudio"))
+                            onExited: TooltipService.hide()
+                        }
                     }
                     Rectangle {
                         height: 26; width: micIcon.implicitWidth + micLabel.implicitWidth + Style.marginM * 2 + Style.marginS + Style.marginXS; radius: Style.radiusS
@@ -472,7 +544,15 @@ Item {
                             NIcon { id: micIcon; icon: root.recordAudioInput ? "microphone" : "microphone-off"; color: root.recordAudioInput ? Color.mOnPrimary : Color.mOnSurface; scale: 0.8 }
                             NText { id: micLabel; text: pluginApi?.tr("panel.mic"); color: root.recordAudioInput ? Color.mOnPrimary : Color.mOnSurface; pointSize: Style.fontSizeXS; font.weight: root.recordAudioInput ? Font.Bold : Font.Normal }
                         }
-                        MouseArea { id: micArea; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.recordAudioInput = !root.recordAudioInput; onEntered: TooltipService.show(micArea, pluginApi?.tr("tooltips.microphone")); onExited: TooltipService.hide() }
+                        MouseArea {
+                            id: micArea
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.recordAudioInput = !root.recordAudioInput
+                            onEntered: TooltipService.show(micArea, pluginApi?.tr("tooltips.microphone"))
+                            onExited: TooltipService.hide()
+                        }
                     }
                     Rectangle {
                         height: 26; width: cursorIcon.implicitWidth + cursorLabel.implicitWidth + Style.marginM * 2 + Style.marginS + Style.marginXS; radius: Style.radiusS
@@ -481,7 +561,15 @@ Item {
                             NIcon { id: cursorIcon; icon: "pointer"; color: root.recordCursor ? Color.mOnPrimary : Color.mOnSurface; scale: 0.8 }
                             NText { id: cursorLabel; text: pluginApi?.tr("panel.cursor"); color: root.recordCursor ? Color.mOnPrimary : Color.mOnSurface; pointSize: Style.fontSizeXS; font.weight: root.recordCursor ? Font.Bold : Font.Normal }
                         }
-                        MouseArea { id: cursorArea; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.recordCursor = !root.recordCursor; onEntered: TooltipService.show(cursorArea, pluginApi?.tr("tooltips.cursor")); onExited: TooltipService.hide() }
+                        MouseArea {
+                            id: cursorArea
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.recordCursor = !root.recordCursor
+                            onEntered: TooltipService.show(cursorArea, pluginApi?.tr("tooltips.cursor"))
+                            onExited: TooltipService.hide()
+                        }
                     }
                 }
                 Row {
@@ -489,22 +577,38 @@ Item {
                     Rectangle {
                         width: (parent.width - Style.marginS) / 2; height: 38; radius: Style.radiusM
                         color: recRegionBtn.containsMouse ? Color.mPrimary : Color.mSurface
-                        border.color: Color.mPrimary; border.width: Style.capsuleBorderWidth || 1
+                        border.color: Color.mPrimary; border.width: Style.capsuleBorderWidth
                         Row { anchors.centerIn: parent; spacing: Style.marginXS
                             NIcon { icon: "crop"; color: recRegionBtn.containsMouse ? Color.mOnPrimary : Color.mPrimary; scale: 0.85 }
                             NText { text: pluginApi?.tr("record.region"); color: recRegionBtn.containsMouse ? Color.mOnPrimary : Color.mPrimary; font.weight: Font.Bold; pointSize: Style.fontSizeS }
                         }
-                        MouseArea { id: recRegionBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.mainInstance?.runRecord(root.selectedRecordFormat, root.recordAudioOutput, root.recordAudioInput, root.recordCursor); onEntered: TooltipService.show(recRegionBtn, pluginApi?.tr("tooltips.record")); onExited: TooltipService.hide() }
+                        MouseArea {
+                            id: recRegionBtn
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.mainInstance?.runRecord(root.selectedRecordFormat, root.recordAudioOutput, root.recordAudioInput, root.recordCursor)
+                            onEntered: TooltipService.show(recRegionBtn, pluginApi?.tr("tooltips.record"))
+                            onExited: TooltipService.hide()
+                        }
                     }
                     Rectangle {
                         width: (parent.width - Style.marginS) / 2; height: 38; radius: Style.radiusM
                         color: recFsBtn.containsMouse ? Color.mSurfaceVariant : Color.mSurface
-                        border.color: Style.capsuleBorderColor || "transparent"; border.width: Style.capsuleBorderWidth || 1
+                        border.color: Style.capsuleBorderColor; border.width: Style.capsuleBorderWidth
                         Row { anchors.centerIn: parent; spacing: Style.marginXS
                             NIcon { icon: "maximize"; color: recFsBtn.containsMouse ? Color.mOnSurface : Color.mOnSurfaceVariant; scale: 0.85 }
                             NText { text: pluginApi?.tr("annotate.fullscreen"); color: recFsBtn.containsMouse ? Color.mOnSurface : Color.mOnSurfaceVariant; font.weight: Font.Bold; pointSize: Style.fontSizeS }
                         }
-                        MouseArea { id: recFsBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.mainInstance?.runRecordFullscreen(root.selectedRecordFormat, root.recordAudioOutput, root.recordAudioInput, root.recordCursor); onEntered: TooltipService.show(recFsBtn, pluginApi?.tr("tooltips.recordfs")); onExited: TooltipService.hide() }
+                        MouseArea {
+                            id: recFsBtn
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.mainInstance?.runRecordFullscreen(root.selectedRecordFormat, root.recordAudioOutput, root.recordAudioInput, root.recordCursor)
+                            onEntered: TooltipService.show(recFsBtn, pluginApi?.tr("tooltips.recordfs"))
+                            onExited: TooltipService.hide()
+                        }
                     }
                 }
             }
@@ -520,7 +624,7 @@ Item {
                 Rectangle {
                     width: parent.width; height: 38; radius: Style.radiusM
                     color: root.mirrorActive ? Color.mError : (mirrorToggleBtn.containsMouse ? Color.mPrimary : Color.mSurface)
-                    border.color: root.mirrorActive ? Color.mError : Color.mPrimary; border.width: Style.capsuleBorderWidth || 1
+                    border.color: root.mirrorActive ? Color.mError : Color.mPrimary; border.width: Style.capsuleBorderWidth
                     Row { anchors.centerIn: parent; spacing: Style.marginS
                         NIcon { icon: root.mirrorActive ? "camera-off" : "camera"; color: root.mirrorActive ? Color.mOnError : (mirrorToggleBtn.containsMouse ? Color.mOnPrimary : Color.mPrimary) }
                         NText { text: root.mirrorActive ? pluginApi?.tr("mirror.close") : pluginApi?.tr("mirror.open"); color: root.mirrorActive ? Color.mOnError : (mirrorToggleBtn.containsMouse ? Color.mOnPrimary : Color.mPrimary); font.weight: Font.Bold; pointSize: Style.fontSizeS }
@@ -565,9 +669,9 @@ Item {
         property bool   recording: false
         property bool   hasResult: false
         readonly property bool  _accented:    recording || active || focused
-        readonly property color _accentColor: recording ? Color.mError || "#f44336"
+        readonly property color _accentColor: recording ? Color.mError
                                             : active    ? Color.mPrimary
-                                            :             Color.mSecondary || Color.mPrimary
+                                            :             Color.mSecondary
         signal triggered()
         Column {
             anchors.centerIn: parent; spacing: Style.marginXS
@@ -577,15 +681,15 @@ Item {
                 radius: Style.radiusM
                 anchors.horizontalCenter: parent.horizontalCenter
                 color:        ba.containsMouse ? Color.mHover : Color.mSurface
-                border.color: btn._accented ? btn._accentColor : Style.capsuleBorderColor || "transparent"
-                border.width: btn._accented ? 2 : (Style.capsuleBorderWidth || 1)
+                border.color: btn._accented ? btn._accentColor : Style.capsuleBorderColor
+                border.width: btn._accented ? 2 : Style.capsuleBorderWidth
                 Rectangle {
                     anchors.fill: parent; radius: parent.radius; color: btn._accentColor
                     opacity: btn.recording ? 0 : btn.active ? 0.15 : btn.focused ? 0.08 : 0
                 }
                 Rectangle {
                     anchors.fill: parent; radius: parent.radius
-                    color: Color.mError || "#f44336"; visible: btn.recording; opacity: 0
+                    color: Color.mError; visible: btn.recording; opacity: 0
                     SequentialAnimation on opacity {
                         running: btn.recording; loops: Animation.Infinite
                         NumberAnimation { to: 0.05; duration: 600 }
@@ -626,4 +730,3 @@ Item {
         }
     }
 }
-
