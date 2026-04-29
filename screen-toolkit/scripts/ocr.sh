@@ -8,7 +8,6 @@
 #   - multi-pass PSM fallback chain: user PSM → 6 (block) → 4 (single col) → 11 (sparse)
 #   - median-filter noise removal pass
 #   - filters out 'osd' from lang string (breaks tesseract when passed as a lang)
-#   - optional desktop notification on completion
 #   - language availability check with graceful fallback to 'eng'
 GX="$1"; GY="$2"; GW="$3"; GH="$4"
 RAW_LANG="${5:-eng}"
@@ -87,9 +86,3 @@ if [ "$BEST_LEN" -lt 4 ]; then
     [ "$LEN4" -gt "$BEST_LEN" ] && BEST_TEXT="$TEXT4"
 fi
 printf '%s' "$BEST_TEXT"
-if [ "${OCR_NOTIFY:-0}" = "1" ] && command -v notify-send &>/dev/null; then
-    WORD_COUNT=$(printf '%s' "$BEST_TEXT" | wc -w)
-    notify-send "OCR" "${WORD_COUNT} words extracted (lang: ${LANG})" \
-        -i edit-find -t 2000
-fi
-
