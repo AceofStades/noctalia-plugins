@@ -34,7 +34,7 @@ Item {
             visible: root.paletteColors.length === 0
             width: parent.width; height: 36; radius: Style.radiusM
             color: emptyPalBtn.containsMouse ? Color.mPrimary : Color.mSurface
-            border.color: Color.mPrimary; border.width: Style.capsuleBorderWidth || 1
+            border.color: Color.mPrimary; border.width: Style.capsuleBorderWidth
             Row {
                 anchors.centerIn: parent; spacing: Style.marginS
                 NIcon { icon: "palette"; color: emptyPalBtn.containsMouse ? Color.mOnPrimary : Color.mPrimary }
@@ -56,7 +56,7 @@ Item {
             Rectangle {
                 width: parent.width; height: 36; radius: Style.radiusM
                 color: pickAgainPalBtn.containsMouse ? Color.mPrimary : Color.mSurface
-                border.color: Color.mPrimary; border.width: Style.capsuleBorderWidth || 1
+                border.color: Color.mPrimary; border.width: Style.capsuleBorderWidth
                 Row {
                     anchors.centerIn: parent; spacing: Style.marginS
                     NIcon { icon: "palette"; color: pickAgainPalBtn.containsMouse ? Color.mOnPrimary : Color.mPrimary }
@@ -79,10 +79,10 @@ Item {
                         width:  (root.width - Style.marginS * 2) / 3 - Style.marginS
                         height: width * 0.7
                         radius: Style.radiusM; color: modelData
-                        border.color: swatchBtn.containsMouse ? Color.mPrimary : (Style.capsuleBorderColor || "transparent")
-                        border.width: swatchBtn.containsMouse ? 2 : (Style.capsuleBorderWidth || 1)
+                        border.color: swatchBtn.containsMouse ? Color.mPrimary : Style.capsuleBorderColor
+                        border.width: swatchBtn.containsMouse ? 2 : Style.capsuleBorderWidth
                         NText {
-                            anchors.bottom: parent.bottom; anchors.bottomMargin: 4
+                            anchors.bottom: parent.bottom; anchors.bottomMargin: Style.marginXS
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: modelData.toUpperCase(); pointSize: Style.fontSizeXS
                             color: "white"; style: Text.Outline; styleColor: "#00000066"
@@ -102,7 +102,7 @@ Item {
             Rectangle {
                 width: parent.width; height: 36; radius: Style.radiusM
                 color: cssBtn.containsMouse ? Color.mSurfaceVariant : Color.mSurface
-                border.color: Style.capsuleBorderColor || "transparent"; border.width: Style.capsuleBorderWidth || 1
+                border.color: Style.capsuleBorderColor; border.width: Style.capsuleBorderWidth
                 Row {
                     anchors.centerIn: parent; spacing: Style.marginS
                     NIcon { icon: "copy"; color: cssBtn.containsMouse ? Color.mOnSurface : Color.mOnSurfaceVariant }
@@ -126,7 +126,7 @@ Item {
             Rectangle {
                 width: parent.width; height: 36; radius: Style.radiusM
                 color: hexBtn.containsMouse ? Color.mSurfaceVariant : Color.mSurface
-                border.color: Style.capsuleBorderColor || "transparent"; border.width: Style.capsuleBorderWidth || 1
+                border.color: Style.capsuleBorderColor; border.width: Style.capsuleBorderWidth
                 Row {
                     anchors.centerIn: parent; spacing: Style.marginS
                     NIcon { icon: "list"; color: hexBtn.containsMouse ? Color.mOnSurface : Color.mOnSurfaceVariant }
@@ -151,10 +151,10 @@ Item {
                 border.width: Style.capsuleBorderWidth || 1
                 Row {
                     anchors.centerIn: parent; spacing: Style.marginS
-                    NIcon { icon: "trash"; color: palClr.containsMouse ? Color.mError || "#f44336" : Color.mOnSurfaceVariant }
+                    NIcon { icon: "trash"; color: palClr.containsMouse ? Color.mError : Color.mOnSurfaceVariant }
                     NText {
                         text: pluginApi?.tr("panel.clearResult")
-                        color: palClr.containsMouse ? Color.mError || "#f44336" : Color.mOnSurfaceVariant
+                        color: palClr.containsMouse ? Color.mError : Color.mOnSurfaceVariant
                         pointSize: Style.fontSizeS
                     }
                 }
@@ -168,3 +168,5 @@ Item {
         }
     }
 }
+
+
