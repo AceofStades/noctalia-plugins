@@ -9,35 +9,17 @@ ColumnLayout {
   property var pluginApi: null
 
   // Local state
-  property string editProfilesDir:
-    pluginApi?.pluginSettings?.profilesDir ||
-    pluginApi?.manifest?.metadata?.defaultSettings?.profilesDir ||
-    ""
+  property string editProfilesDir: pluginApi?.pluginSettings?.profilesDir || pluginApi?.manifest?.metadata?.defaultSettings?.profilesDir || ""
 
-  property string editIcon:
-    pluginApi?.pluginSettings?.icon ||
-    pluginApi?.manifest?.metadata?.defaultSettings?.icon ||
-    "bookmark"
+  property string editIcon: pluginApi?.pluginSettings?.icon || pluginApi?.manifest?.metadata?.defaultSettings?.icon || "bookmark"
 
-  property bool editIncludeWallpapers:
-    pluginApi?.pluginSettings?.includeWallpapers ??
-    pluginApi?.manifest?.metadata?.defaultSettings?.includeWallpapers ??
-    true
+  property bool editIncludeWallpapers: pluginApi?.pluginSettings?.includeWallpapers ?? pluginApi?.manifest?.metadata?.defaultSettings?.includeWallpapers ?? true
 
-  property string editIconColor:
-    pluginApi?.pluginSettings?.iconColor ||
-    pluginApi?.manifest?.metadata?.defaultSettings?.iconColor ||
-    "primary"
+  property string editIconColor: pluginApi?.pluginSettings?.iconColor || pluginApi?.manifest?.metadata?.defaultSettings?.iconColor || "primary"
 
-  property bool editBackupEnabled:
-    pluginApi?.pluginSettings?.backupEnabled ??
-    pluginApi?.manifest?.metadata?.defaultSettings?.backupEnabled ??
-    true
+  property bool editBackupEnabled: pluginApi?.pluginSettings?.backupEnabled ?? pluginApi?.manifest?.metadata?.defaultSettings?.backupEnabled ?? true
 
-  property int editBackupCount:
-    pluginApi?.pluginSettings?.backupCount ??
-    pluginApi?.manifest?.metadata?.defaultSettings?.backupCount ??
-    5
+  property int editBackupCount: pluginApi?.pluginSettings?.backupCount ?? pluginApi?.manifest?.metadata?.defaultSettings?.backupCount ?? 5
 
   spacing: Style.marginM
 
@@ -61,9 +43,9 @@ ColumnLayout {
     title: pluginApi?.tr("settings.dir-select")
     initialPath: root.editProfilesDir || (Settings.configDir + "profiles/")
     onAccepted: paths => {
-      if (paths.length > 0)
-        root.editProfilesDir = paths[0]
-    }
+                  if (paths.length > 0)
+                  root.editProfilesDir = paths[0];
+                }
   }
 
   NDivider {
@@ -85,10 +67,8 @@ ColumnLayout {
     NIcon {
       Layout.alignment: Qt.AlignVCenter
       icon: root.editIcon || "bookmark"
-      pointSize: Style.fontSizeXXL * 2.5
-      color: Color.resolveColorKeyOptional(root.editIconColor).a > 0
-        ? Color.resolveColorKeyOptional(root.editIconColor)
-        : Color.mOnSurface
+      pointSize: Style.fontSizeXXXL
+      color: Color.resolveColorKeyOptional(root.editIconColor).a > 0 ? Color.resolveColorKeyOptional(root.editIconColor) : Color.mOnSurface
     }
   }
 
@@ -101,16 +81,16 @@ ColumnLayout {
     id: iconPicker
     initialIcon: root.editIcon
     onIconSelected: iconName => {
-      root.editIcon = iconName
-    }
+                      root.editIcon = iconName;
+                    }
   }
 
   NColorChoice {
     label: pluginApi?.tr("settings.icon-color-label")
     currentKey: root.editIconColor
     onSelected: key => {
-      root.editIconColor = key
-    }
+                  root.editIconColor = key;
+                }
     defaultValue: pluginApi?.manifest?.metadata?.defaultSettings?.iconColor || "primary"
   }
 
@@ -128,8 +108,8 @@ ColumnLayout {
     description: pluginApi?.tr("settings.wallpapers-description")
     checked: root.editIncludeWallpapers
     onToggled: checked => {
-      root.editIncludeWallpapers = checked
-    }
+                 root.editIncludeWallpapers = checked;
+               }
     defaultValue: pluginApi?.manifest?.metadata?.defaultSettings?.includeWallpapers ?? true
   }
 
@@ -147,8 +127,8 @@ ColumnLayout {
     description: pluginApi?.tr("settings.backup-description")
     checked: root.editBackupEnabled
     onToggled: checked => {
-      root.editBackupEnabled = checked
-    }
+                 root.editBackupEnabled = checked;
+               }
     defaultValue: pluginApi?.manifest?.metadata?.defaultSettings?.backupEnabled ?? true
   }
 
@@ -165,20 +145,23 @@ ColumnLayout {
     defaultValue: pluginApi?.manifest?.metadata?.defaultSettings?.backupCount ?? 5
     showReset: true
     enabled: root.editBackupEnabled
-    onMoved: function(v) { root.editBackupCount = Math.round(v) }
+    onMoved: function (v) {
+      root.editBackupCount = Math.round(v);
+    }
   }
 
   // ── Save ────────────────────────────────
 
   function saveSettings() {
-    if (!pluginApi) return
-    pluginApi.pluginSettings.profilesDir = root.editProfilesDir.trim()
-    pluginApi.pluginSettings.icon = root.editIcon.trim() || "bookmark"
-    pluginApi.pluginSettings.iconColor = root.editIconColor || "primary"
-    pluginApi.pluginSettings.includeWallpapers = root.editIncludeWallpapers
-    pluginApi.pluginSettings.backupEnabled = root.editBackupEnabled
-    pluginApi.pluginSettings.backupCount = root.editBackupCount
-    pluginApi.saveSettings()
-    Logger.i("ShellProfiles", "Settings saved")
+    if (!pluginApi)
+      return;
+    pluginApi.pluginSettings.profilesDir = root.editProfilesDir.trim();
+    pluginApi.pluginSettings.icon = root.editIcon.trim() || "bookmark";
+    pluginApi.pluginSettings.iconColor = root.editIconColor || "primary";
+    pluginApi.pluginSettings.includeWallpapers = root.editIncludeWallpapers;
+    pluginApi.pluginSettings.backupEnabled = root.editBackupEnabled;
+    pluginApi.pluginSettings.backupCount = root.editBackupCount;
+    pluginApi.saveSettings();
+    Logger.i("ShellProfiles", "Settings saved");
   }
 }

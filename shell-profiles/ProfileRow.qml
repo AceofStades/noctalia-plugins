@@ -2,8 +2,8 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import qs.Commons
-import qs.Widgets
 import qs.Services.UI
+import qs.Widgets
 
 NBox {
   id: root
@@ -17,12 +17,15 @@ NBox {
   // Computed from service state
   readonly property bool isActive: profileName !== "" && profileName === (service?.lastAppliedProfile ?? "")
   readonly property string savedAtFormatted: {
-    var s = service?.profileMeta?.[profileName]?.savedAt ?? ""
-    if (!s) return ""
+    var s = service?.profileMeta?.[profileName]?.savedAt ?? "";
+    if (!s)
+      return "";
     try {
-      var d = new Date(s)
-      return Qt.formatDate(d, "dd MMM yyyy") + "  " + Qt.formatTime(d, "HH:mm")
-    } catch(e) { return "" }
+      var d = new Date(s);
+      return Qt.formatDate(d, "dd MMM yyyy") + "  " + Qt.formatTime(d, "HH:mm");
+    } catch (e) {
+      return "";
+    }
   }
 
   Layout.fillWidth: true
@@ -41,7 +44,11 @@ NBox {
     color: Color.mPrimary
     visible: root.isActive
 
-    Behavior on opacity { NumberAnimation { duration: Style.animationFast } }
+    Behavior on opacity {
+      NumberAnimation {
+        duration: Style.animationFast
+      }
+    }
   }
 
   // ── Context menu ──────────────────────────────────────────────────────────
@@ -67,17 +74,17 @@ NBox {
       }
     ]
     onTriggered: action => {
-      contextMenu.close()
-      if (action === "overwrite") {
-        service?.saveProfile(root.profileName)
-      } else if (action === "rename") {
-        renameInput.text = root.profileName
-        renameError.text = ""
-        renameDialog.open()
-      } else if (action === "delete") {
-        deleteDialog.open()
-      }
-    }
+                   contextMenu.close();
+                   if (action === "overwrite") {
+                     service?.saveProfile(root.profileName);
+                   } else if (action === "rename") {
+                     renameInput.text = root.profileName;
+                     renameError.text = "";
+                     renameDialog.open();
+                   } else if (action === "delete") {
+                     deleteDialog.open();
+                   }
+                 }
   }
 
   // ── Delete confirmation dialog ────────────────────────────────────────────
@@ -140,8 +147,8 @@ NBox {
           textColor: Color.mOnError
           Layout.fillWidth: true
           onClicked: {
-            deleteDialog.close()
-            service?.deleteProfile(root.profileName)
+            deleteDialog.close();
+            service?.deleteProfile(root.profileName);
           }
         }
       }
@@ -206,17 +213,22 @@ NBox {
           Layout.fillWidth: true
           enabled: renameInput.text.trim() !== "" && renameInput.text.trim() !== root.profileName
           onClicked: {
-            var newName = renameInput.text.trim()
-            var err = service?.validateName(newName) || ""
-            if (err) { renameError.text = err; return }
-            if (service?.profileExists(newName)) {
-              renameError.text = pluginApi?.tr("error.name-exists")
-              return
+            var newName = renameInput.text.trim();
+            var err = service?.validateName(newName) || "";
+            if (err) {
+              renameError.text = err;
+              return;
             }
-            service?.renameProfile(root.profileName, newName, function(ok, msg) {
-              if (ok) renameDialog.close()
-              else renameError.text = msg
-            })
+            if (service?.profileExists(newName)) {
+              renameError.text = pluginApi?.tr("error.name-exists");
+              return;
+            }
+            service?.renameProfile(root.profileName, newName, function (ok, msg) {
+              if (ok)
+                renameDialog.close();
+              else
+                renameError.text = msg;
+            });
           }
         }
       }
@@ -225,93 +237,107 @@ NBox {
 
   // ── Row content ────────────────────────────────────────
 
-  NIconButton {
-    id: dotsBtn
-    anchors.right: parent.right
-    anchors.verticalCenter: parent.verticalCenter
-    anchors.rightMargin: Style.marginM
-    icon: "dots-vertical"
-    tooltipText: pluginApi?.tr("panel.more-actions")
-    baseSize: Math.round(Style.fontSizeXXL * Style.uiScaleRatio)
-    colorBg: "transparent"
-    colorFg: Color.mOnSurfaceVariant
-    onClicked: contextMenu.openAtItem(this, width / 2, height / 2)
-  }
-
-  NIconButton {
-    id: wallpaperToggle
-    anchors.right: dotsBtn.left
-    anchors.verticalCenter: parent.verticalCenter
-    anchors.rightMargin: Style.marginXS
-    icon: "photo"
-    tooltipText: pluginApi?.tr("panel.include-wallpapers")
-    baseSize: Math.round(Style.fontSizeXXL * Style.uiScaleRatio)
-    colorBg: "transparent"
-    colorFg: root.includeWallpapers ? Color.mPrimary : Color.mOnSurfaceVariant
-    onClicked: root.includeWallpapers = !root.includeWallpapers
-  }
-
-  NButton {
-    id: applyBtn
-    anchors.right: wallpaperToggle.left
-    anchors.verticalCenter: parent.verticalCenter
-    anchors.rightMargin: Style.marginS
-    text: pluginApi?.tr("panel.action-apply")
-    icon: "download"
-    enabled: !(service?.isBusy ?? false)
-    onClicked: {
-      service?.applyProfile(root.profileName, root.includeWallpapers)
-      if (root.panelRef)
-        pluginApi?.closePanel(pluginApi.panelOpenScreen)
-    }
-  }
-
-  // Active check icon
-  NIcon {
-    id: activeIcon
-    anchors.left: parent.left
-    anchors.verticalCenter: savedAtFormatted !== "" ? undefined : parent.verticalCenter
-    anchors.top: savedAtFormatted !== "" ? parent.top : undefined
-    anchors.topMargin: savedAtFormatted !== "" ? Style.marginM : 0
+  RowLayout {
+    anchors.fill: parent
     anchors.leftMargin: Style.marginM
-    icon: "check"
-    color: Color.mPrimary
-    pointSize: Style.fontSizeM
-    visible: root.isActive
-    width: visible ? implicitWidth + Style.marginXS : 0
+    anchors.rightMargin: Style.marginM
+    spacing: Style.marginS
 
-    Behavior on width { NumberAnimation { duration: Style.animationFast } }
-  }
+    // Active check icon
+    Rectangle {
+      id: activeIcon
+      width: root.isActive ? Math.round(Style.baseWidgetSize * 0.45) : 0
+      height: Math.round(Style.baseWidgetSize * 0.45)
+      radius: height / 2
+      color: Color.mPrimary
+      opacity: root.isActive ? 1 : 0
+      visible: root.isActive
+      Layout.alignment: Qt.AlignVCenter
 
-  // Profile name
-  NText {
-    id: nameText
-    anchors.left: activeIcon.right
-    anchors.right: applyBtn.left
-    anchors.top: parent.top
-    anchors.topMargin: savedAtFormatted !== "" ? Style.marginM : 0
-    anchors.verticalCenter: savedAtFormatted !== "" ? undefined : parent.verticalCenter
-    anchors.rightMargin: Style.marginS
-    text: root.profileName
-    pointSize: Style.fontSizeM
-    font.weight: Style.fontWeightSemiBold
-    color: root.isActive ? Color.mPrimary : Color.mOnSurface
-    elide: Text.ElideRight
+      Behavior on width {
+        NumberAnimation {
+          duration: Style.animationFast
+        }
+      }
+      Behavior on opacity {
+        NumberAnimation {
+          duration: Style.animationFast
+        }
+      }
 
-    Behavior on color { ColorAnimation { duration: Style.animationFast } }
-  }
+      NIcon {
+        anchors.centerIn: parent
+        icon: "check"
+        color: Color.mOnPrimary
+        pointSize: Style.fontSizeS
+      }
+    }
 
-  // Saved date subtitle
-  NText {
-    anchors.left: activeIcon.right
-    anchors.right: applyBtn.left
-    anchors.top: nameText.bottom
-    anchors.topMargin: 2
-    anchors.rightMargin: Style.marginS
-    text: root.savedAtFormatted
-    visible: root.savedAtFormatted !== ""
-    pointSize: Style.fontSizeXS
-    color: Color.mOnSurfaceVariant
-    elide: Text.ElideRight
+    // Profile name + date
+    ColumnLayout {
+      Layout.fillWidth: true
+      Layout.alignment: Qt.AlignVCenter
+      spacing: Style.marginXS
+
+      NText {
+        id: nameText
+        Layout.fillWidth: true
+        text: root.profileName
+        pointSize: Style.fontSizeM
+        font.weight: Style.fontWeightSemiBold
+        color: root.isActive ? Color.mPrimary : Color.mOnSurface
+        elide: Text.ElideRight
+
+        Behavior on color {
+          ColorAnimation {
+            duration: Style.animationFast
+          }
+        }
+      }
+
+      NText {
+        Layout.fillWidth: true
+        text: root.savedAtFormatted
+        visible: root.savedAtFormatted !== ""
+        pointSize: Style.fontSizeXS
+        color: Color.mOnSurfaceVariant
+        elide: Text.ElideRight
+      }
+    }
+
+    NButton {
+      id: applyBtn
+      text: pluginApi?.tr("panel.action-apply")
+      icon: "download"
+      enabled: !(service?.isBusy ?? false)
+      Layout.alignment: Qt.AlignVCenter
+      onClicked: {
+        service?.applyProfile(root.profileName, root.includeWallpapers);
+        if (root.panelRef)
+          pluginApi?.closePanel(pluginApi.panelOpenScreen);
+      }
+    }
+
+    NIconButton {
+      id: wallpaperToggle
+      icon: "photo"
+      tooltipText: pluginApi?.tr("panel.include-wallpapers")
+      baseSize: Math.round(Style.fontSizeXXL * Style.uiScaleRatio)
+      colorBg: "transparent"
+      colorFg: root.includeWallpapers ? Color.mPrimary : Color.mOnSurfaceVariant
+      Layout.alignment: Qt.AlignVCenter
+      onClicked: root.includeWallpapers = !root.includeWallpapers
+    }
+
+    NIconButton {
+      id: dotsBtn
+      icon: "dots-vertical"
+      tooltipText: pluginApi?.tr("panel.more-actions")
+      baseSize: Math.round(Style.fontSizeXXL * Style.uiScaleRatio)
+      colorBg: "transparent"
+      colorFg: Color.mOnSurfaceVariant
+      Layout.alignment: Qt.AlignVCenter
+      onClicked: contextMenu.openAtItem(this, width / 2, height / 2)
+    }
   }
 }

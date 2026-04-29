@@ -2,13 +2,13 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import qs.Commons
-import qs.Widgets
 import qs.Services.UI
+import qs.Widgets
 
 Item {
   id: root
 
-  // Plugin API 
+  // Plugin API
   property var pluginApi: null
 
   // Required plugin properties for Bar Widgets
@@ -26,26 +26,17 @@ Item {
   readonly property real barFontSize: Style.getBarFontSizeForScreen(screenName)
 
   // Settings with defaults from manifest
-  readonly property string widgetIcon:
-    pluginApi?.pluginSettings?.icon ||
-    pluginApi?.manifest?.metadata?.defaultSettings?.icon ||
-    "bookmark"
+  readonly property string widgetIcon: pluginApi?.pluginSettings?.icon || pluginApi?.manifest?.metadata?.defaultSettings?.icon || "bookmark"
 
-  readonly property string iconColorKey:
-    pluginApi?.pluginSettings?.iconColor ||
-    pluginApi?.manifest?.metadata?.defaultSettings?.iconColor ||
-    "primary"
+  readonly property string iconColorKey: pluginApi?.pluginSettings?.iconColor || pluginApi?.manifest?.metadata?.defaultSettings?.iconColor || "primary"
 
   readonly property color resolvedIconColor: Color.resolveColorKeyOptional(iconColorKey)
 
-  readonly property color iconColor:
-    mouseArea.containsMouse
-      ? Color.mOnHover
-      : (resolvedIconColor.a > 0 ? resolvedIconColor : Color.mOnSurface)
+  readonly property color iconColor: mouseArea.containsMouse ? Color.mOnHover : (resolvedIconColor.a > 0 ? resolvedIconColor : Color.mOnSurface)
 
   // Content dimensions
-  readonly property real contentWidth: isBarVertical ? capsuleHeight : row.implicitWidth + Style.marginM * 2
-  readonly property real contentHeight: isBarVertical ? row.implicitHeight + Style.marginM * 2 : capsuleHeight
+  readonly property real contentWidth: Style.capsuleHeight
+  readonly property real contentHeight: Style.capsuleHeight
 
   implicitWidth: contentWidth
   implicitHeight: contentHeight
@@ -65,14 +56,14 @@ Item {
     border.width: Style.capsuleBorderWidth
 
     RowLayout {
-      id: row
+      id: content
       anchors.centerIn: parent
       spacing: Style.marginS
 
       NIcon {
         icon: root.widgetIcon
         color: root.iconColor
-        pointSize: root.capsuleHeight * 0.55
+        applyUiScale: true
 
         Behavior on color {
           enabled: !Color.isTransitioning
@@ -97,12 +88,12 @@ Item {
     ]
 
     onTriggered: action => {
-      contextMenu.close()
-      PanelService.closeContextMenu(screen)
-      if (action === "widget-settings") {
-        BarService.openPluginSettings(screen, pluginApi.manifest)
-      }
-    }
+                   contextMenu.close();
+                   PanelService.closeContextMenu(screen);
+                   if (action === "widget-settings") {
+                     BarService.openPluginSettings(screen, pluginApi.manifest);
+                   }
+                 }
   }
 
   MouseArea {
@@ -113,21 +104,21 @@ Item {
     acceptedButtons: Qt.LeftButton | Qt.RightButton
 
     onEntered: {
-      TooltipService.show(root, pluginApi?.tr("widget.tooltip"), BarService.getTooltipDirection())
+      TooltipService.show(root, pluginApi?.tr("widget.tooltip"), BarService.getTooltipDirection());
     }
     onExited: {
-      TooltipService.hide()
+      TooltipService.hide();
     }
-    onClicked: function(mouse) {
+    onClicked: function (mouse) {
       if (mouse.button === Qt.LeftButton) {
-        pluginApi?.togglePanel(root.screen, root)
+        pluginApi?.togglePanel(root.screen, root);
       } else if (mouse.button === Qt.RightButton) {
-        PanelService.showContextMenu(contextMenu, root, screen)
+        PanelService.showContextMenu(contextMenu, root, screen);
       }
     }
   }
 
   Component.onCompleted: {
-    Logger.i("ShellProfiles", "BarWidget loaded on", screenName)
+    Logger.i("ShellProfiles", "BarWidget loaded on", screenName);
   }
 }
