@@ -278,12 +278,12 @@ Item {
         }
 
         // Turn the lightbar off
-        function off() {
+        function off(): void {
             root.setColor(0, 0, 0)
         }
 
         // Force an immediate rescan for connected controllers
-        function scan() {
+        function scan(): void {
             root.scanControllers()
         }
     }
