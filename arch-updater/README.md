@@ -13,6 +13,7 @@ With optional Flatpak support, highlight for Noctalia updates, refresh timer, hi
 
 **Panel**
 - Table of updates
+- Copy names and versions by clicking on them
 - Refresh/Update buttons
 
 **Desktop Widget**
@@ -37,7 +38,8 @@ With optional Flatpak support, highlight for Noctalia updates, refresh timer, hi
 Configuration is done through the settings window accessible from the context menu, panel and desktop widget
 
 ## Requirements
-- The default commands require `paru`, `pacman-contrib`, `flatpak` and `ghostty` to be installed
+- The default commands require `paru`, `pacman-contrib`, `flatpak` and `ghostty`
+- `wl-copy` is required to copy names and versions from the panel
 - Designed for Arch, although commands can be edited so it may be possible to make it work on other distros
 - CPU (Optional)
 
