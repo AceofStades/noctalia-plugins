@@ -147,7 +147,7 @@ Item {
             Rectangle {
                 width: parent.width - 46; height: 38; radius: Style.radiusM
                 color: qah.containsMouse ? Color.mPrimary : Color.mSurface
-                border.color: Color.mPrimary; border.width: Style.capsuleBorderWidth || 1
+                border.color: Color.mPrimary; border.width: Style.capsuleBorderWidth
                 Row {
                     anchors.centerIn: parent; spacing: Style.marginS
                     NIcon {
@@ -178,8 +178,8 @@ Item {
             Rectangle {
                 width: 38; height: 38; radius: Style.radiusM
                 color: qch.containsMouse ? Color.mErrorContainer || "#ffcdd2" : Color.mSurface
-                border.color: qch.containsMouse ? Color.mError || "#f44336" : (Style.capsuleBorderColor || "transparent")
-                border.width: Style.capsuleBorderWidth || 1
+                border.color: qch.containsMouse ? Color.mError || "#f44336" : (Style.capsuleBorderColor)
+                border.width: Style.capsuleBorderWidth
                 NIcon {
                     anchors.centerIn: parent; icon: "trash"
                     color: qch.containsMouse ? Color.mError || "#f44336" : Color.mOnSurfaceVariant
