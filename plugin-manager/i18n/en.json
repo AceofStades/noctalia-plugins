@@ -47,7 +47,9 @@
     "add-to-bar-success": "Added {plugin} to bar",
     "already-on-bar": "{plugin} is already on the bar",
     "version-prefix": "v",
-    "separator": "\u2022"
+    "version-display": "v{version}",
+    "version-update": "v{from} → v{to}",
+    "separator": "•"
   },
   "settings": {
     "iconColor": {

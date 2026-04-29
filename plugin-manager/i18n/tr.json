@@ -47,6 +47,8 @@
     "add-to-bar-success": "{plugin} çubuğa eklendi",
     "already-on-bar": "{plugin} zaten çubukta",
     "version-prefix": "v",
+    "version-display": "v{version}",
+    "version-update": "v{from} → v{to}",
     "separator": "•"
   },
   "settings": {

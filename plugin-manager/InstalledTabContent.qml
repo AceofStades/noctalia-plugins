@@ -51,7 +51,7 @@ ColumnLayout {
       var arr = widgets[sections[s]]
       for (var i = 0; i < arr.length; i++) {
         if (arr[i] && arr[i].id === widgetId) {
-          var alreadyMsg = pluginApi.tr("panel.already-on-bar").replace("{plugin}", pluginName || pluginId)
+          var alreadyMsg = pluginApi.tr("panel.already-on-bar", { plugin: pluginName || pluginId })
           ToastService.showNotice(pluginApi.tr("panel.title"), alreadyMsg)
           return
         }
@@ -72,7 +72,7 @@ ColumnLayout {
     Settings.setScreenOverride(screenName, "widgets", widgets)
     BarService.widgetsRevision++
 
-    var successMsg = pluginApi.tr("panel.add-to-bar-success").replace("{plugin}", pluginName || pluginId)
+    var successMsg = pluginApi.tr("panel.add-to-bar-success", { plugin: pluginName || pluginId })
     ToastService.showNotice(pluginApi.tr("panel.title"), successMsg)
   }
 
@@ -119,8 +119,7 @@ ColumnLayout {
         label: pluginApi?.tr("panel.uninstall-dialog-title")
         description: {
           if (!pluginApi) return ""
-          var base = pluginApi.tr("panel.uninstall-dialog-description")
-          return base.replace("{plugin}", uninstallDialog.pluginToUninstall?.name || "")
+          return pluginApi.tr("panel.uninstall-dialog-description", { plugin: uninstallDialog.pluginToUninstall?.name || "" })
         }
       }
 
@@ -170,19 +169,16 @@ ColumnLayout {
 
     if (!pluginApi) return;
     var title = pluginApi.tr("panel.title")
-    var msg = pluginApi.tr("panel.uninstalling")
-    msg = msg.replace("{plugin}", pluginName)
+    var msg = pluginApi.tr("panel.uninstalling", { plugin: pluginName })
     ToastService.showNotice(title, msg);
 
     PluginService.uninstallPlugin(pluginId, function (success, error) {
       if (!pluginApi) return;
       if (success) {
-        var successMsg = pluginApi.tr("panel.uninstall-success")
-        successMsg = successMsg.replace("{plugin}", pluginName)
+        var successMsg = pluginApi.tr("panel.uninstall-success", { plugin: pluginName })
         ToastService.showNotice(title, successMsg);
       } else {
-        var errorMsg = pluginApi.tr("panel.uninstall-error")
-        errorMsg = errorMsg.replace("{error}", error || pluginApi.tr("panel.unknown-error"))
+        var errorMsg = pluginApi.tr("panel.uninstall-error", { error: error || pluginApi.tr("panel.unknown-error") })
         ToastService.showError(title, errorMsg);
       }
     });
@@ -490,13 +486,11 @@ ColumnLayout {
                   if (!api) return;
                   if (success) {
                     var title = api.tr("panel.title")
-                    var msg = api.tr("panel.install-success")
-                    msg = msg.replace("{plugin}", pname)
+                    var msg = api.tr("panel.install-success", { plugin: pname })
                     ToastService.showNotice(title, msg);
                   } else {
                     var title2 = api.tr("panel.title")
-                    var errMsg = api.tr("panel.install-error")
-                    errMsg = errMsg.replace("{error}", error || api.tr("panel.unknown-error"))
+                    var errMsg = api.tr("panel.install-error", { error: error || api.tr("panel.unknown-error") })
                     ToastService.showError(title2, errMsg);
                   }
                 });
@@ -537,9 +531,9 @@ ColumnLayout {
             NText {
               text: {
                 if (modelData.updateInfo) {
-                  return pluginApi?.tr("panel.version-prefix") + modelData.version + " → " + pluginApi?.tr("panel.version-prefix") + modelData.updateInfo.availableVersion
+                  return pluginApi?.tr("panel.version-update", { from: modelData.version, to: modelData.updateInfo.availableVersion })
                 }
-                return pluginApi?.tr("panel.version-prefix") + modelData.version;
+                return pluginApi?.tr("panel.version-display", { version: modelData.version });
               }
               font.pointSize: Style.fontSizeXS
               color: modelData.updateInfo ? Color.mPrimary : Color.mOnSurfaceVariant

@@ -47,6 +47,8 @@
     "add-to-bar-success": "{plugin}이(가) 바에 추가됨",
     "already-on-bar": "{plugin}이(가) 이미 바에 있습니다",
     "version-prefix": "v",
+    "version-display": "v{version}",
+    "version-update": "v{from} → v{to}",
     "separator": "•"
   },
   "settings": {

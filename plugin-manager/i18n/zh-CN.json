@@ -47,6 +47,8 @@
     "add-to-bar-success": "已将 {plugin} 添加到栏",
     "already-on-bar": "{plugin} 已在栏上",
     "version-prefix": "v",
+    "version-display": "v{version}",
+    "version-update": "v{from} → v{to}",
     "separator": "•"
   },
   "settings": {

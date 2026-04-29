@@ -47,6 +47,8 @@
     "add-to-bar-success": "{plugin} hozzáadva a sávhoz",
     "already-on-bar": "{plugin} már a sávon van",
     "version-prefix": "v",
+    "version-display": "v{version}",
+    "version-update": "v{from} → v{to}",
     "separator": "•"
   },
   "settings": {

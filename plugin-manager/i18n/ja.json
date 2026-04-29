@@ -47,6 +47,8 @@
     "add-to-bar-success": "{plugin} をバーに追加しました",
     "already-on-bar": "{plugin} はすでにバーにあります",
     "version-prefix": "v",
+    "version-display": "v{version}",
+    "version-update": "v{from} → v{to}",
     "separator": "•"
   },
   "settings": {
