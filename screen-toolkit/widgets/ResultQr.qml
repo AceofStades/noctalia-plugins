@@ -62,8 +62,8 @@ Item {
             width: parent.width
             height: Math.min(qrThumb.implicitHeight * (parent.width / Math.max(qrThumb.implicitWidth, 1)), 160 * Style.uiScaleRatio)
             radius: Style.radiusM; color: "transparent"; clip: true
-            border.color: Style.capsuleBorderColor || "transparent"
-            border.width: Style.capsuleBorderWidth || 1
+            border.color: Style.capsuleBorderColor
+            border.width: Style.capsuleBorderWidth
             visible: root.qrCapturePath !== "" && root.qrResult !== "" && qrThumb.status === Image.Ready
             Image {
                 id: qrThumb; anchors.fill: parent
@@ -91,7 +91,7 @@ Item {
             visible: root.qrType === "wifi"
             Rectangle {
                 width: parent.width; height: 38; radius: Style.radiusM; color: Color.mSurface
-                border.color: Style.capsuleBorderColor || "transparent"; border.width: Style.capsuleBorderWidth || 1
+                border.color: Style.capsuleBorderColor; border.width: Style.capsuleBorderWidth
                 Row {
                     anchors.fill: parent; anchors.margins: Style.marginS; spacing: Style.marginS
                     NIcon { icon: "wifi"; color: Color.mPrimary }
@@ -101,7 +101,7 @@ Item {
             Rectangle {
                 width: parent.width; height: 38; radius: Style.radiusM
                 color: wph.containsMouse ? Color.mHover : Color.mSurface
-                border.color: Style.capsuleBorderColor || "transparent"; border.width: Style.capsuleBorderWidth || 1
+                border.color: Style.capsuleBorderColor; border.width: Style.capsuleBorderWidth
                 Row {
                     anchors.fill: parent; anchors.margins: Style.marginS; spacing: Style.marginS
                     NIcon { icon: "key"; color: Color.mOnSurfaceVariant }
@@ -124,8 +124,8 @@ Item {
         Rectangle {
             width: parent.width; height: 120 * Style.uiScaleRatio
             radius: Style.radiusM; color: Color.mSurface; clip: true
-            border.color: Style.capsuleBorderColor || "transparent"
-            border.width: Style.capsuleBorderWidth || 1
+            border.color: Style.capsuleBorderColor
+            border.width: Style.capsuleBorderWidth
             visible: root.qrType !== "wifi"
             Flickable {
                 id: qrFlick; anchors.fill: parent; anchors.margins: Style.marginS
@@ -192,5 +192,6 @@ Item {
         }
     }
 }
+
 
 
