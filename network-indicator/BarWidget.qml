@@ -209,7 +209,7 @@ Item {
 
             model: [
                 {
-                    "label": I18n.tr("actions.widget-settings"),
+                    "label": root.pluginApi?.tr("actions.widget-settings"),
                     "action": "widget-settings",
                     "icon": "settings"
                 },

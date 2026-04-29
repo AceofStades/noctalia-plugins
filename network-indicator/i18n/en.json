@@ -1,4 +1,7 @@
 {
+  "actions": {
+    "widget-settings": "Widget settingsssss"
+  },
   "settings": {
     "byteThresholdActive": {
       "desc": "Set the activity threshold in bytes per second (B/s).",
