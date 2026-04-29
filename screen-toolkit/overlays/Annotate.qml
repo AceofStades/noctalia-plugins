@@ -112,6 +112,7 @@ Variants {
         property string shareUrl:         ""
         property bool   showSharePopover: false
         property bool   uploadFailed:     false
+        readonly property string _annotateScript: Qt.resolvedUrl("../scripts/annotate.sh").toString().replace("file://", "")
         function _invalidateCache() {
             _cacheValid      = false
             _cacheRebuilding = false
@@ -628,7 +629,7 @@ Variants {
                 spacing: Style.marginS
                 visible: !overlayWin.isUploading && overlayWin.uploadFailed
                 NIcon {
-                    icon: "alert-circle"; color: Color.mError ?? "#f44336"
+                    icon: "alert-circle"; color: Color.mError
                     anchors.verticalCenter: parent.verticalCenter
                 }
                 NText {
@@ -718,7 +719,7 @@ Variants {
                 spacing: Style.marginXS
                 NIcon { icon: "zoom-in"; color: Color.mOnPrimary }
                 NText {
-                    text:      Math.round(root.zoomScale) + root.mainInstance?.pluginApi?.tr("annotate.zoomViewOnly")
+                    text:      root.mainInstance?.pluginApi?.tr("annotate.zoomViewOnly", { scale: Math.round(root.zoomScale) })
                     color:     Color.mOnPrimary
                     pointSize: Style.fontSizeXS
                 }
@@ -1118,7 +1119,7 @@ Variants {
                 NIcon {
                     anchors.centerIn: parent
                     icon:  iconName
-                    color: (!parent.disabled && abHover.containsMouse) && parent.danger ? Color.mError || "#f44336"
+                    color: (!parent.disabled && abHover.containsMouse) && parent.danger ? Color.mError
                          : (!parent.disabled && abHover.containsMouse)                  ? Color.mOnHover
                          : Color.mOnSurface
                 }
@@ -1309,11 +1310,11 @@ Variants {
                         btnEnabled: root.zoomScale > 1.0
                         onClicked:  overlayWin.requestZoom(Math.max(1.0, root.zoomScale - 1.0))
                     }
-                    Text {
+                    NText {
                         anchors.verticalCenter: parent.verticalCenter
                         text:                   root.zoomScale === 1.0 ? "1×" : Math.round(root.zoomScale) + "×"
                         color:                  root.zoomScale > 1.0 ? Color.mPrimary : Color.mOnSurfaceVariant
-                        font.pixelSize:         11
+                        pointSize:              Style.fontSizeXS
                         font.bold:              root.zoomScale > 1.0
                         width:                  22
                         horizontalAlignment:    Text.AlignHCenter
@@ -1414,12 +1415,12 @@ Variants {
                         btnEnabled: root.zoomScale > 1.0
                         onClicked:  overlayWin.requestZoom(Math.max(1.0, root.zoomScale - 1.0))
                     }
-                    Text {
+                    NText {
                         anchors.horizontalCenter: parent.horizontalCenter
-                        text:           root.zoomScale === 1.0 ? "1×" : Math.round(root.zoomScale) + "×"
-                        color:          root.zoomScale > 1.0 ? Color.mPrimary : Color.mOnSurfaceVariant
-                        font.pixelSize: 10
-                        font.bold:      root.zoomScale > 1.0
+                        text:      root.zoomScale === 1.0 ? "1×" : Math.round(root.zoomScale) + "×"
+                        color:     root.zoomScale > 1.0 ? Color.mPrimary : Color.mOnSurfaceVariant
+                        pointSize: Style.fontSizeXS
+                        font.bold: root.zoomScale > 1.0
                     }
                     ZoomBtn {
                         iconName:   "zoom-in"
@@ -1628,10 +1629,10 @@ Variants {
                         overlayWin.uploadFailed = true
                         return
                     }
-                    flattenForShareProc.exec({ command: ["bash", "-c",
-                        "magick /tmp/screen-toolkit-annotate.png /tmp/screen-toolkit-overlay.png"
-                            + " -composite /tmp/screen-toolkit-share.png"
-                            + " && rm -f /tmp/screen-toolkit-overlay.png"
+                    flattenForShareProc.exec({ command: [
+                        "bash", overlayWin._annotateScript, "share-flatten",
+                        "/tmp/screen-toolkit-annotate.png",
+                        "/tmp/screen-toolkit-overlay.png"
                     ]})
                 })
             }
@@ -1645,20 +1646,16 @@ Variants {
             var custom   = root._annotateOutputDir()
             if (root.zoomScale > 1.0) {
                 if (custom === "__auto__") {
-                    var ssDir  = home + "/Pictures/Screenshots"
-                    var picDir = home + "/Pictures"
-                    saveFileProc.exec({ command: ["bash", "-c",
-                        "if [ -d " + U.shellEscape(ssDir) + " ]; then DEST=" + U.shellEscape(ssDir)
-                            + "; elif [ -d " + U.shellEscape(picDir) + " ]; then DEST=" + U.shellEscape(picDir)
-                            + "; else exit 1; fi;"
-                            + " cp " + U.shellEscape(root.imagePath) + " \"$DEST/" + filename + "\""
-                            + " && echo \"$DEST/" + filename + "\""
+                    saveFileProc.exec({ command: [
+                        "bash", overlayWin._annotateScript, "save-auto",
+                        root.imagePath, filename,
+                        home + "/Pictures/Screenshots",
+                        home + "/Pictures"
                     ]})
                 } else {
-                    var dest = custom + "/" + filename
-                    saveFileProc.exec({ command: ["bash", "-c",
-                        "cp " + U.shellEscape(root.imagePath) + " " + U.shellEscape(dest)
-                            + " && echo " + U.shellEscape(dest)
+                    saveFileProc.exec({ command: [
+                        "bash", overlayWin._annotateScript, "save",
+                        root.imagePath, custom + "/" + filename
                     ]})
                 }
             } else {
@@ -1669,24 +1666,20 @@ Variants {
                         return
                     }
                     if (custom === "__auto__") {
-                        var ssDir2  = home + "/Pictures/Screenshots"
-                        var picDir2 = home + "/Pictures"
-                        saveFileProc.exec({ command: ["bash", "-c",
-                            "if [ -d " + U.shellEscape(ssDir2) + " ]; then DEST=" + U.shellEscape(ssDir2)
-                                + "; elif [ -d " + U.shellEscape(picDir2) + " ]; then DEST=" + U.shellEscape(picDir2)
-                                + "; else exit 1; fi;"
-                                + " magick /tmp/screen-toolkit-annotate.png /tmp/screen-toolkit-overlay.png"
-                                + " -composite \"$DEST/" + filename + "\""
-                                + " && rm -f /tmp/screen-toolkit-overlay.png"
-                                + " && echo \"$DEST/" + filename + "\""
+                        saveFileProc.exec({ command: [
+                            "bash", overlayWin._annotateScript, "save-overlay-auto",
+                            "/tmp/screen-toolkit-annotate.png",
+                            "/tmp/screen-toolkit-overlay.png",
+                            filename,
+                            home + "/Pictures/Screenshots",
+                            home + "/Pictures"
                         ]})
                     } else {
-                        var dest2 = custom + "/" + filename
-                        saveFileProc.exec({ command: ["bash", "-c",
-                            "magick /tmp/screen-toolkit-annotate.png /tmp/screen-toolkit-overlay.png"
-                                + " -composite " + U.shellEscape(dest2)
-                                + " && rm -f /tmp/screen-toolkit-overlay.png"
-                                + " && echo " + U.shellEscape(dest2)
+                        saveFileProc.exec({ command: [
+                            "bash", overlayWin._annotateScript, "save-overlay",
+                            "/tmp/screen-toolkit-annotate.png",
+                            "/tmp/screen-toolkit-overlay.png",
+                            custom + "/" + filename
                         ]})
                     }
                 })
@@ -1696,7 +1689,9 @@ Variants {
             if (overlayWin.isSaving) return
             overlayWin.isSaving = true
             if (root.zoomScale > 1.0) {
-                copyProc.exec({ command: ["bash", "-c", "wl-copy < " + U.shellEscape(root.imagePath)] })
+                copyProc.exec({ command: [
+                    "bash", overlayWin._annotateScript, "copy-zoom", root.imagePath
+                ]})
             } else {
                 drawCanvas.grabToImage(function(result) {
                     if (!result || !result.saveToFile("/tmp/screen-toolkit-overlay.png")) {
@@ -1704,11 +1699,10 @@ Variants {
                         ToastService.showError(root.mainInstance?.pluginApi?.tr("annotate.copyFailed"))
                         return
                     }
-                    clipFlattenProc.exec({ command: ["bash", "-c",
-                        "magick /tmp/screen-toolkit-annotate.png /tmp/screen-toolkit-overlay.png"
-                            + " -composite /tmp/screen-toolkit-annotated.png"
-                            + " && wl-copy < /tmp/screen-toolkit-annotated.png"
-                            + " && rm -f /tmp/screen-toolkit-overlay.png"
+                    clipFlattenProc.exec({ command: [
+                        "bash", overlayWin._annotateScript, "copy",
+                        "/tmp/screen-toolkit-annotate.png",
+                        "/tmp/screen-toolkit-overlay.png"
                     ]})
                 })
             }
