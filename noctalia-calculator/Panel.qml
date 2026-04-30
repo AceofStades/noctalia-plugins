@@ -221,7 +221,7 @@ FocusScope {
                                         hoverEnabled: true
                                         cursorShape: Qt.PointingHandCursor
                                         onClicked: mainInst?.copyResult()
-                                        onEntered: TooltipService.show(parent, pluginApi?.tr("panel.copy-result-tooltip") ?? "")
+                                        onEntered: TooltipService.show(parent, pluginApi?.tr("panel.copy-result-tooltip"))
                                         onExited: TooltipService.hide()
                                     }
                                 }
