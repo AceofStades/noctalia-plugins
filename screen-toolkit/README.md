@@ -124,11 +124,16 @@ Screen-Toolkit/
 │
 ├── scripts/
 │   ├── annotate.sh
-│   ├── color-picker.sh
+│   ├── capture.sh
+|   ├── color-picker.sh
 │   ├── lens-upload.sh
+|   ├── measure.sh
+|   ├── mirror-record.sh
+|   ├── mirror-screenshot.sh
 │   ├── ocr.sh
+│   ├── pick-file.py
 │   ├── pick-file.sh
-│   └── pick-file.py
+│   ├── record.sh
 │   └── share-upload.sh
 ├── overlays/
 │   ├── Annotate.qml
@@ -137,7 +142,13 @@ Screen-Toolkit/
 │   ├── Measure.qml
 │   ├── Pin.qml
 │   └── RegionSelector.qml
-│
+├── tools/
+│   ├── ColorPicker.qml
+│   ├── Lens.qml
+│   ├── Ocr.qml
+│   ├── Palette.qml
+│   └── Qr.qml
+│   
 ├── widgets/
 │   ├── ResultColor.qml
 │   ├── ResultOcr.qml
