@@ -9,7 +9,7 @@ import qs.Services.UI
 import "../utils/utils.js" as U
 Item {
     id: root
-    property var pluginApi: null
+    property var  pluginApi: null
     property bool isVisible: false
     function show(screen) {
         if (screen) {
@@ -41,18 +41,18 @@ Item {
     property int    currentHeight: 300
     property int    xPos: -1
     property int    yPos: -1
-    property var    _primaryScreen:  null
-    property bool   _cameraActive:   false
-    property bool   _audioEnabled:   false
-    property bool   _pinOnShot:      true
-    property int    _countdown:       0
-    property bool   _countdownActive: false
-    property string _pendingAction:   ""
-    property bool   _isRecording:    false
-    property bool   _isSaving:       false
-    property int    _recElapsed:     0
-    property string _recTmpPath:     ""
-    // Derived from Style so all sizing scales with the user's UI scale/density settings
+    property string scriptsDir:    ""
+    property var    _primaryScreen:   null
+    property bool   _cameraActive:    false
+    property bool   _audioEnabled:    false
+    property bool   _pinOnShot:       true
+    property int    _countdown:        0
+    property bool   _countdownActive:  false
+    property string _pendingAction:    ""
+    property bool   _isRecording:     false
+    property bool   _isSaving:        false
+    property int    _recElapsed:      0
+    property string _recTmpPath:      ""
     readonly property int _ctrlBtnSize: Style.baseWidgetSize - Style.borderS
     readonly property int _ctrlPillH:   _ctrlBtnSize + Style.marginS * 2
     property var _imgCapture: null
@@ -94,26 +94,17 @@ Item {
         root._imgCapture.captureToFile("/tmp/mirror-shot-" + Date.now() + ".png")
     }
     function _onImageCaptured(tmpPath) {
-        var home = Quickshell.env("HOME")
+        var home    = Quickshell.env("HOME")
         var dir     = U.screenshotDir(home, pluginApi?.pluginSettings?.screenshotPath)
-        var file    = dir + "/" + U.buildFilename("mirror", ".png", pluginApi?.pluginSettings?.filenameFormat)
+        var file    = U.buildFilename("mirror", ".png", pluginApi?.pluginSettings?.filenameFormat)
         var filters = []
         if (root.isFlipped) filters.push("hflip")
         if (root.isSquare)  filters.push("crop=min(iw\\,ih):min(iw\\,ih)")
-        screenshotProc.destPath = file
-        var cmd
-        if (filters.length > 0) {
-            cmd = "mkdir -p " + U.shellEscape(dir) + " && " +
-                  "ffmpeg -y -i " + U.shellEscape(tmpPath) + " " +
-                  "-vf " + U.shellEscape(filters.join(",")) + " " +
-                  "-compression_level 0 -update 1 " +
-                  U.shellEscape(file) + " 2>/dev/null && " +
-                  "rm -f " + U.shellEscape(tmpPath)
-        } else {
-            cmd = "mkdir -p " + U.shellEscape(dir) + " && mv " +
-                  U.shellEscape(tmpPath) + " " + U.shellEscape(file)
-        }
-        screenshotProc.exec({ command: ["bash", "-c", cmd] })
+        screenshotProc.destPath = dir + "/" + file
+        screenshotProc.exec({ command: [
+            "bash", scriptsDir + "mirror-screenshot.sh",
+            tmpPath, dir, file, filters.join(",")
+        ]})
     }
     Process {
         id: screenshotProc
@@ -152,30 +143,18 @@ Item {
         if (root._recorder) root._recorder.stop()
     }
     function _doSaveRecord() {
-        var home = Quickshell.env("HOME")
+        var home    = Quickshell.env("HOME")
         var dir     = U.videoDir(home, pluginApi?.pluginSettings?.videoPath)
-        var dest    = dir + "/" + U.buildFilename("mirror", ".mp4", pluginApi?.pluginSettings?.filenameFormat)
+        var file    = U.buildFilename("mirror", ".mp4", pluginApi?.pluginSettings?.filenameFormat)
         var filters = []
         if (root.isFlipped) filters.push("hflip")
         if (root.isSquare)  filters.push("crop=min(iw\\,ih):min(iw\\,ih)")
-        recSaveProc.savedPath = dest
-        if (filters.length > 0) {
-            var cmd =
-                "mkdir -p " + U.shellEscape(dir) + " && " +
-                "ffmpeg -y -i " + U.shellEscape(root._recTmpPath) + " " +
-                "-vf " + U.shellEscape(filters.join(",")) + " " +
-                "-c:v libx264 -crf 14 -preset slow -pix_fmt yuv420p " +
-                (root._audioEnabled ? "-c:a aac -b:a 192k " : "-an ") +
-                U.shellEscape(dest) + " 2>/dev/null && " +
-                "rm -f " + U.shellEscape(root._recTmpPath)
-            recSaveProc.exec({ command: ["bash", "-c", cmd] })
-        } else {
-            recSaveProc.exec({ command: [
-                "bash", "-c",
-                "mkdir -p " + U.shellEscape(dir) + " && " +
-                "mv " + U.shellEscape(root._recTmpPath) + " " + U.shellEscape(dest)
-            ]})
-        }
+        recSaveProc.savedPath = dir + "/" + file
+        recSaveProc.exec({ command: [
+            "bash", scriptsDir + "mirror-record.sh",
+            root._recTmpPath, dir, file, filters.join(","),
+            root._audioEnabled ? "1" : "0"
+        ]})
     }
     Process {
         id: recSaveProc
@@ -223,7 +202,7 @@ Item {
             readonly property bool isInteracting:
                 isPrimary && (dragArea.pressed || resizeBR.pressed || resizeBL.pressed ||
                               resizeTR.pressed || resizeTL.pressed)
-            Item    { id: fullMask; anchors.fill: parent }
+            Item { id: fullMask; anchors.fill: parent }
             mask: Region { item: !win.isPrimary ? null : (win.isInteracting ? fullMask : container) }
             MediaDevices { id: mediaDevices }
             Rectangle {
@@ -305,7 +284,8 @@ Item {
                     anchors.centerIn: parent; spacing: Style.marginS
                     visible: mediaDevices.videoInputs.length === 0
                     NIcon { anchors.horizontalCenter: parent.horizontalCenter; icon: "video-off"; color: "white" }
-                    NText { anchors.horizontalCenter: parent.horizontalCenter; text: root.pluginApi?.tr("mirror.noCamera"); color: "white"; pointSize: Style.fontSizeXS }
+                    NText { anchors.horizontalCenter: parent.horizontalCenter
+                            text: root.pluginApi?.tr("mirror.noCamera"); color: "white"; pointSize: Style.fontSizeXS }
                 }
                 Rectangle {
                     anchors.fill: parent; radius: Style.radiusL
@@ -335,7 +315,7 @@ Item {
                             }
                         }
                         NText {
-                            text: root.pluginApi?.tr("mirror.recordingInProgress") + " " + root._formatTime(root._recElapsed)
+                            text: root.pluginApi?.tr("mirror.recordingInProgress", { time: root._formatTime(root._recElapsed) })
                             color: "white"; font.weight: Font.Bold; pointSize: Style.fontSizeXS
                             anchors.verticalCenter: parent.verticalCenter
                         }
@@ -368,16 +348,16 @@ Item {
                 Rectangle {
                     anchors.fill: parent; radius: Style.radiusL
                     color: Qt.rgba(0, 0, 0, 0.55); visible: root._countdownActive; z: 10
-                    Text {
+                    NText {
                         anchors.centerIn: parent
                         text: root._countdown > 0 ? root._countdown.toString() : ""
                         color: "white"
                         font.pixelSize: Math.min(container.width, container.height) * 0.45
-                        font.weight: Font.Bold; style: Text.Outline; styleColor: Qt.rgba(0,0,0,0.6)
+                        font.weight: Font.Bold; style: Text.Outline; styleColor: Qt.rgba(0, 0, 0, 0.6)
                         SequentialAnimation on scale {
                             running: root._countdownActive; loops: Animation.Infinite
                             NumberAnimation { from: 1.2; to: 0.85; duration: 900; easing.type: Easing.InQuad }
-                            NumberAnimation { from: 0.85; to: 1.2; duration: 100 }
+                            NumberAnimation { from: 0.85; to: 1.2;  duration: 100 }
                         }
                     }
                     MouseArea {
