@@ -1763,7 +1763,7 @@
     {
       "id": "usb-drive-manager",
       "name": "USB Drive Manager",
-      "version": "1.1.1",
+      "version": "1.2.0",
       "official": false,
       "author": "hennifant",
       "description": "Manage USB drives: detect, mount, unmount, safely eject, and browse files",
@@ -1775,7 +1775,7 @@
         "Panel",
         "Utility"
       ],
-      "lastUpdated": "2026-04-14T22:50:45+02:00"
+      "lastUpdated": "2026-04-29T18:30:42+02:00"
     },
     {
       "id": "valent-connect",
