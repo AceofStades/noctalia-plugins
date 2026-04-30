@@ -538,28 +538,33 @@ Variants {
             }
         }
         Rectangle {
-            id: sharePopover
-            visible:      overlayWin.isPrimary && overlayWin.showSharePopover
-            z:            20
-            radius:       Style.radiusL
-            color:        Color.mSurface
-            border.color: Style.capsuleBorderColor
-            border.width: Style.capsuleBorderWidth
-            height: 44
-            width:  overlayWin.isUploading  ? (_spLoadRow.implicitWidth  + Style.marginM * 2)
-                  : overlayWin.uploadFailed ? (_spErrRow.implicitWidth   + Style.marginM * 2)
-                  :                           (_spSuccRow.implicitWidth   + Style.marginM * 2)
-            x: Math.max(Style.marginS, Math.min(
-                   toolbar.x + (toolbar.width - width) / 2,
-                   overlayWin.width - width - Style.marginS))
-            y: toolbar.useVertical
-               ? Math.max(Style.marginS, Math.min(
-                     toolbar.y + (toolbar.height - height) / 2,
-                     overlayWin.height - height - Style.marginS))
-               : (toolbar.spaceAbove >= height + Style.marginS
-                  ? toolbar.y - height - Style.marginXS
-                  : toolbar.y + toolbar.height + Style.marginXS)
+			id: sharePopover
+			visible: overlayWin.isPrimary && overlayWin.showSharePopover
+			z: 20
+			radius: Style.radiusL
+			color: Color.mSurface
+			border.color: Style.capsuleBorderColor
+			border.width: Style.capsuleBorderWidth
+			height: 44
+			width: overlayWin.isUploading
+				? (_spLoadRow.implicitWidth + Style.marginM * 2)
+				: overlayWin.uploadFailed
+					? (_spErrRow.implicitWidth + Style.marginM * 2)
+					: (_spSuccRow.implicitWidth + Style.marginM * 2)
 
+			x: Math.max(Style.marginS, Math.min(
+				toolbar.x + (toolbar.width - width) / 2,
+				overlayWin.width - width - Style.marginS
+			))
+
+			y: toolbar.useVertical
+				? Math.max(Style.marginS, Math.min(
+					toolbar.y + (toolbar.height - height) / 2,
+					overlayWin.height - height - Style.marginS
+				))
+				: (toolbar.y >= height + Style.marginS
+					? toolbar.y - height - Style.marginXS
+					: toolbar.y + toolbar.height + Style.marginXS)
             // ── Uploading ──────────────────────────────────────────────────
             Row {
                 id: _spLoadRow
@@ -1080,59 +1085,72 @@ Variants {
                     onExited:  TooltipService.hide()
                 }
             }
-            component ZoomBtn: Rectangle {
+                        component ZoomBtn: Rectangle {
                 property string iconName:   ""
                 property string tip:        ""
                 property bool   btnEnabled: true
-                width:   28; height: 34
+
+                width:   28
+                height:  34
                 radius:  Style.radiusS
                 color:   zbHover.containsMouse ? Color.mHover : "transparent"
                 enabled: btnEnabled
                 opacity: enabled ? 1.0 : 0.3
+
                 signal clicked()
+
                 NIcon {
                     anchors.centerIn: parent
                     icon:  iconName
                     color: zbHover.containsMouse ? Color.mOnHover : Color.mOnSurface
                 }
+
                 MouseArea {
-                    id: zbHover
+                    id:           zbHover
                     anchors.fill: parent
                     hoverEnabled: true
                     cursorShape:  Qt.PointingHandCursor
-                    onClicked:  parent.clicked()
-                    onEntered:  TooltipService.show(parent, tip)
-                    onExited:   TooltipService.hide()
+                    onClicked:    parent.clicked()
+                    onEntered:    TooltipService.show(parent, tip)
+                    onExited:     TooltipService.hide()
                 }
             }
+
             component ActionBtn: Rectangle {
                 property string iconName: ""
                 property string tip:      ""
                 property bool   danger:   false
                 property bool   disabled: false
-                width:  34; height: 34
-                radius: Style.radiusS
+
+                width:   34
+                height:  34
+                radius:  Style.radiusS
                 opacity: disabled ? 0.3 : 1.0
-                color:  (!disabled && abHover.containsMouse)
-                    ? (danger ? Color.mErrorContainer || "#ffcdd2" : Color.mHover)
-                    : "transparent"
+                color:   (!disabled && abHover.containsMouse)
+                         ? (danger ? Qt.alpha(Color.mError, 0.15) : Color.mHover)
+                         : "transparent"
+
+                signal clicked()
+
                 NIcon {
                     anchors.centerIn: parent
                     icon:  iconName
-                    color: (!parent.disabled && abHover.containsMouse) && parent.danger ? Color.mError
-                         : (!parent.disabled && abHover.containsMouse)                  ? Color.mOnHover
-                         : Color.mOnSurface
+                    color: (!parent.disabled && abHover.containsMouse) && parent.danger
+                           ? Color.mError
+                           : (!parent.disabled && abHover.containsMouse)
+                             ? Color.mOnHover
+                             : Color.mOnSurface
                 }
-                signal clicked()
+
                 MouseArea {
-                    id: abHover
+                    id:           abHover
                     anchors.fill: parent
                     hoverEnabled: true
                     cursorShape:  parent.disabled ? Qt.ArrowCursor : Qt.PointingHandCursor
                     enabled:      !parent.disabled
-                    onClicked:  parent.clicked()
-                    onEntered:  TooltipService.show(parent, tip)
-                    onExited:   TooltipService.hide()
+                    onClicked:    parent.clicked()
+                    onEntered:    TooltipService.show(parent, tip)
+                    onExited:     TooltipService.hide()
                 }
             }
             component SaveBtn: Rectangle {
@@ -1497,21 +1515,38 @@ Variants {
             }
         }
         Rectangle {
-            id: popover
-            visible: overlayWin.isPrimary && overlayWin.showPopover
-            radius: Style.radiusL; color: Color.mSurface
-            border.color: Style.capsuleBorderColor; border.width: Style.capsuleBorderWidth
-            width:  toolbar.useVertical ? (popContent.implicitWidth  + Style.marginS) : (popContent.implicitWidth  + Style.marginM)
-            height: toolbar.useVertical ? (popContent.implicitHeight + Style.marginM) : (popContent.implicitHeight + Style.marginS)
-            readonly property bool _canGoRight: toolbar.x + toolbar.width + width + Style.marginXS <= overlayWin.width
-            x: toolbar.useVertical
-               ? (_canGoRight
-                  ? toolbar.x + toolbar.width + Style.marginXS
-                  : Math.max(Style.marginS, toolbar.x - width - Style.marginXS))
-               : Math.max(Style.marginS, Math.min(toolbar.x + (toolbar.width - width) / 2, overlayWin.width - width - Style.marginS))
-            y: toolbar.useVertical
-               ? Math.max(Style.marginS, Math.min(toolbar.y + (toolbar.height - height) / 2, overlayWin.height - height - Style.marginS))
-               : (toolbar.spaceAbove >= height + Style.marginS ? toolbar.y - height - Style.marginXS : toolbar.y + toolbar.height + Style.marginXS)
+			id: popover
+			visible: overlayWin.isPrimary && overlayWin.showPopover
+			radius: Style.radiusL
+			color: Color.mSurface
+			border.color: Style.capsuleBorderColor
+			border.width: Style.capsuleBorderWidth
+			width: toolbar.useVertical
+				? (popContent.implicitWidth + Style.marginS)
+				: (popContent.implicitWidth + Style.marginM)
+			height: toolbar.useVertical
+				? (popContent.implicitHeight + Style.marginM)
+				: (popContent.implicitHeight + Style.marginS)
+
+			readonly property bool _canGoRight: toolbar.x + toolbar.width + width + Style.marginXS <= overlayWin.width
+
+			x: toolbar.useVertical
+				? (_canGoRight
+					? toolbar.x + toolbar.width + Style.marginXS
+					: Math.max(Style.marginS, toolbar.x - width - Style.marginXS))
+				: Math.max(Style.marginS, Math.min(
+					toolbar.x + (toolbar.width - width) / 2,
+					overlayWin.width - width - Style.marginS
+				))
+
+			y: toolbar.useVertical
+				? Math.max(Style.marginS, Math.min(
+					toolbar.y + (toolbar.height - height) / 2,
+					overlayWin.height - height - Style.marginS
+				))
+				: (toolbar.y >= height + Style.marginS
+					? toolbar.y - height - Style.marginXS
+					: toolbar.y + toolbar.height + Style.marginXS)
             Loader {
                 id: popContent
                 anchors.centerIn: parent
