@@ -430,6 +430,13 @@ Variants {
                 root.hide()
             }
         }
+        Shortcut {
+            sequence: "Ctrl+C"
+            onActivated: {
+                if (overlayWin.isSaving || !overlayWin.isPrimary) return
+                overlayWin.flattenAndCopy()
+            }
+        }
         Process {
             id: flattenForShareProc
             onExited: (code) => {
@@ -459,7 +466,6 @@ Variants {
                             root.mainInstance?.pluginApi?.tr("annotate.shareUrl"),
                             url, "link")
                     }
-                    // if !skipPop the popover already visible shows success state
                 } else {
                     overlayWin.uploadFailed = true
                     overlayWin.shareUrl     = ""
@@ -551,12 +557,10 @@ Variants {
 				: overlayWin.uploadFailed
 					? (_spErrRow.implicitWidth + Style.marginM * 2)
 					: (_spSuccRow.implicitWidth + Style.marginM * 2)
-
 			x: Math.max(Style.marginS, Math.min(
 				toolbar.x + (toolbar.width - width) / 2,
 				overlayWin.width - width - Style.marginS
 			))
-
 			y: toolbar.useVertical
 				? Math.max(Style.marginS, Math.min(
 					toolbar.y + (toolbar.height - height) / 2,
@@ -565,7 +569,6 @@ Variants {
 				: (toolbar.y >= height + Style.marginS
 					? toolbar.y - height - Style.marginXS
 					: toolbar.y + toolbar.height + Style.marginXS)
-            // ── Uploading ──────────────────────────────────────────────────
             Row {
                 id: _spLoadRow
                 anchors.centerIn: parent
@@ -582,8 +585,6 @@ Variants {
                     anchors.verticalCenter: parent.verticalCenter
                 }
             }
-
-            // ── Success ────────────────────────────────────────────────────
             Row {
                 id: _spSuccRow
                 anchors.centerIn: parent
@@ -626,8 +627,6 @@ Variants {
                     }
                 }
             }
-
-            // ── Error ──────────────────────────────────────────────────────
             Row {
                 id: _spErrRow
                 anchors.centerIn: parent
@@ -709,7 +708,6 @@ Variants {
             border.width: Style.borderM
             opacity:      0.8
         }
-        // Zoom badge — Color.mPrimary background guarantees contrast against any image content
         Rectangle {
             visible: overlayWin.isPrimary && root.zoomScale > 1.0
             x:      overlayWin.localX + root.regionW - width - Style.marginXS
@@ -1089,22 +1087,18 @@ Variants {
                 property string iconName:   ""
                 property string tip:        ""
                 property bool   btnEnabled: true
-
                 width:   28
                 height:  34
                 radius:  Style.radiusS
                 color:   zbHover.containsMouse ? Color.mHover : "transparent"
                 enabled: btnEnabled
                 opacity: enabled ? 1.0 : 0.3
-
                 signal clicked()
-
                 NIcon {
                     anchors.centerIn: parent
                     icon:  iconName
                     color: zbHover.containsMouse ? Color.mOnHover : Color.mOnSurface
                 }
-
                 MouseArea {
                     id:           zbHover
                     anchors.fill: parent
@@ -1115,13 +1109,11 @@ Variants {
                     onExited:     TooltipService.hide()
                 }
             }
-
             component ActionBtn: Rectangle {
                 property string iconName: ""
                 property string tip:      ""
                 property bool   danger:   false
                 property bool   disabled: false
-
                 width:   34
                 height:  34
                 radius:  Style.radiusS
@@ -1129,9 +1121,7 @@ Variants {
                 color:   (!disabled && abHover.containsMouse)
                          ? (danger ? Qt.alpha(Color.mError, 0.15) : Color.mHover)
                          : "transparent"
-
                 signal clicked()
-
                 NIcon {
                     anchors.centerIn: parent
                     icon:  iconName
@@ -1141,7 +1131,6 @@ Variants {
                              ? Color.mOnHover
                              : Color.mOnSurface
                 }
-
                 MouseArea {
                     id:           abHover
                     anchors.fill: parent
@@ -1527,9 +1516,7 @@ Variants {
 			height: toolbar.useVertical
 				? (popContent.implicitHeight + Style.marginM)
 				: (popContent.implicitHeight + Style.marginS)
-
 			readonly property bool _canGoRight: toolbar.x + toolbar.width + width + Style.marginXS <= overlayWin.width
-
 			x: toolbar.useVertical
 				? (_canGoRight
 					? toolbar.x + toolbar.width + Style.marginXS
@@ -1538,7 +1525,6 @@ Variants {
 					toolbar.x + (toolbar.width - width) / 2,
 					overlayWin.width - width - Style.marginS
 				))
-
 			y: toolbar.useVertical
 				? Math.max(Style.marginS, Math.min(
 					toolbar.y + (toolbar.height - height) / 2,
@@ -1744,3 +1730,4 @@ Variants {
         }
     }
 }
+
