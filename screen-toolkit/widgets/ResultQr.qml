@@ -6,19 +6,19 @@ import qs.Services.UI
 import "../utils/utils.js" as U
 Item {
     id: root
-    property var pluginApi:    null
+    property var pluginApi: null
     property var mainInstance: null
-    implicitWidth:  parent?.width ?? 0
+    implicitWidth: parent?.width ?? 0
     implicitHeight: contentCol.implicitHeight
-    readonly property string qrResult:      mainInstance?.qrResult      ?? ""
+    readonly property string qrResult: mainInstance?.qrResult ?? ""
     readonly property string qrCapturePath: mainInstance?.qrCapturePath ?? ""
     readonly property string qrType: {
         var r = root.qrResult
         if (r.startsWith("http://") || r.startsWith("https://")) return "url"
-        if (r.startsWith("WIFI:"))       return "wifi"
+        if (r.startsWith("WIFI:")) return "wifi"
         if (r.startsWith("BEGIN:VCARD")) return "contact"
-        if (r.startsWith("mailto:"))     return "email"
-        if (r.startsWith("otpauth://"))  return "otp"
+        if (r.startsWith("mailto:")) return "email"
+        if (r.startsWith("otpauth://")) return "otp"
         return "text"
     }
     readonly property string qrWifiName: {
@@ -34,19 +34,14 @@ Item {
     Process { id: clipProc }
     function _copy(text) {
         if (!text || text === "") return
-        clipProc.exec({ command: ["bash", "-c",
-            "printf '%s' " + U.shellEscape(text) + " | wl-copy 2>/dev/null"] })
+        clipProc.exec({
+            command: ["bash", "-c", "printf '%s' " + U.shellEscape(text) + " | wl-copy 2>/dev/null"]
+        })
     }
     function clear() {
-        if (pluginApi) {
-            pluginApi.pluginSettings.qrResult      = ""
-            pluginApi.pluginSettings.qrCapturePath = ""
-            pluginApi.saveSettings()
-        }
         if (mainInstance) {
-            mainInstance.qrResult      = ""
-            mainInstance.qrCapturePath = ""
-            mainInstance.activeTool    = ""
+            mainInstance.clearQrResult()
+            mainInstance.activeTool = ""
         }
     }
     Column {
@@ -54,65 +49,120 @@ Item {
         width: parent.width
         spacing: Style.marginM
         Row {
-            width: parent.width; spacing: Style.marginS
-            NIcon { icon: "qrcode"; color: Color.mPrimary; anchors.verticalCenter: parent.verticalCenter }
-            NText { text: pluginApi?.tr("tools.qr"); color: Color.mPrimary; font.weight: Font.Bold; pointSize: Style.fontSizeS; anchors.verticalCenter: parent.verticalCenter }
+            width: parent.width
+            spacing: Style.marginS
+            NIcon {
+                icon: "qrcode"
+                color: Color.mPrimary
+                anchors.verticalCenter: parent.verticalCenter
+            }
+            NText {
+                text: pluginApi?.tr("tools.qr")
+                color: Color.mPrimary
+                font.weight: Font.Bold
+                pointSize: Style.fontSizeS
+                anchors.verticalCenter: parent.verticalCenter
+            }
         }
         Rectangle {
             width: parent.width
-            height: Math.min(qrThumb.implicitHeight * (parent.width / Math.max(qrThumb.implicitWidth, 1)), 160 * Style.uiScaleRatio)
-            radius: Style.radiusM; color: "transparent"; clip: true
+            height: Math.min(
+                qrThumb.implicitHeight * (parent.width / Math.max(qrThumb.implicitWidth, 1)),
+                160 * Style.uiScaleRatio
+            )
+            radius: Style.radiusM
+            color: "transparent"
+            clip: true
             border.color: Style.capsuleBorderColor
             border.width: Style.capsuleBorderWidth
             visible: root.qrCapturePath !== "" && root.qrResult !== "" && qrThumb.status === Image.Ready
             Image {
-                id: qrThumb; anchors.fill: parent
+                id: qrThumb
+                anchors.fill: parent
                 source: (root.qrCapturePath !== "" && root.qrResult !== "")
-                    ? ("file://" + root.qrCapturePath) : ""
-                fillMode: Image.PreserveAspectFit; smooth: true; cache: false
+                    ? ("file://" + root.qrCapturePath)
+                    : ""
+                fillMode: Image.PreserveAspectFit
+                smooth: true
+                cache: false
             }
         }
         Rectangle {
-            height: 26; width: qrBadge.implicitWidth + Style.marginM * 2; radius: Style.radiusS
-            color: Color.mPrimaryContainer || Color.mSurfaceVariant
+            height: 26
+            width: qrBadge.implicitWidth + Style.marginM * 2
+            radius: Style.radiusS
+            color: Qt.alpha(Color.mPrimary, 0.15)
             NText {
-                id: qrBadge; anchors.centerIn: parent; font.weight: Font.Bold; pointSize: Style.fontSizeXS
-                color: Color.mOnPrimaryContainer || Color.mOnSurface
-                text: root.qrType === "url"     ? "🔗 URL"
-                    : root.qrType === "wifi"    ? "📶 WiFi"
+                id: qrBadge
+                anchors.centerIn: parent
+                font.weight: Font.Bold
+                pointSize: Style.fontSizeXS
+                color: Color.mPrimary
+                text: root.qrType === "url" ? "🔗 URL"
+                    : root.qrType === "wifi" ? "📶 WiFi"
                     : root.qrType === "contact" ? "👤 Contact"
-                    : root.qrType === "email"   ? "✉️ Email"
-                    : root.qrType === "otp"     ? "🔐 OTP"
+                    : root.qrType === "email" ? "✉️ Email"
+                    : root.qrType === "otp" ? "🔐 OTP"
                     : "📄 Text"
             }
         }
         Column {
-            width: parent.width; spacing: Style.marginS
+            width: parent.width
+            spacing: Style.marginS
             visible: root.qrType === "wifi"
             Rectangle {
-                width: parent.width; height: 38; radius: Style.radiusM; color: Color.mSurface
-                border.color: Style.capsuleBorderColor; border.width: Style.capsuleBorderWidth
+                width: parent.width
+                height: 38
+                radius: Style.radiusM
+                color: Color.mSurface
+                border.color: Style.capsuleBorderColor
+                border.width: Style.capsuleBorderWidth
                 Row {
-                    anchors.fill: parent; anchors.margins: Style.marginS; spacing: Style.marginS
-                    NIcon { icon: "wifi"; color: Color.mPrimary }
-                    NText { text: root.qrWifiName || "Unknown"; color: Color.mOnSurface; font.weight: Font.Bold; pointSize: Style.fontSizeS }
+                    anchors.fill: parent
+                    anchors.margins: Style.marginS
+                    spacing: Style.marginS
+                    NIcon {
+                        icon: "wifi"
+                        color: Color.mPrimary
+                    }
+                    NText {
+                        text: root.qrWifiName || "Unknown"
+                        color: Color.mOnSurface
+                        font.weight: Font.Bold
+                        pointSize: Style.fontSizeS
+                    }
                 }
             }
             Rectangle {
-                width: parent.width; height: 38; radius: Style.radiusM
+                width: parent.width
+                height: 38
+                radius: Style.radiusM
                 color: wph.containsMouse ? Color.mHover : Color.mSurface
-                border.color: Style.capsuleBorderColor; border.width: Style.capsuleBorderWidth
+                border.color: Style.capsuleBorderColor
+                border.width: Style.capsuleBorderWidth
                 Row {
-                    anchors.fill: parent; anchors.margins: Style.marginS; spacing: Style.marginS
-                    NIcon { icon: "key"; color: Color.mOnSurfaceVariant }
+                    anchors.fill: parent
+                    anchors.margins: Style.marginS
+                    spacing: Style.marginS
+                    NIcon {
+                        icon: "key"
+                        color: Color.mOnSurfaceVariant
+                    }
                     NText {
                         text: root.qrWifiPass ? "••••••••" : pluginApi?.tr("panel.noPassword")
-                        color: Color.mOnSurfaceVariant; pointSize: Style.fontSizeS
+                        color: Color.mOnSurfaceVariant
+                        pointSize: Style.fontSizeS
                     }
-                    NIcon { icon: "copy"; color: Color.mOnSurfaceVariant }
+                    NIcon {
+                        icon: "copy"
+                        color: Color.mOnSurfaceVariant
+                    }
                 }
                 MouseArea {
-                    id: wph; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                    id: wph
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
                     enabled: root.qrWifiPass !== ""
                     onClicked: {
                         root._copy(root.qrWifiPass)
@@ -122,53 +172,77 @@ Item {
             }
         }
         Rectangle {
-            width: parent.width; height: 120 * Style.uiScaleRatio
-            radius: Style.radiusM; color: Color.mSurface; clip: true
+            width: parent.width
+            height: 120 * Style.uiScaleRatio
+            radius: Style.radiusM
+            color: Color.mSurface
+            clip: true
             border.color: Style.capsuleBorderColor
             border.width: Style.capsuleBorderWidth
             visible: root.qrType !== "wifi"
             Flickable {
-                id: qrFlick; anchors.fill: parent; anchors.margins: Style.marginS
-                contentHeight: qrText.implicitHeight; clip: true
+                id: qrFlick
+                anchors.fill: parent
+                anchors.margins: Style.marginS
+                contentHeight: qrText.implicitHeight
+                clip: true
                 interactive: qrText.implicitHeight > qrFlick.height
                 TextEdit {
-                    id: qrText; width: qrFlick.width; text: root.qrResult
-                    wrapMode: TextEdit.WordWrap; color: Color.mOnSurface
-                    font.pointSize: Style.fontSizeS; selectByMouse: true
-                    selectionColor: Color.mPrimary; selectedTextColor: Color.mOnPrimary
+                    id: qrText
+                    width: qrFlick.width
+                    text: root.qrResult
+                    wrapMode: TextEdit.WordWrap
+                    color: Color.mOnSurface
+                    font.pointSize: Style.fontSizeS
+                    selectByMouse: true
+                    selectionColor: Color.mPrimary
+                    selectedTextColor: Color.mOnPrimary
                     WheelHandler {
-                        onWheel: event => { qrFlick.flick(0, event.angleDelta.y * 5); event.accepted = false }
+                        onWheel: event => {
+                            qrFlick.flick(0, event.angleDelta.y * 5)
+                            event.accepted = false
+                        }
                     }
                 }
             }
         }
         Row {
-            width: parent.width; spacing: Style.marginS
+            width: parent.width
+            spacing: Style.marginS
             Rectangle {
-                width: parent.width - 46; height: 38; radius: Style.radiusM
+                width: parent.width - 46
+                height: 38
+                radius: Style.radiusM
                 color: qah.containsMouse ? Color.mPrimary : Color.mSurface
-                border.color: Color.mPrimary; border.width: Style.capsuleBorderWidth
+                border.color: Color.mPrimary
+                border.width: Style.capsuleBorderWidth
                 Row {
-                    anchors.centerIn: parent; spacing: Style.marginS
+                    anchors.centerIn: parent
+                    spacing: Style.marginS
                     NIcon {
-                        icon: root.qrType === "url"   ? "external-link"
-                            : root.qrType === "email" ? "mail" : "copy"
+                        icon: root.qrType === "url" ? "external-link"
+                            : root.qrType === "email" ? "mail"
+                            : "copy"
                         color: qah.containsMouse ? Color.mOnPrimary : Color.mPrimary
                     }
                     NText {
-                        text: root.qrType === "url"   ? pluginApi?.tr("panel.openUrl")
+                        text: root.qrType === "url" ? pluginApi?.tr("panel.openUrl")
                             : root.qrType === "email" ? pluginApi?.tr("panel.composeEmail")
                             : pluginApi?.tr("panel.copy")
                         color: qah.containsMouse ? Color.mOnPrimary : Color.mPrimary
-                        font.weight: Font.Bold; pointSize: Style.fontSizeS
+                        font.weight: Font.Bold
+                        pointSize: Style.fontSizeS
                     }
                 }
                 MouseArea {
-                    id: qah; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                    id: qah
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        if (root.qrType === "url" || root.qrType === "email")
+                        if (root.qrType === "url" || root.qrType === "email") {
                             Qt.openUrlExternally(root.qrResult)
-                        else {
+                        } else {
                             root._copy(root.qrResult)
                             ToastService.showNotice(pluginApi?.tr("panel.copied"))
                         }
@@ -176,22 +250,25 @@ Item {
                 }
             }
             Rectangle {
-                width: 38; height: 38; radius: Style.radiusM
-                color: qch.containsMouse ? Color.mErrorContainer || "#ffcdd2" : Color.mSurface
-                border.color: qch.containsMouse ? Color.mError || "#f44336" : (Style.capsuleBorderColor)
+                width: 38
+                height: 38
+                radius: Style.radiusM
+                color: qch.containsMouse ? Qt.alpha(Color.mError, 0.15) : Color.mSurface
+                border.color: qch.containsMouse ? Color.mError : Style.capsuleBorderColor
                 border.width: Style.capsuleBorderWidth
                 NIcon {
-                    anchors.centerIn: parent; icon: "trash"
-                    color: qch.containsMouse ? Color.mError || "#f44336" : Color.mOnSurfaceVariant
+                    anchors.centerIn: parent
+                    icon: "trash"
+                    color: qch.containsMouse ? (Color.mError || "#f44336") : Color.mOnSurfaceVariant
                 }
                 MouseArea {
-                    id: qch; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                    id: qch
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
                     onClicked: root.clear()
                 }
             }
         }
     }
 }
-
-
-

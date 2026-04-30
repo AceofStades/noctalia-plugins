@@ -55,35 +55,13 @@ Item {
         clipProc.exec({ command: ["bash", "-c",
             "printf '%s' " + U.shellEscape(text) + " | wl-copy 2>/dev/null"] })
     }
-    Process {
-        id: translateProc
-        property bool isTranslating: false
-        stdout: StdioCollector {}
-        onExited: {
-            isTranslating = false
-            var result = translateProc.stdout.text.trim()
-            if (root.mainInstance)
-                root.mainInstance.translateResult = result !== ""
-                    ? result : (pluginApi?.tr("messages.translate-failed"))
-        }
-    }
     function _translate(text, lang) {
-        if (!text || text === "" || translateProc.isTranslating) return
-        translateProc.isTranslating = true
-        if (root.mainInstance) root.mainInstance.translateResult = ""
-        translateProc.exec({ command: ["bash", "-c",
-            "trans -brief -to " + lang + " " + U.shellEscape(text)] })
+        if (mainInstance) mainInstance.runTranslate(text, lang)
     }
     function clear() {
         if (mainInstance) {
-            mainInstance.ocrResult      = ""
-            mainInstance.ocrCapturePath = ""
-            mainInstance.activeTool     = ""
-        }
-        if (pluginApi) {
-            pluginApi.pluginSettings.ocrResult      = ""
-            pluginApi.pluginSettings.ocrCapturePath = ""
-            pluginApi.saveSettings()
+            mainInstance.clearOcrResult()
+            mainInstance.activeTool = ""
         }
     }
     Column {
@@ -104,8 +82,8 @@ Item {
         Rectangle {
             width: parent.width; height: 220 * Style.uiScaleRatio
             radius: Style.radiusM; color: Color.mSurface; clip: true
-            border.color: Style.capsuleBorderColor || "transparent"
-            border.width: Style.capsuleBorderWidth || 1
+            border.color: Style.capsuleBorderColor
+            border.width: Style.capsuleBorderWidth
             Flickable {
                 id: ocrFlick; anchors.fill: parent; anchors.margins: Style.marginS
                 contentHeight: ocrText.implicitHeight; clip: true
@@ -184,7 +162,7 @@ Item {
                 id: _ocrClearBtn; height: 26; width: _ocrClearRow.implicitWidth + Style.marginM * 2; radius: Style.radiusS
                 color: _ocrClearMA.containsMouse
                     ? Qt.rgba(Color.mError.r, Color.mError.g, Color.mError.b, 0.15) : Color.mSurfaceVariant
-                border.color: Color.mError; border.width: Style.capsuleBorderWidth || 1
+                border.color: Color.mError; border.width: Style.capsuleBorderWidth
                 Row {
                     id: _ocrClearRow; anchors.centerIn: parent; spacing: Style.marginXS
                     NIcon { icon: "trash"; color: _ocrClearMA.containsMouse ? Color.mError : Color.mOnSurfaceVariant; scale: 0.8 }
@@ -243,8 +221,8 @@ Item {
             Rectangle {
                 width: parent.width; height: 140 * Style.uiScaleRatio
                 radius: Style.radiusM; color: Color.mSurface; clip: true
-                border.color: Style.capsuleBorderColor || "transparent"
-                border.width: Style.capsuleBorderWidth || 1
+                border.color: Style.capsuleBorderColor
+                border.width: Style.capsuleBorderWidth
                 visible: root.translateResult !== ""
                 Flickable {
                     id: trFlick; anchors.fill: parent; anchors.margins: Style.marginS
@@ -278,4 +256,3 @@ Item {
         }
     }
 }
-

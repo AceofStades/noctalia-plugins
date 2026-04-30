@@ -9,6 +9,7 @@ import qs.Services.Compositor
 import "overlays"
 import "widgets"
 import "utils/utils.js" as U
+import "tools"
 Item {
     id: root
     property var pluginApi: null
@@ -25,27 +26,29 @@ Item {
     property var    installedLangs:         []
     property bool   transAvailable:         false
     property string detectedRecorder:       ""
-    readonly property string detectedCompositor: isHyprland ? "hyprland" : isNiri ? "niri" : "other"
-    property string resultHex:        ""
-    property string resultRgb:        ""
-    property string resultHsv:        ""
-    property string resultHsl:        ""
-    property string colorCapturePath: ""
-    property int    colorCacheBust:   0
-    property string ocrResult:        ""
-    property string ocrCapturePath:   ""
-    property string qrResult:         ""
-    property string qrCapturePath:    ""
-    property string translateResult:  ""
-    property var    paletteColors:    []
-    property var    colorHistory:     []
+    readonly property string detectedCompositor: CompositorService.isHyprland ? "hyprland"
+                                                 : CompositorService.isNiri   ? "niri" : "other"
+    readonly property bool isNiri:     CompositorService.isNiri
+    readonly property bool isHyprland: CompositorService.isHyprland
+    readonly property string resultHex:        colorPickerOverlay.resultHex
+    readonly property string resultRgb:        colorPickerOverlay.resultRgb
+    readonly property string resultHsv:        colorPickerOverlay.resultHsv
+    readonly property string resultHsl:        colorPickerOverlay.resultHsl
+    readonly property string colorCapturePath: colorPickerOverlay.colorCapturePath
+    readonly property int    colorCacheBust:   colorPickerOverlay.colorCacheBust
+    readonly property var    colorHistory:     colorPickerOverlay.colorHistory
+    readonly property string ocrResult:        ocrOverlay.ocrResult
+    readonly property string ocrCapturePath:   ocrOverlay.ocrCapturePath
+    readonly property string translateResult:  ocrOverlay.translateResult
+    readonly property string qrResult:         qrOverlay.qrResult
+    readonly property string qrCapturePath:    qrOverlay.qrCapturePath
+    readonly property var    paletteColors:    paletteOverlay.paletteColors
     readonly property string recordState:  recordOverlay?.recordState  ?? ""
     readonly property string recordFormat: recordOverlay?.format       ?? "gif"
     readonly property string recordPath:   recordOverlay?.gifPath      ?? ""
     readonly property bool   mirrorVisible: mirrorOverlay.isVisible
     readonly property bool   hasPins:       pinOverlay.hasPins
-    readonly property bool   isNiri:      CompositorService.isNiri
-    readonly property bool   isHyprland:  CompositorService.isHyprland
+    readonly property var mainInstance: pluginApi?.mainInstance ?? null
     property int    _regionX:      0
     property int    _regionY:      0
     property int    _regionW:      0
@@ -72,15 +75,10 @@ Item {
     }
     onPluginApiChanged: {
         if (pluginApi) {
-            _resolveMainInstance()
-            mainInstancePoller.start()
             if (!root._sessionChecked) {
                 root._sessionChecked = true
                 _checkSession()
             }
-        } else {
-            mainInstancePoller.stop()
-            root.mainInstance = null
         }
     }
     Process {
@@ -88,11 +86,8 @@ Item {
         stdout: StdioCollector {}
         onExited: {
             var isNewBoot = sessionCheckProc.stdout.text.trim() === "new"
-            if (isNewBoot) {
-                _clearStaleResults()
-            } else {
-                _restoreSavedState()
-            }
+            if (isNewBoot) _clearStaleResults()
+            else           _restoreSavedState()
         }
     }
     function _checkSession() {
@@ -103,80 +98,72 @@ Item {
     }
     function _clearStaleResults() {
         if (!pluginApi) return
+        var s = pluginApi.pluginSettings
+        s.resultHex        = ""; s.resultRgb        = ""
+        s.resultHsv        = ""; s.resultHsl        = ""
+        s.colorCapturePath = ""; s.colorCacheBust   = 0
+        s.ocrResult        = ""; s.ocrCapturePath   = ""
+        s.qrResult         = ""; s.qrCapturePath    = ""
+        s.paletteColors    = ""; s.translateResult  = ""
+        pluginApi.saveSettings()
+        colorPickerOverlay.clearResults()
+        ocrOverlay.clearResults()
+        qrOverlay.clearResults()
+        paletteOverlay.clearResults()
+        colorPickerOverlay.colorHistory = pluginApi.pluginSettings.colorHistory || []
+    }
+    function clearColorResult() {
+    colorPickerOverlay.clearResults()
+    if (pluginApi) {
         pluginApi.pluginSettings.resultHex        = ""
         pluginApi.pluginSettings.resultRgb        = ""
         pluginApi.pluginSettings.resultHsv        = ""
         pluginApi.pluginSettings.resultHsl        = ""
         pluginApi.pluginSettings.colorCapturePath = ""
         pluginApi.pluginSettings.colorCacheBust   = 0
-        pluginApi.pluginSettings.ocrResult        = ""
-        pluginApi.pluginSettings.ocrCapturePath   = ""
-        pluginApi.pluginSettings.qrResult         = ""
-        pluginApi.pluginSettings.qrCapturePath    = ""
-        pluginApi.pluginSettings.paletteColors    = []
-        pluginApi.pluginSettings.translateResult  = ""
         pluginApi.saveSettings()
-        root.colorHistory = pluginApi.pluginSettings.colorHistory || []
     }
+}
+function clearColorHistory() {
+    colorPickerOverlay.colorHistory = []
+    if (pluginApi) { pluginApi.pluginSettings.colorHistory = []; pluginApi.saveSettings() }
+}
+function clearOcrResult() {
+    ocrOverlay.clearResults()
+    if (pluginApi) {
+        pluginApi.pluginSettings.ocrResult      = ""
+        pluginApi.pluginSettings.ocrCapturePath = ""
+        pluginApi.saveSettings()
+    }
+}
+function clearQrResult() {
+    qrOverlay.clearResults()
+    if (pluginApi) {
+        pluginApi.pluginSettings.qrResult      = ""
+        pluginApi.pluginSettings.qrCapturePath = ""
+        pluginApi.saveSettings()
+    }
+}
+function clearPaletteResult() {
+    paletteOverlay.clearResults()
+    if (pluginApi) { pluginApi.pluginSettings.paletteColors = []; pluginApi.saveSettings() }
+}
     function _restoreSavedState() {
         if (!pluginApi) return
         var s = pluginApi.pluginSettings
-        if ((s.resultHex ?? "") !== "") {
-            root.resultHex        = s.resultHex
-            root.resultRgb        = s.resultRgb        ?? ""
-            root.resultHsv        = s.resultHsv        ?? ""
-            root.resultHsl        = s.resultHsl        ?? ""
-            root.colorCapturePath = s.colorCapturePath ?? ""
-            root.colorCacheBust   = s.colorCacheBust   ?? 0
-        }
-        if ((s.ocrResult ?? "") !== "") {
-            root.ocrResult      = s.ocrResult
-            root.ocrCapturePath = s.ocrCapturePath ?? ""
-        }
-        if ((s.qrResult ?? "") !== "") {
-            root.qrResult      = s.qrResult
-            root.qrCapturePath = s.qrCapturePath ?? ""
-        }
-        var pal = s.paletteColors ?? []
-        if (pal.length > 0) root.paletteColors = pal
-        root.colorHistory = s.colorHistory || []
-    }
-    property var mainInstance: null
-    Connections {
-        target: pluginApi
-        ignoreUnknownSignals: true
-        function onMainInstanceChanged() { root._resolveMainInstance() }
-    }
-    function _resolveMainInstance() {
-        if (!pluginApi) { mainInstancePoller.stop(); return }
-        if (pluginApi?.mainInstance) {
-            root.mainInstance = pluginApi.mainInstance
-            mainInstancePoller.stop()
-        }
-    }
-    Timer {
-        id: mainInstancePoller
-        interval: 200; repeat: true
-        property int _attempts: 0
-        readonly property int _maxAttempts: 25
-        onTriggered: {
-            _attempts++
-            root._resolveMainInstance()
-            if (_attempts >= _maxAttempts && root.mainInstance === null) {
-                console.warn("ScreenToolkit: mainInstance not resolved after 5s")
-                stop()
-            }
-        }
-        onRunningChanged: if (!running) _attempts = 0
+        colorPickerOverlay.loadState(s)
+        ocrOverlay.loadState(s)
+        qrOverlay.loadState(s)
+        paletteOverlay.loadState(s)
+        colorPickerOverlay.colorHistory = s.colorHistory || []
     }
     Connections {
         target: recordOverlay
         function onRecordStateChanged() {
             if (!pluginApi) return
-            var s = recordOverlay.recordState
             var skipConfirm = pluginApi.pluginSettings?.recordSkipConfirmation ?? false
             var toClipboard = pluginApi.pluginSettings?.recordCopyToClipboard  ?? false
-            if (s === "converting" && !skipConfirm && !toClipboard) {
+            if (recordOverlay.recordState === "converting" && !skipConfirm && !toClipboard) {
                 var screen = recordOverlay._primaryScreen
                 if (screen) pluginApi.openPanel(screen)
                 else pluginApi.withCurrentScreen(sc => pluginApi.openPanel(sc))
@@ -184,6 +171,67 @@ Item {
         }
         function onDismissed() {
             if (root.activeTool === "record") root.activeTool = ""
+        }
+    }
+    Connections {
+        target: colorPickerOverlay
+        function onDone() {
+            root.isRunning  = false
+            root.activeTool = "colorpicker"
+            pluginApi?.withCurrentScreen(screen => pluginApi.openPanel(screen))
+        }
+        function onFailed() {
+            root.isRunning  = false
+            root.activeTool = ""
+            ToastService.showError(pluginApi?.tr("messages.picker-cancelled"))
+        }
+    }
+    Connections {
+        target: ocrOverlay
+        function onDone() {
+            root.isRunning  = false
+            root.activeTool = "ocr"
+            pluginApi?.withCurrentScreen(screen => pluginApi.openPanel(screen))
+        }
+        function onFailed() {
+            root.isRunning  = false
+            root.activeTool = ""
+            ToastService.showError(pluginApi?.tr("messages.no-text"))
+        }
+    }
+    Connections {
+        target: qrOverlay
+        function onDone() {
+            root.isRunning  = false
+            root.activeTool = "qr"
+            pluginApi?.withCurrentScreen(screen => pluginApi.openPanel(screen))
+        }
+        function onFailed() {
+            root.isRunning  = false
+            root.activeTool = ""
+            ToastService.showError(pluginApi?.tr("messages.no-qr"))
+        }
+    }
+    Connections {
+        target: lensOverlay
+        function onDone()   { root.isRunning = false; root.activeTool = "" }
+        function onFailed() {
+            root.isRunning  = false
+            root.activeTool = ""
+            ToastService.showError(pluginApi?.tr("messages.lens-failed"))
+        }
+    }
+    Connections {
+        target: paletteOverlay
+        function onDone() {
+            root.isRunning  = false
+            root.activeTool = "palette"
+            pluginApi?.withCurrentScreen(screen => pluginApi.openPanel(screen))
+        }
+        function onFailed() {
+            root.isRunning  = false
+            root.activeTool = ""
+            ToastService.showError(pluginApi?.tr("messages.palette-failed"))
         }
     }
     RegionSelector {
@@ -210,11 +258,16 @@ Item {
             root.activeTool = ""
         }
     }
-    Annotate { id: annotateOverlay; mainInstance: root }
-    Measure  { id: measureOverlay;  mainInstance: root }
-    Pin      { id: pinOverlay;      pluginApi: root.pluginApi }
-    Record   { id: recordOverlay;   pluginApi: root.pluginApi }
-    Mirror   { id: mirrorOverlay;   pluginApi: root.pluginApi }
+    Annotate      { id: annotateOverlay;      mainInstance: root }
+    Measure       { id: measureOverlay;       mainInstance: root }
+    Pin           { id: pinOverlay;           pluginApi: root.pluginApi }
+    Record        { id: recordOverlay;        pluginApi: root.pluginApi }
+    Mirror { id: mirrorOverlay; pluginApi: root.pluginApi; scriptsDir: root._scriptsDir }
+    ColorPicker   { id: colorPickerOverlay;   pluginApi: root.pluginApi; scriptsDir: root._scriptsDir }
+    Ocr           { id: ocrOverlay;           pluginApi: root.pluginApi; scriptsDir: root._scriptsDir }
+    Qr            { id: qrOverlay;            pluginApi: root.pluginApi; scriptsDir: root._scriptsDir }
+    Lens          { id: lensOverlay;          pluginApi: root.pluginApi; scriptsDir: root._scriptsDir }
+    Palette       { id: paletteOverlay;       pluginApi: root.pluginApi; scriptsDir: root._scriptsDir }
     Process {
         id: detectLangsProc
         stdout: StdioCollector {}
@@ -261,125 +314,6 @@ Item {
             root.detectedRecorder =
                 path.endsWith("wl-screenrec") ? "wl-screenrec" :
                 path.endsWith("wf-recorder")  ? "wf-recorder"  : ""
-        }
-    }
-    Process {
-        id: colorPickerProc
-        stdout: StdioCollector {}
-        onExited: (code) => {
-            root.isRunning = false
-            if (code !== 0 || colorPickerProc.stdout.text.trim() === "") {
-                root.activeTool = ""
-                ToastService.showError(pluginApi.tr("messages.picker-cancelled"))
-                return
-            }
-            var output = colorPickerProc.stdout.text.trim()
-            var parts  = output.split(/\s+/)
-            if (parts.length < 3) {
-                root.activeTool = ""
-                ToastService.showError(pluginApi.tr("messages.picker-cancelled"))
-                return
-            }
-            var r = Math.max(0, Math.min(255, parseInt(parts[0])))
-            var g = Math.max(0, Math.min(255, parseInt(parts[1])))
-            var b = Math.max(0, Math.min(255, parseInt(parts[2])))
-            var hex = "#" + ((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1).toUpperCase()
-            var rgb = "rgb(" + r + ", " + g + ", " + b + ")"
-            var rn  = r / 255, gn = g / 255, bn = b / 255
-            var max = Math.max(rn, gn, bn)
-            var min = Math.min(rn, gn, bn)
-            var d   = max - min
-            var h = 0
-            var s = max === 0 ? 0 : d / max
-            var v = max
-            if (d !== 0) {
-                if      (max === rn) h = ((gn - bn) / d + (gn < bn ? 6 : 0)) % 6
-                else if (max === gn) h = (bn - rn) / d + 2
-                else                 h = (rn - gn) / d + 4
-                h = Math.round(h * 60)
-            }
-            var hsv = "hsv(" + h + ", " + Math.round(s * 100) + "%, " + Math.round(v * 100) + "%)"
-            var l   = (max + min) / 2
-            var sl  = d === 0 ? 0 : d / (1 - Math.abs(2 * l - 1))
-            var hsl = "hsl(" + h + ", " + Math.round(sl * 100) + "%, " + Math.round(l * 100) + "%)"
-            root.resultHex        = hex
-            root.resultRgb        = rgb
-            root.resultHsv        = hsv
-            root.resultHsl        = hsl
-            root.colorCapturePath = "/tmp/screen-toolkit-colorpicker.png"
-            root.colorCacheBust   = Date.now()
-            if (pluginApi) {
-                pluginApi.pluginSettings.resultHex        = hex
-                pluginApi.pluginSettings.resultRgb        = rgb
-                pluginApi.pluginSettings.resultHsv        = hsv
-                pluginApi.pluginSettings.resultHsl        = hsl
-                pluginApi.pluginSettings.colorCapturePath = "/tmp/screen-toolkit-colorpicker.png"
-                pluginApi.pluginSettings.colorCacheBust   = Date.now()
-                var history = pluginApi.pluginSettings.colorHistory || []
-                history = [hex].concat(history.filter(c => c !== hex)).slice(0, 8)
-                pluginApi.pluginSettings.colorHistory = history
-                pluginApi.saveSettings()
-                root.colorHistory = history
-            }
-            root.activeTool = "colorpicker"
-            if (pluginApi)
-                pluginApi.withCurrentScreen(screen => pluginApi.openPanel(screen))
-        }
-    }
-    Process {
-        id: ocrProc
-        stdout: StdioCollector {}
-        onExited: {
-            root.isRunning = false
-            var text = ocrProc.stdout.text.trim()
-            if (text !== "") {
-                if (pluginApi) {
-                    pluginApi.pluginSettings.ocrResult       = text
-                    pluginApi.pluginSettings.ocrCapturePath  = "/tmp/screen-toolkit-ocr.png"
-                    pluginApi.pluginSettings.translateResult = ""
-                    pluginApi.saveSettings()
-                }
-                root.ocrResult       = text
-                root.ocrCapturePath  = "/tmp/screen-toolkit-ocr.png"
-                root.translateResult = ""
-                root.activeTool      = "ocr"
-                if (pluginApi)
-                    pluginApi.withCurrentScreen(screen => pluginApi.openPanel(screen))
-            } else {
-                root.activeTool = ""
-                ToastService.showError(pluginApi.tr("messages.no-text"))
-            }
-        }
-    }
-    Process {
-        id: qrProc
-        stdout: StdioCollector {}
-        onExited: {
-            root.isRunning = false
-            var result = qrProc.stdout.text.trim()
-            if (result !== "") {
-                if (pluginApi) {
-                    pluginApi.pluginSettings.qrResult      = result
-                    pluginApi.pluginSettings.qrCapturePath = "/tmp/screen-toolkit-qr.png"
-                    pluginApi.saveSettings()
-                }
-                root.qrResult      = result
-                root.qrCapturePath = "/tmp/screen-toolkit-qr.png"
-                root.activeTool    = "qr"
-                if (pluginApi)
-                    pluginApi.withCurrentScreen(screen => pluginApi.openPanel(screen))
-            } else {
-                root.activeTool = ""
-                ToastService.showError(pluginApi.tr("messages.no-qr"))
-            }
-        }
-    }
-    Process {
-        id: lensProc
-        onExited: (code) => {
-            root.isRunning  = false
-            root.activeTool = ""
-            if (code !== 0) ToastService.showError(pluginApi.tr("messages.lens-failed"))
         }
     }
     Process {
@@ -477,94 +411,26 @@ Item {
             }
         }
     }
-    Process {
-        id: paletteProc
-        stdout: StdioCollector {}
-        onExited: (code) => {
-            root.isRunning = false
-            var raw = paletteProc.stdout.text.trim()
-            if (code === 0 && raw !== "") {
-                var colors = raw.split("\n")
-                    .map(function(c) { return c.trim() })
-                    .filter(function(c) { return /^#[0-9a-fA-F]{6}$/.test(c) })
-                    .filter(function(c, i, arr) { return arr.indexOf(c) === i })
-                    .slice(0, 8)
-                if (colors.length > 0) {
-                    root.paletteColors = colors
-                    root.activeTool    = "palette"
-                    if (pluginApi) {
-                        pluginApi.pluginSettings.paletteColors = colors
-                        pluginApi.saveSettings()
-                        pluginApi.withCurrentScreen(screen => pluginApi.openPanel(screen))
-                    }
-                } else {
-                    root.activeTool = ""
-                    ToastService.showError(pluginApi?.tr("messages.palette-failed"))
-                }
-            } else {
-                root.activeTool = ""
-                ToastService.showError(pluginApi?.tr("messages.palette-failed"))
-            }
-        }
-    }
-    Process {
-        id: translateProc
-        property bool isTranslating: false
-        stdout: StdioCollector {}
-        onExited: {
-            translateProc.isTranslating = false
-            var result = translateProc.stdout.text.trim()
-            root.translateResult = result !== ""
-                ? result : pluginApi?.tr("messages.translate-failed")
-        }
-    }
     Process { id: clipProc }
     Timer {
         id: launchColorPicker
         interval: 220; repeat: false
-        onTriggered: {
-            colorPickerProc.exec({ command: [
-                root._scriptsDir + "color-picker.sh",
-                "/tmp/screen-toolkit-colorpicker.png"
-            ]})
-        }
+        onTriggered: colorPickerOverlay.run()
     }
     Timer {
         id: launchOcr
         interval: 50; repeat: false
-        onTriggered: {
-            var area        = root._grimW * root._grimH
-            var upscale     = root._grimH < 30 ? "-resize 400%" : (area < 50000 || root._grimW < 200) ? "-resize 200%" : ""
-            var aspectRatio = root._grimW / Math.max(root._grimH, 1)
-            var psm         = aspectRatio > 8 ? "7" : area < 60000 ? "6" : root._grimH < 40 ? "7" : "3"
-            ocrProc.exec({ command: [
-                root._scriptsDir + "ocr.sh",
-                String(root._grimX), String(root._grimY), String(root._grimW), String(root._grimH),
-                root.pendingLangStr || "eng",
-                upscale,
-                psm
-            ]})
-        }
+        onTriggered: ocrOverlay.run(root._grimX, root._grimY, root._grimW, root._grimH, root.pendingLangStr)
     }
     Timer {
         id: launchQr
         interval: 50; repeat: false
-        onTriggered: {
-            qrProc.exec({ command: ["bash", "-c",
-                "grim -g \"" + root._grimGeometry + "\" /tmp/screen-toolkit-qr.png 2>/dev/null" +
-                "; zbarimg -q --raw /tmp/screen-toolkit-qr.png 2>/dev/null"
-            ]})
-        }
+        onTriggered: qrOverlay.run(root._grimGeometry)
     }
     Timer {
         id: launchLens
         interval: 50; repeat: false
-        onTriggered: {
-            lensProc.exec({ command: [
-                root._scriptsDir + "lens-upload.sh",
-                String(root._grimX), String(root._grimY), String(root._grimW), String(root._grimH)
-            ]})
-        }
+        onTriggered: lensOverlay.run(root._grimX, root._grimY, root._grimW, root._grimH)
     }
     Timer {
         id: launchAnnotate
@@ -582,13 +448,7 @@ Item {
         id: launchAnnotateActiveWindow
         interval: 360; repeat: false
         onTriggered: {
-            annotateWinProc.exec({ command: ["bash", "-c",
-                "WIN=$(hyprctl activewindow -j 2>/dev/null) || exit 1; " +
-                "GEOM=$(printf '%s' \"$WIN\" | jq -r '\"\\(.at[0]),\\(.at[1]) \\(.size[0])x\\(.size[1])\"' 2>/dev/null); " +
-                "[ -z \"$GEOM\" ] && exit 1; " +
-                "grim -g \"$GEOM\" /tmp/screen-toolkit-annotate.png 2>/dev/null || exit 1; " +
-                "printf '%s' \"$GEOM\""
-            ]})
+            annotateWinProc.exec({ command: [root._scriptsDir + "capture.sh", "annotate-window"] })
         }
     }
     Timer {
@@ -607,11 +467,7 @@ Item {
         id: launchPin
         interval: 50; repeat: false
         onTriggered: {
-            pinGrimProc.exec({ command: ["bash", "-c",
-                "FILE=/tmp/screen-toolkit-pin-$(date +%s%3N).png" +
-                "; grim -s 2 -g \"" + root._grimGeometry + "\" \"$FILE\" 2>/dev/null || exit 1" +
-                "; echo \"$FILE|" + root._grimW + "x" + root._grimH + "\""
-            ]})
+            pinGrimProc.exec({ command: [root._scriptsDir + "capture.sh", "pin", root._grimGeometry] })
         }
     }
     Timer {
@@ -624,14 +480,7 @@ Item {
     Timer {
         id: launchPalette
         interval: 50; repeat: false
-        onTriggered: {
-            var file = "/tmp/screen-toolkit-palette.png"
-            paletteProc.exec({ command: ["bash", "-c",
-                "grim -g \"" + root._grimGeometry + "\" " + file + " 2>/dev/null && " +
-                "magick " + file + " -alpha off +dither -colors 8 -unique-colors txt:- 2>/dev/null" +
-                " | grep -v '^#' | grep -oP '#[0-9a-fA-F]{6}' | head -8"
-            ]})
-        }
+        onTriggered: paletteOverlay.run(root._grimGeometry)
     }
     Timer {
         id: launchRecord
@@ -701,22 +550,13 @@ Item {
         })
     }
     function runTranslate(text, targetLang) {
-        if (!text || text === "" || translateProc.isTranslating) return
-        translateProc.isTranslating = true
-        root.translateResult = ""
-        translateProc.exec({ command: ["bash", "-c",
-            "trans -brief -to " + targetLang + " " + U.shellEscape(text)] })
+        ocrOverlay.runTranslate(text, targetLang)
     }
     function runColorPicker() {
         if (root.isRunning) return
-        root.isRunning        = true
-        root.activeTool       = ""
-        root.resultHex        = ""
-        root.resultRgb        = ""
-        root.resultHsv        = ""
-        root.resultHsl        = ""
-        root.colorCapturePath = ""
-        root.colorCacheBust   = 0
+        root.isRunning  = true
+        root.activeTool = ""
+        colorPickerOverlay.clearResults()
         closeThenLaunch(launchColorPicker)
     }
     function runOcr(langStr) {
@@ -764,8 +604,6 @@ Item {
     }
     function runPalette() {
         if (root.isRunning) return
-        if (pluginApi) { pluginApi.pluginSettings.paletteColors = []; pluginApi.saveSettings() }
-        root.paletteColors = []
         _runSlurpTool("palette")
     }
     function runPin() { _runSlurpTool("pin") }
@@ -788,10 +626,7 @@ Item {
     }
     function runRecordStop()    { recordOverlay.stopRecording() }
     function runRecordSave()    { recordOverlay._saveToFile() }
-    function runRecordDiscard() {
-        var screen = recordOverlay._primaryScreen
-        recordOverlay.dismiss()
-    }
+    function runRecordDiscard() { recordOverlay.dismiss() }
     function runRecord(format, audioOut, audioIn, cursor) {
         if (root.isRunning || recordOverlay.isRecording || recordOverlay.isConverting) return
         root.pendingRecordFormat   = format   || "gif"
@@ -819,16 +654,13 @@ Item {
         if (pluginApi) {
             pluginApi.withCurrentScreen(screen => {
                 pluginApi.closePanel(screen)
-                if (!mirrorOverlay.isVisible)
-                    mirrorOverlay.show(screen)
+                if (!mirrorOverlay.isVisible) mirrorOverlay.show(screen)
             })
         } else {
             if (!mirrorOverlay.isVisible) mirrorOverlay.show()
         }
     }
-    function runMirrorClose() {
-        mirrorOverlay.hide()
-    }
+    function runMirrorClose() { mirrorOverlay.hide() }
     function _runSlurpTool(tool) {
         if (root.isRunning) return
         root.pendingTool = tool
@@ -881,4 +713,3 @@ Item {
         function recordStop()          { if (recordOverlay.isRecording) recordOverlay.stopRecording() }
     }
 }
-
