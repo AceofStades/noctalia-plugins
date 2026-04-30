@@ -205,7 +205,7 @@ ColumnLayout {
 
     NDivider { Layout.fillWidth: true; Layout.topMargin: Style.marginM; Layout.bottomMargin: Style.marginM }
 
-        // ── Share ─────────────────────────────────────────────────────────────────
+    // ── Share ─────────────────────────────────────────────────────────────────
     ColumnLayout {
         Layout.fillWidth: true
         spacing: Style.marginM
@@ -287,35 +287,34 @@ ColumnLayout {
             }
         }
 
-        SettingToggle {
+        NToggle {
             Layout.fillWidth: true
-            labelText: pluginApi?.tr("settings.shareSkipPopover")
-            descText:  pluginApi?.tr("settings.shareSkipPopoverDesc")
-            checked:   root.shareSkipPopover
-            onToggled: (v) => { root.shareSkipPopover = v; saveSettings() }
+            label:       pluginApi?.tr("settings.shareSkipPopover")
+            description: pluginApi?.tr("settings.shareSkipPopoverDesc")
+            checked:     root.shareSkipPopover
+            onToggled:   (v) => { root.shareSkipPopover = v; saveSettings() }
         }
     }
 
     NDivider { Layout.fillWidth: true; Layout.topMargin: Style.marginM; Layout.bottomMargin: Style.marginM }
 
-
     // ── Recording ─────────────────────────────────────────────────────────────
     NLabel { label: pluginApi?.tr("settings.recordingSection") }
 
-    SettingToggle {
+    NToggle {
         Layout.fillWidth: true
-        labelText: pluginApi?.tr("settings.recordSkipConfirmation")
-        descText:  pluginApi?.tr("settings.recordSkipConfirmationDesc")
-        checked:   root.recordSkipConfirmation
-        onToggled: (v) => { root.recordSkipConfirmation = v; saveSettings() }
+        label:       pluginApi?.tr("settings.recordSkipConfirmation")
+        description: pluginApi?.tr("settings.recordSkipConfirmationDesc")
+        checked:     root.recordSkipConfirmation
+        onToggled:   (v) => { root.recordSkipConfirmation = v; saveSettings() }
     }
 
-    SettingToggle {
+    NToggle {
         Layout.fillWidth: true
-        labelText: pluginApi?.tr("settings.recordCopyToClipboard")
-        descText:  pluginApi?.tr("settings.recordCopyToClipboardDesc")
-        checked:   root.recordCopyToClipboard
-        onToggled: (v) => { root.recordCopyToClipboard = v; saveSettings() }
+        label:       pluginApi?.tr("settings.recordCopyToClipboard")
+        description: pluginApi?.tr("settings.recordCopyToClipboardDesc")
+        checked:     root.recordCopyToClipboard
+        onToggled:   (v) => { root.recordCopyToClipboard = v; saveSettings() }
     }
 
     NTextInput {
@@ -329,47 +328,6 @@ ColumnLayout {
             if (!isNaN(val)) {
                 root.gifMaxSeconds = Math.max(5, Math.min(300, val))
                 saveSettings()
-            }
-        }
-    }
-
-    component SettingToggle: RowLayout {
-        id: _tog
-        property string labelText: ""
-        property string descText:  ""
-        property bool   checked:   false
-        signal toggled(bool value)
-        spacing: Style.marginM
-        ColumnLayout {
-            Layout.fillWidth: true
-            spacing: Style.marginXXS
-            NLabel { label: _tog.labelText }
-            NText {
-                text:      _tog.descText
-                pointSize: Style.fontSizeXS
-                color:     Color.mOnSurfaceVariant
-                wrapMode:  Text.WordWrap
-                Layout.fillWidth: true
-            }
-        }
-        Rectangle {
-            width:  Style.marginXL * 2 + Style.marginXS
-            height: Style.marginL + Style.marginM
-            radius: Math.round((Style.marginL + Style.marginM) / 2)
-            color:  _tog.checked ? Color.mPrimary : Color.mSurfaceVariant
-            Behavior on color { ColorAnimation { duration: 120 } }
-            Rectangle {
-                id: _thumb
-                width:  Style.marginXL; height: Style.marginXL
-                radius: Math.round(Style.marginXL / 2)
-                color:  "white"
-                anchors.verticalCenter: parent.verticalCenter
-                x: _tog.checked ? parent.width - width - 2 : 2
-                Behavior on x { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
-            }
-            MouseArea {
-                anchors.fill: parent; cursorShape: Qt.PointingHandCursor
-                onClicked: _tog.toggled(!_tog.checked)
             }
         }
     }
