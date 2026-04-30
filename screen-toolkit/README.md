@@ -28,6 +28,10 @@ Screen Toolkit provides a single integrated panel for advanced screen interactio
 ### Color Picker + Annotation
 You can use the color picker tool to select any color, and it will be automatically applied to annotations.
 
+### Annotation – Shortcuts
+
+- **Ctrl + C:** Copy current annotation to clipboard and close overlay.
+
 ### Annotation – Sharing
 
 You can quickly upload screenshots and get a shareable link.
