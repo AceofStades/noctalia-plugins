@@ -26,6 +26,7 @@
     "open": "Open USB Manager",
     "refresh": "Refresh Devices",
     "unmount-all": "Unmount All",
+    "eject-all": "Eject All",
     "settings": "Settings"
   },
   "notifications": {

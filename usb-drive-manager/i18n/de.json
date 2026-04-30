@@ -26,6 +26,7 @@
     "open": "USB-Manager öffnen",
     "refresh": "Geräte aktualisieren",
     "unmount-all": "Alle aushängen",
+    "eject-all": "Alle auswerfen",
     "settings": "Einstellungen"
   },
   "notifications": {
