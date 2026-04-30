@@ -683,6 +683,11 @@ Item {
                 color:        ba.containsMouse ? Color.mHover : Color.mSurface
                 border.color: btn._accented ? btn._accentColor : Style.capsuleBorderColor
                 border.width: btn._accented ? 2 : Style.capsuleBorderWidth
+                clip: true
+
+                scale: ba.containsMouse && !btn.running ? 1.04 : 1.0
+                Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutQuint } }
+
                 Rectangle {
                     anchors.fill: parent; radius: parent.radius; color: btn._accentColor
                     opacity: btn.recording ? 0 : btn.active ? 0.15 : btn.focused ? 0.08 : 0
@@ -696,6 +701,25 @@ Item {
                         NumberAnimation { to: 0.2;  duration: 600 }
                     }
                 }
+
+                // click ripple
+                Rectangle {
+                    id: ripple
+                    width: 0; height: 0
+                    radius: width / 2
+                    color: btn._accentColor
+                    opacity: 0
+                    property real cx: 0; property real cy: 0
+                    x: cx - width  / 2
+                    y: cy - height / 2
+                    ParallelAnimation {
+                        id: rippleAnim
+                        NumberAnimation { target: ripple; property: "width";   to: 80; duration: 350; easing.type: Easing.OutCubic }
+                        NumberAnimation { target: ripple; property: "height";  to: 80; duration: 350; easing.type: Easing.OutCubic }
+                        NumberAnimation { target: ripple; property: "opacity"; to: 0;  duration: 350; easing.type: Easing.OutCubic }
+                    }
+                }
+
                 NIcon {
                     anchors.centerIn: parent; icon: btn.icon
                     color: btn._accented ? btn._accentColor
@@ -716,7 +740,15 @@ Item {
                 MouseArea {
                     id: ba; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
                     enabled: !btn.running || btn.recording
-                    onClicked:  btn.triggered()
+                    onClicked: (mouse) => {
+                        ripple.cx      = mouse.x
+                        ripple.cy      = mouse.y
+                        ripple.width   = 0
+                        ripple.height  = 0
+                        ripple.opacity = 0.3
+                        rippleAnim.restart()
+                        btn.triggered()
+                    }
                     onEntered:  TooltipService.show(btn, btn.tooltip !== "" ? btn.tooltip : btn.label)
                     onExited:   TooltipService.hide()
                 }
@@ -724,6 +756,7 @@ Item {
             NText {
                 text: btn.label; pointSize: Style.fontSizeXS
                 color: btn._accented ? btn._accentColor : Color.mOnSurfaceVariant
+                font.weight: btn.active ? Font.Bold : Font.Normal
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: btn.width; horizontalAlignment: Text.AlignHCenter; elide: Text.ElideRight
             }
