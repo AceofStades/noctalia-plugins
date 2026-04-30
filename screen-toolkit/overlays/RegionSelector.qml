@@ -5,17 +5,20 @@ import Quickshell.Wayland
 import qs.Commons
 import qs.Widgets
 import qs.Services.UI
+
 Item {
     id: root
     signal regionSelected(real x, real y, real w, real h, var screen)
     signal cancelled()
+
     property bool isVisible: false
     property var activeScreen: null
     property var windowRegions: []
     property var pluginApi: null
     property bool windowRegionsFetched: false
-    property bool isNiri: false
-    property bool _isNiriChecked: false
+
+    readonly property bool isNiri: Quickshell.env("NIRI_SOCKET") !== ""
+
     function show(screen) {
         var target = screen || null
         if (!target && Quickshell.screens.length > 0)
@@ -24,14 +27,7 @@ Item {
         root.windowRegions = []
         root.windowRegionsFetched = false
         root.isVisible = true
-        if (!root._isNiriChecked) {
-            root._isNiriChecked = true
-            _envCheckProc.exec({
-                command: ["bash", "-c",
-                    "[ -n \"$NIRI_SOCKET\" ] && echo 1 || echo 0"
-                ]
-            })
-        }
+
         _winFetchProc.exec({
             command: ["bash", "-c",
                 "if [ -n \"$HYPRLAND_INSTANCE_SIGNATURE\" ]; then" +
@@ -52,17 +48,12 @@ Item {
             ]
         })
     }
+
     function hide() {
         root.isVisible = false
         root.activeScreen = null
     }
-    Process {
-        id: _envCheckProc
-        stdout: StdioCollector {}
-        onExited: {
-            root.isNiri = _envCheckProc.stdout.text.trim() === "1"
-        }
-    }
+
     Process {
         id: _winFetchProc
         stdout: StdioCollector {}
@@ -88,6 +79,7 @@ Item {
             root.windowRegionsFetched = true
         }
     }
+
     Variants {
         model: Quickshell.screens
         delegate: PanelWindow {
@@ -101,6 +93,7 @@ Item {
             WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.keyboardFocus: visible ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
             WlrLayershell.namespace: "noctalia-region-selector"
+
             property real selX: 0
             property real selY: 0
             property real selW: 0
@@ -112,6 +105,7 @@ Item {
             property real fadeOpacity: 0.0
             property real _lastPaintMouseX: -1
             property real _lastPaintMouseY: -1
+
             NumberAnimation {
                 id: fadeIn
                 target: win
@@ -120,6 +114,7 @@ Item {
                 duration: 150
                 easing.type: Easing.OutCubic
             }
+
             onVisibleChanged: {
                 if (visible) {
                     fadeOpacity = 0.0
@@ -132,7 +127,9 @@ Item {
                     dragging = false
                 }
             }
+
             property var pendingCapture: null
+
             Timer {
                 id: captureDelay
                 interval: 80; repeat: false
@@ -144,6 +141,7 @@ Item {
                     }
                 }
             }
+
             function _winAt(px, py) {
                 var regions = root.windowRegions
                 var sx = win.screen?.x ?? 0, sy = win.screen?.y ?? 0
@@ -154,6 +152,7 @@ Item {
                 }
                 return -1
             }
+
             ShaderEffect {
                 anchors.fill: parent
                 z: 0
@@ -166,6 +165,7 @@ Item {
                 property vector4d outlineColor: Qt.vector4d(1.0, 1.0, 1.0, 1.0)
                 fragmentShader: Qt.resolvedUrl("../shaders/dimming.frag.qsb")
             }
+
             Canvas {
                 id: guides
                 anchors.fill: parent
@@ -180,6 +180,7 @@ Item {
                     var mx = win.mouseX, my = win.mouseY
                     var sx = win.selX,   sy = win.selY
                     var sw = win.selW,   sh = win.selH
+
                     if (!win.dragging && !hasSel) {
                         ctx.setLineDash([])
                         ctx.strokeStyle = "rgba(0,0,0,0.6)"; ctx.lineWidth = 3
@@ -197,6 +198,7 @@ Item {
                         ctx.fillStyle = "rgba(255,255,255,1.0)"
                         ctx.beginPath(); ctx.arc(mx, my, 2, 0, Math.PI * 2); ctx.fill()
                     }
+
                     if (win.dragging || hasSel) {
                         var ex = sx + sw, ey = sy + sh
                         ctx.strokeStyle = "rgba(0,0,0,0.5)"; ctx.lineWidth = 3
@@ -215,6 +217,7 @@ Item {
                         ctx.moveTo(0, ey); ctx.lineTo(width, ey)
                         ctx.stroke()
                     }
+
                     if (hasSel) {
                         ctx.setLineDash([])
                         ctx.strokeStyle = "rgba(255,255,255,0.15)"; ctx.lineWidth = 0.5
@@ -245,6 +248,7 @@ Item {
                     }
                 }
             }
+
             Rectangle {
                 readonly property real dpr: win.screen?.devicePixelRatio ?? 1.0
                 visible: win.selW > 30 && win.selH > 10
@@ -258,6 +262,7 @@ Item {
                 border.width: Style.borderS
                 x: Math.max(4, Math.min(win.selX + win.selW/2 - width/2, win.width - width - 4))
                 y: win.selY > 48 ? win.selY - height - Style.marginS : win.selY + win.selH + Style.marginS
+
                 NText {
                     id: _szText
                     anchors.centerIn: parent
@@ -267,6 +272,7 @@ Item {
                     pointSize: Style.fontSizeXS
                 }
             }
+
             Rectangle {
                 visible: !win.dragging && win.selW < 4
                 z: 10
@@ -277,6 +283,7 @@ Item {
                 color: Qt.rgba(0, 0, 0, 0.75)
                 x: { var bx = win.mouseX + 20; return bx + width > win.width - 4 ? win.mouseX - width - 20 : bx }
                 y: { var by = win.mouseY + 20; return by + height > win.height - 4 ? win.mouseY - height - 20 : by }
+
                 NText {
                     id: _coordText
                     anchors.centerIn: parent
@@ -285,6 +292,7 @@ Item {
                     pointSize: Style.fontSizeXS
                 }
             }
+
             Rectangle {
                 anchors { bottom: parent.bottom; horizontalCenter: parent.horizontalCenter; bottomMargin: Style.marginXL }
                 z: 10
@@ -295,6 +303,7 @@ Item {
                 color: Qt.rgba(0, 0, 0, 0.75)
                 border.color: Qt.rgba(1,1,1,0.1)
                 border.width: Style.borderS
+
                 Row {
                     id: _hintRow
                     anchors.centerIn: parent
@@ -313,6 +322,7 @@ Item {
                     NText { text: pluginApi?.tr("regionSelector.toCancel");    color: Qt.rgba(1,1,1,0.4); pointSize: Style.fontSizeXS }
                 }
             }
+
             MouseArea {
                 anchors.fill: parent
                 z: 3
@@ -381,6 +391,7 @@ Item {
                     }
                 }
             }
+
             Shortcut {
                 sequence: "Escape"; enabled: win.visible
                 onActivated: { root.hide(); root.cancelled() }
