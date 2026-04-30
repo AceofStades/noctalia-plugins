@@ -2,39 +2,31 @@
 # measure.sh — capture a measurement overlay
 # Args: sx sy rx ry rw rh lx1 ly1 lx2 ly2 lw lh color scale dest_dir full_path
 set -euo pipefail
-
 [ $# -lt 16 ] && { echo "Usage: measure.sh sx sy rx ry rw rh lx1 ly1 lx2 ly2 lw lh color scale dest_dir full_path" >&2; exit 1; }
-
 SX=$1;  SY=$2
 RX=$3;  RY=$4;  RW=$5;  RH=$6
 LX1=$7; LY1=$8; LX2=$9; LY2=${10}
 LW=${11}; LH=${12}
-COL=$13; SCALE=$14
-DEST_DIR=$15; FULL_PATH=$16
-
+COL=${13}; SCALE=${14}
+DEST_DIR=${15}; FULL_PATH=${16}
 TMP_CROP="/tmp/measure-crop-$$.png"
 TMP_OUT="/tmp/measure-out-$$.png"
 TMP_VLABEL="/tmp/measure-vlabel-$$.png"
-
 cleanup() { rm -f "$TMP_CROP" "$TMP_OUT" "$TMP_VLABEL"; }
 trap cleanup EXIT
-
 # Float-safe scale helpers
 iscale() { printf '%.0f' "$(awk "BEGIN { print $1 * $SCALE }")"; }
 idiv()   { printf '%.0f' "$(awk "BEGIN { print $1 / $SCALE }")"; }
-
 BX1=$(( LX1 < LX2 ? LX1 : LX2 )); BX2=$(( LX1 > LX2 ? LX1 : LX2 ))
 BY1=$(( LY1 < LY2 ? LY1 : LY2 )); BY2=$(( LY1 > LY2 ? LY1 : LY2 ))
 MID_X=$(( (BX1 + BX2) / 2 ))
 MID_Y=$(( (BY1 + BY2) / 2 ))
-R3=$(iscale 3); R5=$(iscale 5)
-PS=$(iscale 13)
+R3=$(iscale 3); (( R3 < 1 )) && R3=1
+R5=$(iscale 5); (( R5 < 1 )) && R5=1
+PS=$(iscale 13); (( PS < 8 )) && PS=8
 T20=$(iscale 20)
-
 mkdir -p "$DEST_DIR"
 grim -g "$((SX + RX)),$((SY + RY)) ${RW}x${RH}" "$TMP_CROP"
-
-# ── Main annotation ───────────────────────────────────────────────────────────
 magick "$TMP_CROP" \
     -strokewidth 1 -stroke 'rgba(255,255,255,0.25)' -fill none \
     -draw "rectangle ${BX1},${BY1} ${BX2},${BY2}" \
@@ -49,8 +41,6 @@ magick "$TMP_CROP" \
     -draw "circle ${LX1},${LY1} $((LX1 + R5)),${LY1}" \
     -draw "circle ${LX2},${LY2} $((LX2 + R5)),${LY2}" \
     "$TMP_OUT"
-
-# ── Horizontal label ──────────────────────────────────────────────────────────
 if (( LW > T20 )); then
     HTXT="$(idiv $LW)px"
     T6=$(iscale 6)
@@ -66,8 +56,6 @@ if (( LW > T20 )); then
         -draw "text ${TX},${TY} \"${HTXT}\"" \
         "$TMP_OUT"
 fi
-
-# ── Vertical label ────────────────────────────────────────────────────────────
 if (( LH > T20 )); then
     VTXT="$(idiv $LH)px"
     VPH=$(iscale 22)
@@ -91,7 +79,6 @@ if (( LH > T20 )); then
     magick "$TMP_OUT" "$TMP_VLABEL" \
         -geometry "+${COMP_X}+${COMP_Y}" -composite "$TMP_OUT"
 fi
-
 cp "$TMP_OUT" "$FULL_PATH"
-wl-copy -t image/png < "$TMP_OUT"
-echo "$DEST_DIR"
+wl-copy -t image/png < "$TMP_OUT" || true
+echo "$FULL_PATH"

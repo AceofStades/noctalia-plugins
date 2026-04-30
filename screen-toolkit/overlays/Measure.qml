@@ -6,7 +6,6 @@ import qs.Commons
 import qs.Widgets
 import qs.Services.UI
 import "../utils/utils.js" as U
-
 Variants {
     id: measureVariants
     property bool isVisible: false
@@ -25,33 +24,27 @@ Variants {
         WlrLayershell.keyboardFocus: measureVariants.isVisible ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
         WlrLayershell.exclusionMode: ExclusionMode.Ignore
         WlrLayershell.namespace: "noctalia-measure"
-
         Shortcut {
             sequence: "Escape"
             onActivated: measureVariants.hide()
         }
-
         property bool measuring: false
         property var current: null
         property var pinned: []
         property bool _isShooting: false
-
         readonly property var palette: [
             "#A78BFA", "#34D399", "#F87171", "#FBBF24",
             "#60A5FA", "#F472B6", "#A3E635", "#FB923C"
         ]
         function colorForIndex(i) { return palette[i % palette.length] }
-
         property real x1: 0; property real y1: 0
         property real x2: 0; property real y2: 0
         readonly property real curW: current ? Math.abs(current.x2 - current.x1) : 0
         readonly property real curH: current ? Math.abs(current.y2 - current.y1) : 0
         readonly property real curDist: Math.round(Math.sqrt(curW*curW + curH*curH))
-
         onMeasuringChanged: measureCanvas.requestPaint()
         onCurrentChanged:   measureCanvas.requestPaint()
         onPinnedChanged:    measureCanvas.requestPaint()
-
         function doPin() {
             if (!current) return
             var p = pinned.slice()
@@ -59,7 +52,6 @@ Variants {
             pinned = p
             current = null
         }
-
         function removePinned(i) {
             var p = pinned.slice()
             p.splice(i, 1)
@@ -67,16 +59,12 @@ Variants {
                 p[j] = { x1: p[j].x1, y1: p[j].y1, x2: p[j].x2, y2: p[j].y2, color: colorForIndex(j) }
             pinned = p
         }
-
         function clearAll() { pinned = [] }
-
         property var _shotMeasure: null
         property string _shotColor: "#ffffff"
-
         function _tr(key, interp) {
             return measureVariants.mainInstance?.pluginApi?.tr(key, interp ?? {})
         }
-
         Process {
             id: shotProc
             stdout: StdioCollector {}
@@ -84,14 +72,13 @@ Variants {
                 overlayWin._isShooting = false
                 measureVariants.isVisible = true
                 if (code === 0) {
-                    var dest = shotProc.stdout.text.trim()
-                    ToastService.showNotice(_tr("messages.measure-saved", { dest: dest !== "" ? dest : "~/Pictures" }), "", "camera")
+                    var savedPath = shotProc.stdout.text.trim()
+                    ToastService.showNotice(_tr("messages.measure-saved"), savedPath, "camera")
                 } else {
                     ToastService.showError(_tr("messages.measure-failed"))
                 }
             }
         }
-
         Timer {
             id: shotTimer
             interval: 400
@@ -104,42 +91,42 @@ Variants {
                     return
                 }
                 var scale = overlayWin.modelData.devicePixelRatio ?? 1.0
-                var sx = overlayWin.modelData.x, sy = overlayWin.modelData.y
-                var pad  = 40
-                var minX = Math.min(m.x1, m.x2)
-                var minY = Math.min(m.y1, m.y2)
-                var maxX = Math.max(m.x1, m.x2)
-                var maxY = Math.max(m.y1, m.y2)
-                var rx = Math.round(Math.max(0, minX - pad))
-                var ry = Math.round(Math.max(0, minY - pad))
-                var rw = Math.round(maxX + pad) - rx
-                var rh = Math.round(maxY + pad) - ry
-                var lx1 = Math.round((m.x1 - rx) * scale)
-                var ly1 = Math.round((m.y1 - ry) * scale)
-                var lx2 = Math.round((m.x2 - rx) * scale)
-                var ly2 = Math.round((m.y2 - ry) * scale)
-                var lw  = Math.abs(lx2 - lx1)
-                var lh  = Math.abs(ly2 - ly1)
+                var sx    = overlayWin.modelData.x
+                var sy    = overlayWin.modelData.y
+                var pad   = 40
+                var minX  = Math.min(m.x1, m.x2)
+                var minY  = Math.min(m.y1, m.y2)
+                var maxX  = Math.max(m.x1, m.x2)
+                var maxY  = Math.max(m.y1, m.y2)
+                var rx    = Math.round(Math.max(0, minX - pad))
+                var ry    = Math.round(Math.max(0, minY - pad))
+                var rw    = Math.round(maxX + pad) - rx
+                var rh    = Math.round(maxY + pad) - ry
+                var lx1   = Math.round((m.x1 - rx) * scale)
+                var ly1   = Math.round((m.y1 - ry) * scale)
+                var lx2   = Math.round((m.x2 - rx) * scale)
+                var ly2   = Math.round((m.y2 - ry) * scale)
+                var lw    = Math.abs(lx2 - lx1)
+                var lh    = Math.abs(ly2 - ly1)
                 var home     = Quickshell.env("HOME")
                 var settings = measureVariants.mainInstance?.pluginApi?.pluginSettings
                 var destDir  = U.screenshotDir(home, settings?.screenshotPath)
                 var baseName = U.buildFilename("measure", ".png", settings?.filenameFormat)
                 var fullPath = destDir + "/" + baseName
-                var scriptPath = Qt.resolvedUrl("../scripts/measure.sh").toString().replace("file://", "")
+                var script   = measureVariants.mainInstance._scriptsDir + "measure.sh"
                 shotProc.exec({
                     command: [
-                        "bash", scriptPath,
-                        String(sx), String(sy),
-                        String(rx), String(ry), String(rw), String(rh),
-                        String(lx1), String(ly1), String(lx2), String(ly2),
-                        String(lw), String(lh),
+                        "bash", script,
+                        String(sx),    String(sy),
+                        String(rx),    String(ry),    String(rw),  String(rh),
+                        String(lx1),   String(ly1),   String(lx2), String(ly2),
+                        String(lw),    String(lh),
                         overlayWin._shotColor, String(scale),
                         destDir, fullPath
                     ]
                 })
             }
         }
-
         function doScreenshot(m, color) {
             if (_isShooting) return
             _shotMeasure = m
@@ -148,7 +135,6 @@ Variants {
             measureVariants.isVisible = false
             shotTimer.restart()
         }
-
         Connections {
             target: measureVariants
             function onIsVisibleChanged() {
@@ -159,7 +145,6 @@ Variants {
                 }
             }
         }
-
         Rectangle {
             anchors.fill: parent
             color: Qt.rgba(0, 0, 0, 0.45)
@@ -209,7 +194,6 @@ Variants {
                 }
             }
         }
-
         Canvas {
             id: measureCanvas
             anchors.fill: parent
@@ -261,7 +245,6 @@ Variants {
                     drawLine(ctx, overlayWin.current, "#ffffff")
             }
         }
-
         Rectangle {
             id: activeCard
             visible: overlayWin.current !== null && !overlayWin.measuring
@@ -331,7 +314,6 @@ Variants {
                 }
             }
         }
-
         Repeater {
             model: overlayWin.pinned
             delegate: Rectangle {
@@ -395,7 +377,6 @@ Variants {
                 }
             }
         }
-
         Rectangle {
             visible: overlayWin.pinned.length >= 1
             anchors.bottom: parent.bottom
@@ -415,7 +396,6 @@ Variants {
             }
         }
     }
-
     function copyResult(txt) {
         if (mainInstance) mainInstance.copyToClipboard(txt)
     }
