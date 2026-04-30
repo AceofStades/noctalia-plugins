@@ -6,6 +6,7 @@ import qs.Commons
 import qs.Widgets
 import qs.Services.UI
 import "../utils/utils.js" as U
+
 Variants {
     id: measureVariants
     property bool isVisible: false
@@ -24,27 +25,33 @@ Variants {
         WlrLayershell.keyboardFocus: measureVariants.isVisible ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
         WlrLayershell.exclusionMode: ExclusionMode.Ignore
         WlrLayershell.namespace: "noctalia-measure"
+
         Shortcut {
             sequence: "Escape"
             onActivated: measureVariants.hide()
         }
+
         property bool measuring: false
         property var current: null
         property var pinned: []
         property bool _isShooting: false
+
         readonly property var palette: [
             "#A78BFA", "#34D399", "#F87171", "#FBBF24",
             "#60A5FA", "#F472B6", "#A3E635", "#FB923C"
         ]
         function colorForIndex(i) { return palette[i % palette.length] }
+
         property real x1: 0; property real y1: 0
         property real x2: 0; property real y2: 0
         readonly property real curW: current ? Math.abs(current.x2 - current.x1) : 0
         readonly property real curH: current ? Math.abs(current.y2 - current.y1) : 0
         readonly property real curDist: Math.round(Math.sqrt(curW*curW + curH*curH))
+
         onMeasuringChanged: measureCanvas.requestPaint()
         onCurrentChanged:   measureCanvas.requestPaint()
         onPinnedChanged:    measureCanvas.requestPaint()
+
         function doPin() {
             if (!current) return
             var p = pinned.slice()
@@ -52,6 +59,7 @@ Variants {
             pinned = p
             current = null
         }
+
         function removePinned(i) {
             var p = pinned.slice()
             p.splice(i, 1)
@@ -59,12 +67,16 @@ Variants {
                 p[j] = { x1: p[j].x1, y1: p[j].y1, x2: p[j].x2, y2: p[j].y2, color: colorForIndex(j) }
             pinned = p
         }
+
         function clearAll() { pinned = [] }
+
         property var _shotMeasure: null
         property string _shotColor: "#ffffff"
+
         function _tr(key, interp) {
             return measureVariants.mainInstance?.pluginApi?.tr(key, interp ?? {})
         }
+
         Process {
             id: shotProc
             stdout: StdioCollector {}
@@ -79,6 +91,7 @@ Variants {
                 }
             }
         }
+
         Timer {
             id: shotTimer
             interval: 400
@@ -107,79 +120,26 @@ Variants {
                 var ly2 = Math.round((m.y2 - ry) * scale)
                 var lw  = Math.abs(lx2 - lx1)
                 var lh  = Math.abs(ly2 - ly1)
-                var col = overlayWin._shotColor
                 var home     = Quickshell.env("HOME")
                 var settings = measureVariants.mainInstance?.pluginApi?.pluginSettings
                 var destDir  = U.screenshotDir(home, settings?.screenshotPath)
                 var baseName = U.buildFilename("measure", ".png", settings?.filenameFormat)
                 var fullPath = destDir + "/" + baseName
-                var cmd = [
-                    "bash", "-c",
-                    "mkdir -p " + U.shellEscape(destDir) + " || exit 1; " +
-                    "grim -g " + U.shellEscape((sx + rx) + "," + (sy + ry) + " " + rw + "x" + rh) + " /tmp/measure-crop.png || exit 1; " +
-                    (function() {
-                        var bx1 = Math.min(lx1,lx2), bx2 = Math.max(lx1,lx2)
-                        var by1 = Math.min(ly1,ly2), by2 = Math.max(ly1,ly2)
-                        var midX = Math.round((bx1+bx2)/2)
-                        var midY = Math.round((by1+by2)/2)
-                        var d = "magick /tmp/measure-crop.png"
-                        d += " -strokewidth " + Math.max(1, Math.round(1*scale)) + " -stroke 'rgba(255,255,255,0.25)' -fill none"
-                        d += " -draw 'rectangle " + bx1 + "," + by1 + " " + bx2 + "," + by2 + "'"
-                        d += " -fill 'rgba(255,255,255,0.6)' -stroke none"
-                        ;[[lx1,ly1],[lx2,ly2],[lx1,ly2],[lx2,ly1]].forEach(function(c) {
-                            d += " -draw 'circle " + c[0] + "," + c[1] + " " + (c[0]+Math.round(3*scale)) + "," + c[1] + "'"
-                        })
-                        d += " -strokewidth " + Math.max(1, Math.round(2*scale)) + " -stroke '" + col + "' -fill none"
-                        d += " -draw 'line " + lx1 + "," + ly1 + " " + lx2 + "," + ly2 + "'"
-                        d += " -fill '" + col + "' -stroke none"
-                        d += " -draw 'circle " + lx1 + "," + ly1 + " " + (lx1+Math.round(5*scale)) + "," + ly1 + "'"
-                        d += " -draw 'circle " + lx2 + "," + ly2 + " " + (lx2+Math.round(5*scale)) + "," + ly2 + "'"
-                        if (lw > 20 * scale) {
-                            var htxt = Math.round(lw/scale) + "px"
-                            var gy = by1 - Math.round(20*scale)
-                            var labelBelow = gy < 18 * scale
-                            gy = labelBelow ? by2 + Math.round(20*scale) : gy
-                            d += " -strokewidth " + Math.max(1, Math.round(1*scale)) + " -stroke 'rgba(255,255,255,0.5)' -fill none"
-                            d += " -draw 'line " + bx1 + "," + gy + " " + bx2 + "," + gy + "'"
-                            var tx = Math.max(6 * scale, Math.min(rw * scale - htxt.length*8*scale - 6*scale, midX - Math.round(htxt.length*4*scale)))
-                            var ty = labelBelow ? gy + Math.round(16*scale) : gy - Math.round(8*scale)
-                            d += " -fill white -stroke none -pointsize " + Math.round(13*scale) + " -font DejaVu-Sans"
-                            d += " -draw 'text " + tx + "," + ty + " \"" + htxt + "\"'"
-                        }
-                        return d
-                    })() +
-                    " /tmp/measure-out.png || exit 1; " +
-                    (function() {
-                        if (lh <= 20 * scale) return ""
-                        var bx1v = Math.min(lx1,lx2), bx2v = Math.max(lx1,lx2)
-                        var by1v = Math.min(ly1,ly2), by2v = Math.max(ly1,ly2)
-                        var midYv = Math.round((by1v+by2v)/2)
-                        var vtxt = Math.round(lh/scale) + "px"
-                        var vph = Math.round(22*scale), vpw = vtxt.length * Math.round(9*scale) + Math.round(16*scale)
-                        var spaceLeft = lx1 - vph - Math.round(14*scale)
-                        var labelRight = spaceLeft < 4 * scale
-                        var compX = labelRight
-                            ? Math.min(rw - vph - 2, bx2v + Math.round(10*scale))
-                            : Math.max(2, bx1v - Math.round(10*scale) - vph)
-                        var compY = Math.max(2, Math.min(rh - vpw - 2, midYv - Math.round(vpw/2)))
-                        return "magick -size " + vpw + "x" + vph + " xc:'rgba(0,0,0,0)'" +
-                            " -fill white -stroke none -pointsize " + Math.round(13*scale) + " -font DejaVu-Sans" +
-                            " -draw 'text " + (Math.round(vpw/2) - Math.round(vtxt.length*4*scale)) + "," + (vph-Math.round(6*scale)) + " \"" + vtxt + "\"'" +
-                            " -rotate -90" +
-                            " /tmp/measure-vlabel.png" +
-                            " && magick /tmp/measure-out.png /tmp/measure-vlabel.png" +
-                            " -geometry +" + compX + "+" + compY + " -composite" +
-                            " /tmp/measure-out.png" +
-                            " && rm -f /tmp/measure-vlabel.png; "
-                    })() +
-                    "cp /tmp/measure-out.png " + U.shellEscape(fullPath) + " || exit 1; " +
-                    "wl-copy -t image/png < /tmp/measure-out.png || exit 1; " +
-                    "rm -f /tmp/measure-crop.png /tmp/measure-out.png; " +
-                    "echo " + U.shellEscape(destDir)
-                ]
-                shotProc.exec({ command: cmd })
+                var scriptPath = Qt.resolvedUrl("../scripts/measure.sh").toString().replace("file://", "")
+                shotProc.exec({
+                    command: [
+                        "bash", scriptPath,
+                        String(sx), String(sy),
+                        String(rx), String(ry), String(rw), String(rh),
+                        String(lx1), String(ly1), String(lx2), String(ly2),
+                        String(lw), String(lh),
+                        overlayWin._shotColor, String(scale),
+                        destDir, fullPath
+                    ]
+                })
             }
         }
+
         function doScreenshot(m, color) {
             if (_isShooting) return
             _shotMeasure = m
@@ -188,6 +148,7 @@ Variants {
             measureVariants.isVisible = false
             shotTimer.restart()
         }
+
         Connections {
             target: measureVariants
             function onIsVisibleChanged() {
@@ -198,6 +159,7 @@ Variants {
                 }
             }
         }
+
         Rectangle {
             anchors.fill: parent
             color: Qt.rgba(0, 0, 0, 0.45)
@@ -247,6 +209,7 @@ Variants {
                 }
             }
         }
+
         Canvas {
             id: measureCanvas
             anchors.fill: parent
@@ -298,6 +261,7 @@ Variants {
                     drawLine(ctx, overlayWin.current, "#ffffff")
             }
         }
+
         Rectangle {
             id: activeCard
             visible: overlayWin.current !== null && !overlayWin.measuring
@@ -358,8 +322,8 @@ Variants {
                 }
                 Rectangle {
                     width: 28; height: 28; radius: Style.radiusS; anchors.verticalCenter: parent.verticalCenter
-                    color: discardBtn.containsMouse ? Color.mErrorContainer || "#ffcdd2" : Color.mSurfaceVariant
-                    NIcon { anchors.centerIn: parent; icon: "x"; color: discardBtn.containsMouse ? Color.mError || "#f44336" : Color.mOnSurface; scale: 0.85 }
+                    color: discardBtn.containsMouse ? Qt.alpha(Color.mError, 0.15) : Color.mSurfaceVariant
+                    NIcon { anchors.centerIn: parent; icon: "x"; color: discardBtn.containsMouse ? Color.mError : Color.mOnSurface; scale: 0.85 }
                     MouseArea { id: discardBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
                         onClicked: { overlayWin.current = null; if (overlayWin.pinned.length === 0) measureVariants.hide() }
                         onEntered: TooltipService.show(discardBtn, _tr("measure.discard")); onExited: TooltipService.hide()
@@ -367,6 +331,7 @@ Variants {
                 }
             }
         }
+
         Repeater {
             model: overlayWin.pinned
             delegate: Rectangle {
@@ -420,8 +385,8 @@ Variants {
                     }
                     Rectangle {
                         width: 26; height: 26; radius: Style.radiusS; anchors.verticalCenter: parent.verticalCenter
-                        color: premoveBtn.containsMouse ? Color.mErrorContainer || "#ffcdd2" : Color.mSurfaceVariant
-                        NIcon { anchors.centerIn: parent; icon: "x"; color: premoveBtn.containsMouse ? Color.mError || "#f44336" : Color.mOnSurface; scale: 0.8 }
+                        color: premoveBtn.containsMouse ? Qt.alpha(Color.mError, 0.15) : Color.mSurfaceVariant
+                        NIcon { anchors.centerIn: parent; icon: "x"; color: premoveBtn.containsMouse ? Color.mError : Color.mOnSurface; scale: 0.8 }
                         MouseArea { id: premoveBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
                             onClicked: overlayWin.removePinned(myIdx)
                             onEntered: TooltipService.show(premoveBtn, _tr("measure.remove")); onExited: TooltipService.hide()
@@ -430,6 +395,7 @@ Variants {
                 }
             }
         }
+
         Rectangle {
             visible: overlayWin.pinned.length >= 1
             anchors.bottom: parent.bottom
@@ -437,20 +403,20 @@ Variants {
             anchors.bottomMargin: 32
             width: clearRow.implicitWidth + Style.marginL * 2
             height: 38; radius: Style.radiusM
-            color: clearAllBtn.containsMouse ? Color.mErrorContainer || "#ffcdd2" : Color.mSurface
-            border.color: Color.mError || "#f44336"; border.width: 1
+            color: clearAllBtn.containsMouse ? Qt.alpha(Color.mError, 0.15) : Color.mSurface
+            border.color: Color.mError; border.width: Style.borderS
             Row {
                 id: clearRow; anchors.centerIn: parent; spacing: Style.marginS
-                NIcon { icon: "trash"; color: Color.mError || "#f44336" }
-                NText { text: _tr("measure.clearAll"); color: Color.mError || "#f44336"; font.weight: Font.Bold; pointSize: Style.fontSizeS }
+                NIcon { icon: "trash"; color: Color.mError }
+                NText { text: _tr("measure.clearAll"); color: Color.mError; font.weight: Font.Bold; pointSize: Style.fontSizeS }
             }
             MouseArea { id: clearAllBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
                 onClicked: overlayWin.clearAll()
             }
         }
     }
+
     function copyResult(txt) {
         if (mainInstance) mainInstance.copyToClipboard(txt)
     }
 }
-
