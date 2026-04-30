@@ -27,6 +27,10 @@ Item {
     property bool   includeCursor: false
     property string _recorderBin:  "wl-screenrec"
     readonly property int gifMaxSeconds: pluginApi?.pluginSettings?.gifMaxSeconds ?? 30
+    readonly property string _scriptPath: {
+        var url = Qt.resolvedUrl("../scripts/record.sh").toString()
+        return url.startsWith("file://") ? url.slice(7) : url
+    }
     property string recordState: ""
     readonly property bool isRecording:  recordState === "recording"
     readonly property bool isConverting: recordState === "converting"
@@ -84,7 +88,7 @@ Item {
     }
     function stopRecording() {
         if (!root.isRecording) return
-        stopProc.exec({ command: ["bash", "-c", "pkill -INT " + root._recorderBin + " 2>/dev/null || true"] })
+        stopProc.exec({ command: ["bash", root._scriptPath, "stop", root._recorderBin] })
     }
     function dismiss() {
         if (root.isRecording) root.stopRecording()
@@ -130,13 +134,6 @@ Item {
         var s = secs % 60
         return (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s
     }
-    function _thumbCmd(srcPath) {
-        return "DUR=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 " + U.shellEscape(srcPath) + " 2>/dev/null); " +
-               "if [ -z \"$DUR\" ] || [ \"$DUR\" = \"N/A\" ]; then DUR=1; fi; " +
-               "MID=$(echo \"$DUR / 2\" | bc -l 2>/dev/null || echo \"0.5\"); " +
-               "ffmpeg -y -ss \"$MID\" -i " + U.shellEscape(srcPath) +
-               " -frames:v 1 /tmp/screen-toolkit-record-thumb.png 2>/dev/null"
-    }
     Process {
         id: wfRecorderProc
         onExited: (code) => {
@@ -150,27 +147,15 @@ Item {
                 if (root.format === "mp4") {
                     root.gifPath = optimOut + ".mp4"
                     var needsRecode = root.audioOutput || root.audioInput
-                    var mp4Cmd = needsRecode
-                        ? "ffmpeg -y -i " + U.shellEscape(root.mp4Path) +
-                          " -c:v copy -c:a aac -b:a 128k -movflags +faststart " +
-                          U.shellEscape(root.gifPath) + " 2>/dev/null && rm -f " + U.shellEscape(root.mp4Path) +
-                          " && " + root._thumbCmd(root.gifPath) + "; exit 0"
-                        : "mv " + U.shellEscape(root.mp4Path) + " " + U.shellEscape(root.gifPath) +
-                          " && " + root._thumbCmd(root.gifPath) + "; exit 0"
-                    gifConvertProc.exec({ command: ["bash", "-c", mp4Cmd] })
+                    gifConvertProc.exec({ command: needsRecode
+                        ? ["bash", root._scriptPath, "convert-mp4", root.mp4Path, root.gifPath, "--recode"]
+                        : ["bash", root._scriptPath, "convert-mp4", root.mp4Path, root.gifPath]
+                    })
                 } else {
                     root.gifPath = optimOut + ".gif"
-                    gifConvertProc.exec({ command: [
-                        "bash", "-c",
-                        "ffmpeg -y -i " + U.shellEscape(root.mp4Path) +
-                        " -vf 'fps=15,scale=trunc(iw/2)*2:trunc(ih/2)*2:flags=lanczos,palettegen'" +
-                        " /tmp/palette.png 2>/dev/null && " +
-                        "ffmpeg -y -i " + U.shellEscape(root.mp4Path) + " -i /tmp/palette.png " +
-                        "-lavfi 'fps=15,scale=trunc(iw/2)*2:trunc(ih/2)*2:flags=lanczos[x];[x][1:v]paletteuse' " +
-                        U.shellEscape(root.gifPath) + " 2>/dev/null && " +
-                        "rm -f /tmp/palette.png " + U.shellEscape(root.mp4Path) + " && " +
-                        root._thumbCmd(root.gifPath) + "; exit 0"
-                    ]})
+                    gifConvertProc.exec({ command:
+                        ["bash", root._scriptPath, "convert-gif", root.mp4Path, root.gifPath]
+                    })
                 }
             } else {
                 root.dismiss()
