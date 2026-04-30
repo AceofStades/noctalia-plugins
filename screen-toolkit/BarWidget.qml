@@ -36,8 +36,8 @@ Item {
     Rectangle {
         visible: root._isRecording
         width: 8; height: 8; radius: Style.radiusXXS
-        color: Color.mError || "#f44336"
-        anchors { top: pill.top; right: pill.right; topMargin: 4; rightMargin: 4 }
+        color: Color.mError
+        anchors { top: pill.top; right: pill.right; topMargin: Style.marginXS; rightMargin: Style.marginXS }
         SequentialAnimation on opacity {
             running: root._isRecording; loops: Animation.Infinite
             NumberAnimation { to: 0.3; duration: 600 }
