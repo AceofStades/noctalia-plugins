@@ -1264,6 +1264,23 @@
       "lastUpdated": "2026-04-21T17:26:58+02:00"
     },
     {
+      "id": "plugin-manager",
+      "name": "Plugin Manager",
+      "version": "1.0.1",
+      "official": false,
+      "author": "blacku",
+      "description": "A full-featured plugin manager with browsing, installation, and README viewer for Noctalia plugins.",
+      "repository": "https://github.com/noctalia-dev/noctalia-plugins",
+      "minNoctaliaVersion": "4.6.6",
+      "license": "MIT",
+      "tags": [
+        "Bar",
+        "Panel",
+        "Development"
+      ],
+      "lastUpdated": "2026-04-29T22:11:00+02:00"
+    },
+    {
       "id": "polkit-agent",
       "name": "Polkit Agent",
       "version": "1.0.6",
