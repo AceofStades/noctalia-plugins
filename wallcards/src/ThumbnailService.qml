@@ -142,6 +142,13 @@ Item {
   }
 
   function buildFileList() {
+    // Ground truth needed to avoid showing thumbnails for files
+    // that are no longer in the wallpaper directory.
+    var existingFiles = new Set();
+    for (let j = 0; j < thumbnailModel.count; j++) {
+      existingFiles.add(thumbnailModel.get(j, "fileName"));
+    }
+
     var items = [];
 
     for (let i = 0; i < filesModel.count; i++) {
@@ -159,6 +166,10 @@ Item {
       // Strip trailing .jpg to recover the original video filename.
       var isVid = thumbBase.toLowerCase().endsWith(".jpg") && Utils.isVideo(thumbBase.substring(0, thumbBase.lastIndexOf(".")), service.videoFilter);
       var wallpaperName = isVid ? thumbBase.substring(0, thumbBase.lastIndexOf(".")) : thumbBase;
+
+      if (!existingFiles.has(wallpaperName)) {
+        continue;
+      }
 
       items.push({
         fileName: wallpaperName,
