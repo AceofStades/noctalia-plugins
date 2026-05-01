@@ -48,6 +48,11 @@ NIconButtonHot {
                 "icon": "plug-connected-x"
             },
             {
+                "label": pluginApi?.tr("context.eject-all"),
+                "action": "eject-all",
+                "icon": "player-eject"
+            },
+            {
                 "label": pluginApi?.tr("context.settings"),
                 "action": "settings",
                 "icon": "settings"
@@ -65,6 +70,8 @@ NIconButtonHot {
                 mainInstance?.refreshDevices()
             } else if (action === "unmount-all") {
                 mainInstance?.unmountAll()
+            } else if (action === "eject-all") {
+                mainInstance?.ejectAll()
             } else if (action === "settings") {
                 if (pluginApi?.manifest) {
                     BarService.openPluginSettings(screen, pluginApi.manifest)
