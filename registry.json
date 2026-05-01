@@ -173,7 +173,7 @@
     {
       "id": "claude-code-panel",
       "name": "Claude Code Panel",
-      "version": "0.1.2",
+      "version": "0.2.0",
       "official": false,
       "author": "d7om",
       "description": "Claude Code (Anthropic agentic CLI) with full tool access, permission controls, session management, MCP servers, and device integration",
@@ -186,7 +186,7 @@
         "AI",
         "Productivity"
       ],
-      "lastUpdated": "2026-04-21T00:34:48+02:00"
+      "lastUpdated": "2026-04-25T02:40:15+03:00"
     },
     {
       "id": "clipboard",
