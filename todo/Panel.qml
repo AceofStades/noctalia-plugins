@@ -1075,7 +1075,7 @@ Item {
     x: (parent.width - width) / 2
     y: (parent.height - height) / 2
     width: 500 * Style.uiScaleRatio
-    height: 300 * Style.uiScaleRatio
+    height: 480 * Style.uiScaleRatio
     modal: true
     focus: true
     padding: 0
@@ -1214,20 +1214,26 @@ Item {
             }
 
             // Edit mode (TextArea)
-            TextArea {
-              id: detailsTextArea
+            ScrollView {
+              id: detailsScroll
               visible: detailsEditMode
-              text: detailDialog.todoDetails
               Layout.fillWidth: true
-              Layout.preferredHeight: 100
-              wrapMode: TextArea.Wrap
-              color: Color.mOnSurface
-              background: Rectangle {
-                color: Color.mSurfaceVariant
-                radius: Style.iRadiusS
-              }
-              Keys.onEscapePressed: {
-                detailsEditMode = false;
+              Layout.preferredHeight: 200 * Style.uiScaleRatio
+              clip: true
+
+              TextArea {
+                id: detailsTextArea
+                text: detailDialog.todoDetails
+                width: parent.width
+                wrapMode: TextArea.Wrap
+                color: Color.mOnSurface
+                background: Rectangle {
+                  color: Color.mSurfaceVariant
+                  radius: Style.iRadiusS
+                }
+                Keys.onEscapePressed: {
+                  detailsEditMode = false;
+                }
               }
             }
 
