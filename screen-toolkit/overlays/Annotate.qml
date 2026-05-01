@@ -449,34 +449,52 @@ Variants {
             }
         }
         Process {
-            id: uploadProc
-            stdout: StdioCollector {}
-            onExited: (code) => {
-                overlayWin.isUploading = false
-                var url     = uploadProc.stdout.text.trim()
-                var skipPop = root.mainInstance?.pluginApi?.pluginSettings?.shareSkipPopover ?? false
-                if (code === 0 && url.startsWith("http")) {
-                    overlayWin.shareUrl     = url
-                    overlayWin.uploadFailed = false
-                    if (skipPop) {
-                        overlayWin.showSharePopover = false
-                        wlCopyUrlProc.exec({ command: ["bash", "-c",
-                        "printf '%s' " + U.shellEscape(url) + " | wl-copy"] })
-                        ToastService.showNotice(
-                            root.mainInstance?.pluginApi?.tr("annotate.shareUrl"),
-                            url, "link")
-                    }
-                } else {
-                    overlayWin.uploadFailed = true
-                    overlayWin.shareUrl     = ""
-                    if (skipPop) {
-                        overlayWin.showSharePopover = false
-                        ToastService.showError(
-                            root.mainInstance?.pluginApi?.tr("annotate.shareFailed"))
-                    }
-                }
-            }
-        }
+			id: uploadProc
+			stdout: StdioCollector {}
+			onExited: (code) => {
+				overlayWin.isUploading = false
+				var skipPop = root.mainInstance?.pluginApi?.pluginSettings?.shareSkipPopover ?? false
+				if (code === 0) {
+					var url = uploadProc.stdout.text.trim()
+					if (url.startsWith("http")) {
+						overlayWin.shareUrl     = url
+						overlayWin.uploadFailed = false
+						if (skipPop) {
+							overlayWin.showSharePopover = false
+							wlCopyUrlProc.exec({ command: ["bash", "-c",
+								"printf '%s' " + U.shellEscape(url) + " | wl-copy"] })
+							ToastService.showNotice(
+								root.mainInstance?.pluginApi?.tr("annotate.shareUrl"),
+								url, "link")
+						}
+						return
+					}
+					// code 0 but no valid URL — treat as code 5
+					code = 5
+				}
+				// failure path
+				overlayWin.uploadFailed = true
+				overlayWin.shareUrl     = ""
+				const keyMap = {
+					1: "share-bad-args",
+					2: "share-file-not-found",
+					3: "share-missing-dep",
+					4: "share-request-failed",
+					5: "share-invalid-response",
+					6: "share-file-too-large"
+				}
+				var msgKey = "messages." + (keyMap[code] ?? "share-unknown-error")
+				var msg    = root.mainInstance?.pluginApi?.tr(msgKey) ?? msgKey
+				if (skipPop) {
+					overlayWin.showSharePopover = false
+					ToastService.showError(msg)
+				} else {
+					// popover is open — it already shows uploadFailed state,
+					// but also fire a toast so the user knows why
+					ToastService.showError(msg)
+				}
+			}
+		}
         Process { id: wlCopyUrlProc }
         Connections {
             target: root

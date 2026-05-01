@@ -118,6 +118,13 @@
     "cssVars": "Copy as CSS vars",
     "hexList": "Copy hex list"
   },
+  "lens": {
+    "missingDep":    "Missing dependency: {dep}",
+    "captureFailed": "Capture failed",
+    "uploadFailed":  "Upload failed",
+    "uploading":     "Uploading to Lens…",
+    "unknownError":  "Unknown error (code {dep})"
+  },
   "messages": {
     "picker-cancelled": "Color picker cancelled.",
     "no-text": "No text detected.",
@@ -131,7 +138,25 @@
     "measure-failed": "Screenshot failed.",
     "measure-copied": "Measurement copied.",
     "no-file-picker": "No file picker available (install python3-gi, zenity, or kdialog)",
-    "measure-pinned": "Pinned."
+    "measure-pinned": "Pinned.",
+    "lens-opened":         "Opened in Google Lens",
+    "lens-missing-dep":    "Missing dependency: {dep}",
+    "lens-capture-failed": "Capture failed",
+    "lens-upload-failed":  "Upload failed",
+    "lens-unknown-error":  "Unknown error (code {dep})",
+    "ocr-no-text":        "No text detected",
+    "ocr-missing-dep":    "Missing dependency: {dep}",
+    "ocr-bad-args":       "Invalid capture arguments",
+    "ocr-capture-failed": "Screen capture failed",
+    "ocr-process-failed": "Image processing failed",
+    "ocr-unknown-error":  "Unknown error (code {dep})",
+    "share-bad-args":         "Share failed: no file specified",
+    "share-file-not-found":   "Share failed: file not found",
+    "share-missing-dep":      "Share failed: missing dependency (curl/jq)",
+    "share-request-failed":   "Upload request failed",
+    "share-invalid-response": "Upload failed: unexpected server response",
+    "share-file-too-large":   "File too large for anonymous upload (128 MB max). Add an X02 API key for larger files.",
+    "share-unknown-error":    "Upload failed with unknown error"
   },
   "settings": {
     "ocrLanguages": "OCR Languages",
@@ -270,5 +295,6 @@
     "remove": "Remove"
   }
 }
+
 
 

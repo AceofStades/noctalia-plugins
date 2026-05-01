@@ -193,10 +193,12 @@ function clearPaletteResult() {
             root.activeTool = "ocr"
             pluginApi?.withCurrentScreen(screen => pluginApi.openPanel(screen))
         }
-        function onFailed() {
+        function onFailed(messageKey, messageArg) {
             root.isRunning  = false
             root.activeTool = ""
-            ToastService.showError(pluginApi?.tr("messages.no-text"))
+            var template = pluginApi?.tr(messageKey) ?? messageKey
+            var msg = messageArg !== "" ? template.replace("{dep}", messageArg) : template
+            ToastService.showError(msg)
         }
     }
     Connections {
@@ -214,11 +216,17 @@ function clearPaletteResult() {
     }
     Connections {
         target: lensOverlay
-        function onDone()   { root.isRunning = false; root.activeTool = "" }
-        function onFailed() {
+        function onDone() {
             root.isRunning  = false
             root.activeTool = ""
-            ToastService.showError(pluginApi?.tr("messages.lens-failed"))
+            ToastService.showNotice(pluginApi?.tr("messages.lens-opened"))
+        }
+        function onFailed(messageKey, messageArg) {
+            root.isRunning  = false
+            root.activeTool = ""
+            var template = pluginApi?.tr(messageKey) ?? messageKey
+            var msg = messageArg !== "" ? template.replace("{dep}", messageArg) : template
+            ToastService.showError(msg)
         }
     }
     Connections {
@@ -713,3 +721,4 @@ function clearPaletteResult() {
         function recordStop()          { if (recordOverlay.isRecording) recordOverlay.stopRecording() }
     }
 }
+

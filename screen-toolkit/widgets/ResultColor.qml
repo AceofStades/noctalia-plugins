@@ -105,13 +105,14 @@ Item {
                     }
                     Rectangle {
                         anchors.centerIn: parent
-                        width: Style.marginS + Style.marginXXS * 2
-                        height: Style.marginS + Style.marginXXS * 2
-                        radius: (Style.marginS + Style.marginXXS * 2) / 2
+                        width:  12
+                        height: 12
+                        radius: 6
                         color: "transparent"
                         border.color: "white"
-                        border.width: Style.capsuleBorderWidth
-                        visible: pixelImg.status === Image.Ready
+                        border.width: 2
+                        visible: root.colorCapturePath !== ""
+                        z:1
                     }
                     NText {
                         anchors.centerIn: parent
@@ -279,45 +280,58 @@ Item {
             width: parent.width
             spacing: Style.marginS
             visible: root.colorHistory.length > 0
-            Row {
-                width: parent.width
-                spacing: Style.marginS
+
+            Item {
+                width:  parent.width
+                height: 22
+
                 Rectangle {
-                    width: 40
-                    height: 1
-                    color: Color.mOnSurfaceVariant
-                    opacity: 0.3
+                    anchors.left:           parent.left
+                    anchors.right:          historyLabel.left
+                    anchors.rightMargin:    Style.marginS
                     anchors.verticalCenter: parent.verticalCenter
+                    height:  1
+                    color:   Color.mOnSurfaceVariant
+                    opacity: 0.3
                 }
+
                 NText {
-                    text: pluginApi?.tr("panel.history")
-                    color: Color.mOnSurfaceVariant
-                    pointSize: Style.fontSizeXS
+                    id:              historyLabel
+                    anchors.centerIn: parent
+                    text:             pluginApi?.tr("panel.history")
+                    color:            Color.mOnSurfaceVariant
+                    pointSize:        Style.fontSizeXS
                 }
+
                 Rectangle {
-                    height: 1
-                    color: Color.mOnSurfaceVariant
+                    anchors.left:           historyLabel.right
+                    anchors.leftMargin:     Style.marginS
+                    anchors.right:          clearHistoryBtn.left
+                    anchors.rightMargin:    Style.marginS
+                    anchors.verticalCenter: parent.verticalCenter
+                    height:  1
+                    color:   Color.mOnSurfaceVariant
                     opacity: 0.3
-                    anchors.verticalCenter: parent.verticalCenter
-                    width: parent.width - 120
                 }
+
                 Rectangle {
-                    width: 22
-                    height: 22
-                    radius: Style.radiusS
+                    id:                     clearHistoryBtn
+                    anchors.right:          parent.right
                     anchors.verticalCenter: parent.verticalCenter
-                    color: hhc.containsMouse ? Color.mError : "transparent"
+                    width:  22; height: 22
+                    radius: Style.radiusS
+                    color:  hhc.containsMouse ? Color.mError : "transparent"
                     NIcon {
                         anchors.centerIn: parent
-                        icon: "trash"
+                        icon:  "trash"
                         scale: 0.75
                         color: hhc.containsMouse ? Color.mError : Color.mOnSurfaceVariant
                     }
                     MouseArea {
-                        id: hhc
+                        id:          hhc
                         anchors.fill: parent
                         hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
+                        cursorShape:  Qt.PointingHandCursor
                         onClicked: {
                             mainInstance?.clearColorHistory()
                             ToastService.showNotice(pluginApi?.tr("panel.historyCleared"))
@@ -355,3 +369,4 @@ Item {
         }
     }
 }
+

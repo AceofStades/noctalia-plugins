@@ -79,3 +79,4 @@ fi
 
 echo "ERROR: uguu.se: no valid URL in response" >&2
 exit 5
+
