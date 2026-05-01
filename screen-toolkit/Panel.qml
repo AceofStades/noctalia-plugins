@@ -268,8 +268,9 @@ Item {
                 }
             }
             Rectangle {
-                opacity: (root.viewedTool === "record" && root.isRecording) ? 1.0 : 0.0
-                visible: opacity > 0
+                property bool _shown: root.viewedTool === "record" && root.isRecording
+                visible: _shown
+                opacity: _shown ? 1.0 : 0.0
                 Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
                 width: parent.width; height: 38; radius: Style.radiusM
                 color: recPanelStopBtn.containsMouse ? Color.mError : Color.mSurfaceVariant
@@ -285,8 +286,9 @@ Item {
                 MouseArea { id: recPanelStopBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.mainInstance?.runRecordStop() }
             }
             Rectangle {
-                opacity: (root.viewedTool === "record" && root.isConverting) ? 1.0 : 0.0
-                visible: opacity > 0
+                property bool _shown: root.viewedTool === "record" && root.isConverting
+                visible: _shown
+                opacity: _shown ? 1.0 : 0.0
                 Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
                 width: parent.width; height: 38; radius: Style.radiusM
                 color: Color.mSurfaceVariant
@@ -302,8 +304,9 @@ Item {
                 }
             }
             Column {
-                opacity: (root.viewedTool === "record" && root.isDone) ? 1.0 : 0.0
-                visible: opacity > 0
+                property bool _shown: root.viewedTool === "record" && root.isDone
+                visible: _shown
+                opacity: _shown ? 1.0 : 0.0
                 Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
                 width: parent.width; spacing: Style.marginS
                 Rectangle {
@@ -357,8 +360,9 @@ Item {
                 }
             }
             Row {
-                opacity: (root.viewedTool === "annotate" && !root.isRunning) ? 1.0 : 0.0
-                visible: opacity > 0
+                property bool _shown: root.viewedTool === "annotate" && !root.isRunning
+                visible: _shown
+                opacity: _shown ? 1.0 : 0.0
                 Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
                 width: parent.width; spacing: Style.marginS
                 Rectangle {
@@ -426,8 +430,9 @@ Item {
                 }
             }
             Column {
-                opacity: (root.viewedTool === "ocr" && !root.isRunning) ? 1.0 : 0.0
-                visible: opacity > 0
+                property bool _shown: root.viewedTool === "ocr" && !root.isRunning
+                visible: _shown
+                opacity: _shown ? 1.0 : 0.0
                 Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
                 width: parent.width; spacing: Style.marginS
                 Row {
@@ -468,8 +473,9 @@ Item {
                 }
             }
             Row {
-                opacity: (root.viewedTool === "pin" && !root.isRunning) ? 1.0 : 0.0
-                visible: opacity > 0
+                property bool _shown: root.viewedTool === "pin" && !root.isRunning
+                visible: _shown
+                opacity: _shown ? 1.0 : 0.0
                 Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
                 width: parent.width; spacing: Style.marginS
                 Rectangle {
@@ -510,8 +516,9 @@ Item {
                 }
             }
             Column {
-                opacity: (root.viewedTool === "record" && !root.isRunning && !root.isRecording && !root.isConverting && !root.isDone) ? 1.0 : 0.0
-                visible: opacity > 0
+                property bool _shown: root.viewedTool === "record" && !root.isRunning && !root.isRecording && !root.isConverting && !root.isDone
+                visible: _shown
+                opacity: _shown ? 1.0 : 0.0
                 Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
                 width: parent.width; spacing: Style.marginS
                 Flow {
@@ -629,8 +636,9 @@ Item {
                 }
             }
             Column {
-                opacity: (root.viewedTool === "mirror") ? 1.0 : 0.0
-                visible: opacity > 0
+                property bool _shown: root.viewedTool === "mirror"
+                visible: _shown
+                opacity: _shown ? 1.0 : 0.0
                 Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
                 width: parent.width; spacing: Style.marginM
                 Row {
@@ -651,32 +659,36 @@ Item {
                 }
             }
             ResultColor {
-                opacity: (root.viewedTool === "colorpicker") ? 1.0 : 0.0
-                visible: opacity > 0
+                property bool _shown: root.viewedTool === "colorpicker"
+                visible: _shown
+                opacity: _shown ? 1.0 : 0.0
                 Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
                 width: parent.width
                 pluginApi:    root.pluginApi
                 mainInstance: root.mainInstance
             }
             ResultOcr {
-                opacity: (root.viewedTool === "ocr" && (mainInstance?.ocrResult ?? "") !== "") ? 1.0 : 0.0
-                visible: opacity > 0
+                property bool _shown: root.viewedTool === "ocr" && (mainInstance?.ocrResult ?? "") !== ""
+                visible: _shown
+                opacity: _shown ? 1.0 : 0.0
                 Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
                 width: parent.width
                 pluginApi:    root.pluginApi
                 mainInstance: root.mainInstance
             }
             ResultQr {
-                opacity: (root.viewedTool === "qr" && (mainInstance?.qrResult ?? "") !== "") ? 1.0 : 0.0
-                visible: opacity > 0
+                property bool _shown: root.viewedTool === "qr" && (mainInstance?.qrResult ?? "") !== ""
+                visible: _shown
+                opacity: _shown ? 1.0 : 0.0
                 Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
                 width: parent.width
                 pluginApi:    root.pluginApi
                 mainInstance: root.mainInstance
             }
             ResultPalette {
-                opacity: (root.viewedTool === "palette") ? 1.0 : 0.0
-                visible: opacity > 0
+                property bool _shown: root.viewedTool === "palette"
+                visible: _shown
+                opacity: _shown ? 1.0 : 0.0
                 Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
                 width: parent.width
                 pluginApi:    root.pluginApi
@@ -712,10 +724,8 @@ Item {
                             : "transparent"
                 border.width: btn._accented ? 2 : ba.containsMouse ? 1 : 0
                 clip: true
-
                 scale: ba.containsMouse && !btn.running ? 1.04 : 1.0
                 Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutQuint } }
-
                 Rectangle {
                     anchors.fill: parent; radius: parent.radius; color: btn._accentColor
                     opacity: btn.recording ? 0 : btn.active ? 0.15 : btn.focused ? 0.08 : 0
@@ -729,8 +739,6 @@ Item {
                         NumberAnimation { to: 0.2;  duration: 600 }
                     }
                 }
-
-                // click ripple
                 Rectangle {
                     id: ripple
                     width: 0; height: 0
@@ -747,7 +755,6 @@ Item {
                         NumberAnimation { target: ripple; property: "opacity"; to: 0;  duration: 350; easing.type: Easing.OutCubic }
                     }
                 }
-
                 NIcon {
                     anchors.centerIn: parent; icon: btn.icon
                     color: btn._accented ? btn._accentColor
@@ -790,7 +797,6 @@ Item {
                 width: btn.width; horizontalAlignment: Text.AlignHCenter; elide: Text.ElideRight
                 opacity: (ba.containsMouse || btn._accented) ? 1.0 : 0.35
                 Behavior on opacity { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
-                
             }
         }
     }
