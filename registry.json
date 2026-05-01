@@ -319,7 +319,7 @@
     {
       "id": "custom-sticker",
       "name": "Custom Stickers",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "official": false,
       "author": "spiros132",
       "description": "Custom stickers (images) that you can put on the desktop as desktop widgets.",
@@ -330,7 +330,7 @@
         "Desktop",
         "Fun"
       ],
-      "lastUpdated": "2026-04-25T13:31:23+02:00"
+      "lastUpdated": "2026-05-01T21:07:15+02:00"
     },
     {
       "id": "daily-wallpaper",
