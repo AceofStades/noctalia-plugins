@@ -12,6 +12,7 @@ Item {
     signal failed()
 
     function run(grimX, grimY, grimW, grimH) {
+        ToastService.showNotice(pluginApi?.tr("messages.lens-uploading"))
         lensProc.exec({ command: [
             root.scriptsDir + "lens-upload.sh",
             String(grimX), String(grimY), String(grimW), String(grimH)
@@ -26,4 +27,5 @@ Item {
         }
     }
 }
+
 

@@ -219,7 +219,6 @@ function clearPaletteResult() {
         function onDone() {
             root.isRunning  = false
             root.activeTool = ""
-            ToastService.showNotice(pluginApi?.tr("messages.lens-opened"))
         }
         function onFailed(messageKey, messageArg) {
             root.isRunning  = false

@@ -140,6 +140,7 @@
     "no-file-picker": "No file picker available (install python3-gi, zenity, or kdialog)",
     "measure-pinned": "Pinned.",
     "lens-opened":         "Opened in Google Lens",
+    "lens-uploading": "Uploading to Google Lens...",
     "lens-missing-dep":    "Missing dependency: {dep}",
     "lens-capture-failed": "Capture failed",
     "lens-upload-failed":  "Upload failed",
@@ -295,6 +296,7 @@
     "remove": "Remove"
   }
 }
+
 
 
 
