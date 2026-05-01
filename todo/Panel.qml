@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import Quickshell
 import qs.Commons
 import qs.Services.UI
 import qs.Widgets
@@ -824,6 +825,93 @@ Item {
                       }
                     }
 
+                    // Copy button (only show when not editing)
+                    Item {
+                      Layout.preferredWidth: Style.baseWidgetSize * 0.8
+                      Layout.preferredHeight: parent.height
+                      visible: !delegateItem.editing
+
+                      Item {
+                        id: copyButtonContainer
+                        anchors.centerIn: parent
+
+                        implicitWidth: Style.baseWidgetSize * 0.8
+                        implicitHeight: Style.baseWidgetSize * 0.8
+
+                        NIcon {
+                          id: copyButtonIcon
+                          anchors.centerIn: parent
+                          icon: "copy"
+                          pointSize: Style.fontSizeM
+                          color: Color.mOnSurfaceVariant
+                          opacity: 0.5
+
+                          MouseArea {
+                            id: copyMouseArea
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                              Quickshell.clipboardText = modelData.text;
+                              ToastService.showNotice(pluginApi?.tr("panel.todo_item.copied"));
+                            }
+                          }
+
+                          ToolTip {
+                            id: copyToolTip
+                            text: pluginApi?.tr("panel.todo_item.copy_button_tooltip")
+                            delay: 1000
+                            parent: copyButtonIcon
+                            visible: copyMouseArea.containsMouse
+
+                            contentItem: NText {
+                              text: copyToolTip.text
+                              color: Color.mOnPrimary
+                              font.pointSize: Style.fontSizeXS
+                            }
+
+                            background: Rectangle {
+                              color: Color.mPrimary
+                              radius: Style.iRadiusS
+                              border.color: Qt.rgba(0, 0, 0, 0.2)
+                              border.width: 1
+                            }
+                          }
+
+                          states: [
+                            State {
+                              name: "hovered"
+                              when: copyMouseArea.containsMouse
+                              PropertyChanges {
+                                target: copyButtonIcon
+                                opacity: 1.0
+                                color: Color.mPrimary
+                              }
+                            }
+                          ]
+
+                          transitions: [
+                            Transition {
+                              from: "*"
+                              to: "hovered"
+                              NumberAnimation {
+                                properties: "opacity"
+                                duration: 150
+                              }
+                            },
+                            Transition {
+                              from: "hovered"
+                              to: "*"
+                              NumberAnimation {
+                                properties: "opacity"
+                                duration: 150
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+
                     // Save/Cancel buttons (only show when editing)
                     Item {
                       implicitWidth: Style.baseWidgetSize * 0.8
@@ -1207,9 +1295,41 @@ Item {
                 Layout.alignment: Qt.AlignVCenter
               }
 
-              // Spacer to push button to the right
+              // Spacer to push buttons to the right
               Item {
                 Layout.fillWidth: true
+              }
+
+              // Copy button for details
+              NButton {
+                visible: !detailsEditMode && detailDialog.todoDetails.length > 0
+                icon: "copy"
+                text: pluginApi?.tr("panel.todo_details.copy_details_button_tooltip")
+                backgroundColor: Color.mPrimary
+                textColor: Color.mOnPrimary
+                fontSize: Style.fontSizeS
+                onClicked: {
+                  Quickshell.clipboardText = detailDialog.todoDetails;
+                  ToastService.showNotice(pluginApi?.tr("panel.todo_details.copied_details"));
+                }
+                ToolTip {
+                  id: copyDetailsToolTip
+                  text: pluginApi?.tr("panel.todo_details.copy_details_button_tooltip")
+                  delay: 1000
+                  parent: parent
+                  visible: parent.hovered
+                  contentItem: NText {
+                    text: copyDetailsToolTip.text
+                    color: Color.mOnPrimary
+                    font.pointSize: Style.fontSizeXS
+                  }
+                  background: Rectangle {
+                    color: Color.mPrimary
+                    radius: Style.iRadiusS
+                    border.color: Qt.rgba(0, 0, 0, 0.2)
+                    border.width: 1
+                  }
+                }
               }
 
               NButton {
