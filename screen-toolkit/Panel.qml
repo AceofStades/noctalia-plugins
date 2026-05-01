@@ -332,7 +332,7 @@ Item {
                     }
                     Rectangle {
                         width: 38; height: 38; radius: Style.radiusM
-                        color: recDiscardBtn.containsMouse ? Color.mErrorContainer : Color.mSurface
+                        color: recDiscardBtn.containsMouse ? Color.mError : Color.mSurface
                         border.color: recDiscardBtn.containsMouse ? Color.mError : Style.capsuleBorderColor
                         border.width: Style.capsuleBorderWidth
                         NIcon { anchors.centerIn: parent; icon: "trash"; color: recDiscardBtn.containsMouse ? Color.mError : Color.mOnSurfaceVariant }
@@ -763,3 +763,4 @@ Item {
         }
     }
 }
+
