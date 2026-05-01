@@ -1,7 +1,7 @@
 {
   "id": "claude-code-panel",
   "name": "Claude Code Panel",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "minNoctaliaVersion": "4.1.2",
   "author": "d7om",
   "license": "MIT",
