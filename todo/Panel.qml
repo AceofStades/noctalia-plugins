@@ -1272,7 +1272,7 @@ Item {
           // Details section with add/edit button
           ColumnLayout {
             Layout.fillWidth: true
-            spacing: Style.marginS
+            spacing: Style.marginM
 
             // Divider before details
             Rectangle {
@@ -1291,7 +1291,7 @@ Item {
                 text: pluginApi?.tr("panel.todo_details.label_details")
                 font.pointSize: Style.fontSizeS
                 color: Color.mOnSurfaceVariant
-                Layout.preferredWidth: 80 * Style.uiScaleRatio
+                Layout.preferredWidth: 78 * Style.uiScaleRatio
                 Layout.alignment: Qt.AlignVCenter
               }
 
@@ -1349,14 +1349,27 @@ Item {
               }
             }
 
-            // View mode (show details if not empty)
-            NText {
-              text: detailDialog.todoDetails
-              font.pointSize: Style.fontSizeS
-              color: Color.mOnSurface
-              wrapMode: Text.Wrap
+            // View mode
+            Rectangle {
               Layout.fillWidth: true
+              Layout.preferredHeight: detailText.implicitHeight + Style.marginM * 2
               visible: detailDialog.todoDetails.length > 0 && !detailsEditMode
+
+              color: Color.mSurfaceVariant
+              radius: Style.iRadiusM
+              opacity: 0.8
+
+              NText {
+                id: detailText
+                text: detailDialog.todoDetails
+                anchors.fill: parent
+                anchors.margins: Style.marginM
+
+                font.pointSize: Style.fontSizeS
+                color: Color.mOnSurface
+                wrapMode: Text.Wrap
+                verticalAlignment: Text.AlignVCenter
+              }
             }
 
             // Edit mode (TextArea)
@@ -1441,7 +1454,7 @@ Item {
                 text: pluginApi?.tr("panel.todo_details.label_page")
                 font.pointSize: Style.fontSizeS
                 color: Color.mOnSurfaceVariant
-                Layout.preferredWidth: 72 * Style.uiScaleRatio
+                Layout.preferredWidth: 78 * Style.uiScaleRatio
                 Layout.alignment: Qt.AlignVCenter
               }
 
@@ -1469,7 +1482,7 @@ Item {
                 text: pluginApi?.tr("panel.todo_details.label_status")
                 font.pointSize: Style.fontSizeS
                 color: Color.mOnSurfaceVariant
-                Layout.preferredWidth: 72 * Style.uiScaleRatio
+                Layout.preferredWidth: 78 * Style.uiScaleRatio
                 Layout.alignment: Qt.AlignVCenter
               }
 
@@ -1497,7 +1510,7 @@ Item {
                 text: pluginApi?.tr("panel.todo_details.label_priority")
                 font.pointSize: Style.fontSizeS
                 color: Color.mOnSurfaceVariant
-                Layout.preferredWidth: 72 * Style.uiScaleRatio
+                Layout.preferredWidth: 78 * Style.uiScaleRatio
                 Layout.alignment: Qt.AlignVCenter
               }
 
@@ -1609,7 +1622,7 @@ Item {
                 text: pluginApi?.tr("panel.todo_details.label_created")
                 font.pointSize: Style.fontSizeS
                 color: Color.mOnSurfaceVariant
-                Layout.preferredWidth: 72 * Style.uiScaleRatio
+                Layout.preferredWidth: 78 * Style.uiScaleRatio
                 Layout.alignment: Qt.AlignVCenter
               }
 
