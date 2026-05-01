@@ -196,7 +196,7 @@ function clearPaletteResult() {
         function onFailed(messageKey, messageArg) {
             root.isRunning  = false
             root.activeTool = ""
-            var template = pluginApi?.tr(messageKey) ?? messageKey
+            var template = pluginApi?.tr(messageKey)
             var msg = messageArg !== "" ? template.replace("{dep}", messageArg) : template
             ToastService.showError(msg)
         }
@@ -224,7 +224,7 @@ function clearPaletteResult() {
         function onFailed(messageKey, messageArg) {
             root.isRunning  = false
             root.activeTool = ""
-            var template = pluginApi?.tr(messageKey) ?? messageKey
+            var template = pluginApi?.tr(messageKey)
             var msg = messageArg !== "" ? template.replace("{dep}", messageArg) : template
             ToastService.showError(msg)
         }
@@ -721,4 +721,5 @@ function clearPaletteResult() {
         function recordStop()          { if (recordOverlay.isRecording) recordOverlay.stopRecording() }
     }
 }
+
 
