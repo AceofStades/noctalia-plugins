@@ -120,7 +120,7 @@ Item {
             if (isDone && viewedTool === "record") {
                 root.viewedTool = ""
                 if (mainInstance) mainInstance.activeTool = ""
-            }    
+            }
         } else {
             if (viewedTool !== "record") {
                 root.viewedTool  = ""
@@ -208,6 +208,7 @@ Item {
                     readonly property int btnSize: Math.floor((width - Style.marginS * 4) / 5)
                     Row {
                         spacing: Style.marginS
+                        anchors.horizontalCenter: parent.horizontalCenter
                         Repeater {
                             model: root.toolDefs.slice(0, 5)
                             delegate: ToolBtn {
@@ -229,6 +230,7 @@ Item {
                     }
                     Row {
                         spacing: Style.marginS
+                        anchors.horizontalCenter: parent.horizontalCenter
                         Repeater {
                             model: root.toolDefs.slice(5, 10)
                             delegate: ToolBtn {
@@ -266,7 +268,9 @@ Item {
                 }
             }
             Rectangle {
-                visible: root.viewedTool === "record" && root.isRecording
+                opacity: (root.viewedTool === "record" && root.isRecording) ? 1.0 : 0.0
+                visible: opacity > 0
+                Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
                 width: parent.width; height: 38; radius: Style.radiusM
                 color: recPanelStopBtn.containsMouse ? Color.mError : Color.mSurfaceVariant
                 Row {
@@ -281,7 +285,9 @@ Item {
                 MouseArea { id: recPanelStopBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.mainInstance?.runRecordStop() }
             }
             Rectangle {
-                visible: root.viewedTool === "record" && root.isConverting
+                opacity: (root.viewedTool === "record" && root.isConverting) ? 1.0 : 0.0
+                visible: opacity > 0
+                Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
                 width: parent.width; height: 38; radius: Style.radiusM
                 color: Color.mSurfaceVariant
                 Row {
@@ -296,7 +302,9 @@ Item {
                 }
             }
             Column {
-                visible: root.viewedTool === "record" && root.isDone
+                opacity: (root.viewedTool === "record" && root.isDone) ? 1.0 : 0.0
+                visible: opacity > 0
+                Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
                 width: parent.width; spacing: Style.marginS
                 Rectangle {
                     width: parent.width; height: Math.round(parent.width * 9 / 16)
@@ -349,8 +357,10 @@ Item {
                 }
             }
             Row {
+                opacity: (root.viewedTool === "annotate" && !root.isRunning) ? 1.0 : 0.0
+                visible: opacity > 0
+                Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
                 width: parent.width; spacing: Style.marginS
-                visible: root.viewedTool === "annotate" && !root.isRunning
                 Rectangle {
                     width: (parent.width - Style.marginS * 2) / 3; height: 38; radius: Style.radiusM
                     color: annotRegionBtn.containsMouse ? Color.mPrimary : Color.mSurface
@@ -416,8 +426,10 @@ Item {
                 }
             }
             Column {
+                opacity: (root.viewedTool === "ocr" && !root.isRunning) ? 1.0 : 0.0
+                visible: opacity > 0
+                Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
                 width: parent.width; spacing: Style.marginS
-                visible: root.viewedTool === "ocr" && !root.isRunning
                 Row {
                     width: parent.width; spacing: Style.marginS
                     visible: root.installedLangs.length > 0
@@ -456,8 +468,10 @@ Item {
                 }
             }
             Row {
+                opacity: (root.viewedTool === "pin" && !root.isRunning) ? 1.0 : 0.0
+                visible: opacity > 0
+                Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
                 width: parent.width; spacing: Style.marginS
-                visible: root.viewedTool === "pin" && !root.isRunning
                 Rectangle {
                     width: (parent.width - Style.marginS) / 2; height: 38; radius: Style.radiusM
                     color: pinScreenBtn.containsMouse ? Color.mPrimary : Color.mSurface
@@ -496,8 +510,10 @@ Item {
                 }
             }
             Column {
+                opacity: (root.viewedTool === "record" && !root.isRunning && !root.isRecording && !root.isConverting && !root.isDone) ? 1.0 : 0.0
+                visible: opacity > 0
+                Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
                 width: parent.width; spacing: Style.marginS
-                visible: root.viewedTool === "record" && !root.isRunning && !root.isRecording && !root.isConverting && !root.isDone
                 Flow {
                     width: parent.width; spacing: Style.marginS
                     NText { text: pluginApi?.tr("panel.format"); color: Color.mOnSurfaceVariant; pointSize: Style.fontSizeXS; height: 26; verticalAlignment: Text.AlignVCenter }
@@ -613,8 +629,10 @@ Item {
                 }
             }
             Column {
+                opacity: (root.viewedTool === "mirror") ? 1.0 : 0.0
+                visible: opacity > 0
+                Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
                 width: parent.width; spacing: Style.marginM
-                visible: root.viewedTool === "mirror"
                 Row {
                     width: parent.width; spacing: Style.marginS
                     NIcon { icon: "camera"; color: Color.mPrimary; anchors.verticalCenter: parent.verticalCenter }
@@ -633,25 +651,33 @@ Item {
                 }
             }
             ResultColor {
-                visible: root.viewedTool === "colorpicker"
+                opacity: (root.viewedTool === "colorpicker") ? 1.0 : 0.0
+                visible: opacity > 0
+                Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
                 width: parent.width
                 pluginApi:    root.pluginApi
                 mainInstance: root.mainInstance
             }
             ResultOcr {
-                visible: root.viewedTool === "ocr" && (mainInstance?.ocrResult ?? "") !== ""
+                opacity: (root.viewedTool === "ocr" && (mainInstance?.ocrResult ?? "") !== "") ? 1.0 : 0.0
+                visible: opacity > 0
+                Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
                 width: parent.width
                 pluginApi:    root.pluginApi
                 mainInstance: root.mainInstance
             }
             ResultQr {
-                visible: root.viewedTool === "qr" && (mainInstance?.qrResult ?? "") !== ""
+                opacity: (root.viewedTool === "qr" && (mainInstance?.qrResult ?? "") !== "") ? 1.0 : 0.0
+                visible: opacity > 0
+                Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
                 width: parent.width
                 pluginApi:    root.pluginApi
                 mainInstance: root.mainInstance
             }
             ResultPalette {
-                visible: root.viewedTool === "palette"
+                opacity: (root.viewedTool === "palette") ? 1.0 : 0.0
+                visible: opacity > 0
+                Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
                 width: parent.width
                 pluginApi:    root.pluginApi
                 mainInstance: root.mainInstance
@@ -676,13 +702,15 @@ Item {
         Column {
             anchors.centerIn: parent; spacing: Style.marginXS
             Rectangle {
-                width:  Math.min(btn.width - 4, 44)
-                height: Math.min(btn.width - 4, 44)
+                width:  Math.min(btn.width - 8, 42)
+                height: Math.min(btn.width - 8, 42)
                 radius: Style.radiusM
                 anchors.horizontalCenter: parent.horizontalCenter
                 color:        ba.containsMouse ? Color.mHover : Color.mSurface
-                border.color: btn._accented ? btn._accentColor : Style.capsuleBorderColor
-                border.width: btn._accented ? 2 : Style.capsuleBorderWidth
+                border.color: btn._accented ? btn._accentColor
+                            : ba.containsMouse ? Color.mOnSurfaceVariant
+                            : "transparent"
+                border.width: btn._accented ? 2 : ba.containsMouse ? 1 : 0
                 clip: true
 
                 scale: ba.containsMouse && !btn.running ? 1.04 : 1.0
@@ -725,6 +753,7 @@ Item {
                     color: btn._accented ? btn._accentColor
                          : ba.containsMouse ? Color.mOnHover
                          : Color.mOnSurface
+                    Behavior on color { ColorAnimation { duration: 120 } }
                 }
                 Rectangle {
                     width: 8; height: 8; radius: 4
@@ -755,12 +784,14 @@ Item {
             }
             NText {
                 text: btn.label; pointSize: Style.fontSizeXS
-                color: btn._accented ? btn._accentColor : Color.mOnSurfaceVariant
+                color:   (ba.containsMouse || btn._accented) ? Color.mOnSurface : Color.mOnSurfaceVariant
                 font.weight: btn.active ? Font.Bold : Font.Normal
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: btn.width; horizontalAlignment: Text.AlignHCenter; elide: Text.ElideRight
+                opacity: (ba.containsMouse || btn._accented) ? 1.0 : 0.35
+                Behavior on opacity { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
+                
             }
         }
     }
 }
-
