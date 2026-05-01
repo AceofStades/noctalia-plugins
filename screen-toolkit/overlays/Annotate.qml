@@ -484,7 +484,7 @@ Variants {
 					6: "share-file-too-large"
 				}
 				var msgKey = "messages." + (keyMap[code] ?? "share-unknown-error")
-				var msg    = root.mainInstance?.pluginApi?.tr(msgKey) ?? msgKey
+				var msg    = root.mainInstance?.pluginApi?.tr(msgKey)
 				if (skipPop) {
 					overlayWin.showSharePopover = false
 					ToastService.showError(msg)
@@ -1748,4 +1748,5 @@ Variants {
         }
     }
 }
+
 
