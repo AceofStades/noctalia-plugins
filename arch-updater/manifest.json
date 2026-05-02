@@ -41,6 +41,8 @@
       "boldVer": true,
       "tooltip": true,
       "closeButton": true,
+      "panelTooltip": true,
+      "panelContext": true,
       "boldVerPanel": true,
       "boldVerDesktop": true,
       "hoverTip": true
