@@ -3,7 +3,7 @@
 A `lively` wallpaper selector for images and videos with live preview.
 
 > [!NOTE]
-> Heavily inspired by other work — see [Credits](#credits) for details.
+> Heavily inspired by other work — see Credits for details.
 
 https://github.com/user-attachments/assets/9ffbc83d-95e5-4dcd-a834-7bd224211b55
 
