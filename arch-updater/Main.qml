@@ -38,27 +38,72 @@ Item {
         refresh()
     }
 
+    Process {
+        id: checkRepo
+        
+        property string _output: ""
+        property var _callback: null
+
+        stdout: SplitParser {
+            onRead: data => checkRepo._output += data + "\n"
+        }
+
+        onExited: {
+            if (_callback) _callback(_output)
+            _output = ""
+            _callback = null
+        }
+
+        function run(cmd, callback) {
+            _output = ""
+            _callback = callback
+            command = cmd
+            running = true
+        }
+    }
+
     function openURL(source, id) {
         // Opens the page for the package
         switch (source) {
             case "system":
-                var url = "https://archlinux.org/packages/extra/x86_64/" + id
+                checkRepo.run(["sh", "-c", "pacman -Qi " + id + " | awk 'FNR <= 1 {print $4}'"], output => {
+                    var repo = output
+                    switch (repo) {
+                        case "cachyos-znver4":
+                            var url = "https://packages.cachyos.org/package/cachyos-znver4/x86_64_v4/" + id
+                            break
+                        case "cachyos-extra-znver4":
+                            var url = "https://packages.cachyos.org/package/cachyos-extra-znver4/x86_64_v4/" + id
+                            break
+                        case "cachyos-core-znver4":
+                            var url = "https://packages.cachyos.org/package/cachyos-core-znver4/x86_64_v4/" + id
+                            break
+                        case "extra":
+                            var url = "https://archlinux.org/packages/extra/x86_64/" + id
+                            break
+                        case "multilib":
+                            var url = "https://archlinux.org/packages/multilib/x86_64/" + id
+                            break
+                        default:
+                            var url = "https://archlinux.org/packages/core/x86_64/" + id
+                            break
+                    }
+                    Qt.openUrlExternally(url)
+                })
                 break
             case "aur":
-                var url = "https://aur.archlinux.org/packages/" + id
+                Qt.openUrlExternally("https://aur.archlinux.org/packages/" + id)
                 break
             case "flatpak":
-                var url = "https://flathub.org/en/apps/" + id
+                Qt.openUrlExternally("https://flathub.org/en/apps/" + id)
                 break
             default:
-                var url = ""
+                Logger.i("Arch Updater", "Unkown source: " + source)
                 ToastService.showNotice("Unkown source: " + source)
                 break
         }
-        Logger.i("Arch Updater", "Opening " + url)
-        Qt.openUrlExternally(url)
     }
-    
+
     function copy(text) {
         // Copy the text and send a toast
         Quickshell.execDetached(["sh", "-c", "wl-copy '" + text + "'"])
