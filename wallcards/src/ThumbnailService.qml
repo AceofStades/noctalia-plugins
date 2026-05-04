@@ -6,6 +6,9 @@ import Qt.labs.folderlistmodel
 Item {
   id: service
 
+  property int maxThumbnailJobs: 4
+  property var pendingJobs: []
+  property int activeJobs: 0
   required property string cacheDir
   required property var imageFilter
   required property var videoFilter
@@ -39,58 +42,82 @@ Item {
     }
   }
 
-  function createThumbnails() {
+function createThumbnails() {
     var proc = processComponent.createObject(null, {
-      command: ["mkdir", "-p", cacheDir]
+        command: ["mkdir", "-p", cacheDir]
     });
     proc.running = true;
 
     var items = [];
+    var jobs = [];
+
     for (var i = 0; i < thumbnailModel.count; i++) {
-      (function (idx) {
-          var filePath = toLocalPath(thumbnailModel.get(idx, "filePath"));
-          var fileName = thumbnailModel.get(idx, "fileName");
-          var isVid = Utils.isVideo(fileName, service.videoFilter);
-          var thumbName = isVid ? fileName + ".jpg" : fileName;
-          var thumbnailPath = cacheDir + "/" + thumbName;
+        (function (idx) {
+            var filePath = toLocalPath(thumbnailModel.get(idx, "filePath"));
+            var fileName = thumbnailModel.get(idx, "fileName");
+            var isVid = Utils.isVideo(fileName, service.videoFilter);
+            var thumbName = isVid ? fileName + ".jpg" : fileName;
+            var thumbnailPath = cacheDir + "/" + thumbName;
 
-          var thumbnailCmd = isVid ? videoToThumbnailCmd(filePath, thumbnailPath) : imageToThumbnailCmd(filePath, thumbnailPath);
-          var hexCmd = thumbnailHexValueCmd(thumbnailPath);
+            var thumbnailCmd = isVid ? videoToThumbnailCmd(filePath, thumbnailPath) : imageToThumbnailCmd(filePath, thumbnailPath);
+            var hexCmd = thumbnailHexValueCmd(thumbnailPath);
 
-          const script = `
-            [ -f "${thumbnailPath}"* ] && exit 0
-            ${thumbnailCmd}
-            mv "${thumbnailPath}" "${thumbnailPath}__x$(${hexCmd})"
-          `;
+            const script = `
+                [ -f "${thumbnailPath}"* ] && exit 0
+                ${thumbnailCmd}
+                mv "${thumbnailPath}" "${thumbnailPath}__x$(${hexCmd})"
+            `;
 
-          service.pendingProcesses++;
-          var proc = processComponent.createObject(null, {
-            command: ["bash", "-c", script]
-          });
+            jobs.push({
+                script: script,
+                thumbnailPath: thumbnailPath
+            });
 
-          proc.exited.connect(function () {
-            service.pendingProcesses--;
-            service.thumbnailRevision++;
-
-            if (service.pendingProcesses === 0) {
-              filesModel.running = true;
-            }
-
-            proc.destroy();
-          });
-
-          proc.running = true;
-          items.push({});
+            items.push({});
         })(i);
     }
 
+    pendingJobs = jobs;
+    activeJobs = 0;
+    processNextJob();
+
     if (thumbnailModel.count === 0) {
-      service.loading = false;
+        service.loading = false;
     }
 
     files = items;
-  }
+}
+function processNextJob() {
+    while (activeJobs < maxThumbnailJobs && pendingJobs.length > 0) {
+        var job = pendingJobs.shift();
+        activeJobs++;
+        service.pendingProcesses++;
+        createSingleThumbnail(job, function() {
+            activeJobs--;
+            processNextJob();
+        });
+    }
+}
 
+function createSingleThumbnail(job, onFinished) {
+    var proc = processComponent.createObject(null, {
+        command: ["bash", "-c", job.script]
+    });
+
+    proc.exited.connect(function () {
+        service.pendingProcesses--;
+        service.thumbnailRevision++;
+
+        if (service.pendingProcesses === 0) {
+            filesModel.running = true;
+        }
+
+        proc.destroy();
+        if (onFinished) onFinished();
+    });
+
+    proc.running = true;
+}
   function imageToThumbnailCmd(filePath, thumbnailPath) {
     return `magick "${filePath}" \
       -resize x500 \
