@@ -289,7 +289,7 @@
     {
       "id": "currency-exchange",
       "name": "Currency Exchange",
-      "version": "1.0.3",
+      "version": "1.0.4",
       "official": false,
       "author": "balor",
       "description": "Currency conversion utility via launcher and bar widget",
@@ -300,7 +300,7 @@
         "Launcher",
         "Utility"
       ],
-      "lastUpdated": "2026-03-29T19:05:12-04:00"
+      "lastUpdated": "2026-05-04T14:10:38+09:00"
     },
     {
       "id": "custom-commands",
