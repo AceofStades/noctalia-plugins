@@ -67,7 +67,7 @@ Item {
         switch (source) {
             case "system":
                 checkRepo.run(["sh", "-c", "pacman -Si " + id + " 2>/dev/null | awk '/^Repository/{print $3; exit}'"], output => {
-                    var repo = output
+                    var repo = output.trim()
                     switch (repo) {
                         case "cachyos-znver4":
                             var url = "https://packages.cachyos.org/package/cachyos-znver4/x86_64_v4/" + id
