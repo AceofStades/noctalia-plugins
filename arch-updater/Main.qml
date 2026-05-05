@@ -66,7 +66,7 @@ Item {
         // Opens the page for the package
         switch (source) {
             case "system":
-                checkRepo.run(["sh", "-c", "pacman -Qi " + id + " | awk 'FNR <= 1 {print $4}'"], output => {
+                checkRepo.run(["sh", "-c", "pacman -Si " + id + " 2>/dev/null | awk '/^Repository/{print $3; exit}'"], output => {
                     var repo = output
                     switch (repo) {
                         case "cachyos-znver4":
