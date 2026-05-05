@@ -241,7 +241,7 @@ Item {
     // Output format: application\tname\tnewver\toldver
     Process {
         id: getFlatpakUpdates
-        command: ["sh", "-c", "flatpak update --no-deploy --noninteractive >/dev/null 2>&1; join -t'\t' -j1 <(flatpak remote-ls --updates --app --columns=application,name,version 2>/dev/null | sort -t'\t' -k1,1) <(flatpak list --app --columns=application,version 2>/dev/null | sort -t'\t' -k1,1)"]
+        command: ["sh", "-c", "flatpak update --no-deploy --noninteractive >/dev/null 2>&1; join -t'\t' -j1 <(flatpak remote-ls --updates --columns=application,name,version 2>/dev/null | sort -t'\t' -k1,1) <(flatpak list --columns=application,version 2>/dev/null | sort -t'\t' -k1,1)"]
         onExited: (exitCode, exitStatus) => {
             if (exitCode !== 0) {
                 Logger.w("Arch Updater", "Flatpak check exited with code " + exitCode)
