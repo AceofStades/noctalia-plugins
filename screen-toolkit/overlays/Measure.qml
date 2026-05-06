@@ -170,8 +170,20 @@ Variants {
                 hoverEnabled: true
                 onPositionChanged: (mouse) => {
                     if (overlayWin.measuring) {
-                        overlayWin.x2 = mouse.x
-                        overlayWin.y2 = mouse.y
+                        if (mouse.modifiers & Qt.AltModifier) {
+                            var dx = Math.abs(mouse.x - overlayWin.x1)
+                            var dy = Math.abs(mouse.y - overlayWin.y1)
+                            if (dx > dy) {
+                                overlayWin.x2 = mouse.x
+                                overlayWin.y2 = overlayWin.y1
+                            } else {
+                                overlayWin.x2 = overlayWin.x1
+                                overlayWin.y2 = mouse.y
+                            }
+                        } else {
+                            overlayWin.x2 = mouse.x
+                            overlayWin.y2 = mouse.y
+                        }
                         measureCanvas.requestPaint()
                     }
                 }
@@ -182,7 +194,20 @@ Variants {
                     overlayWin.x2 = mouse.x; overlayWin.y2 = mouse.y
                 }
                 onReleased: (mouse) => {
-                    overlayWin.x2 = mouse.x; overlayWin.y2 = mouse.y
+                    if (mouse.modifiers & Qt.AltModifier) {
+                        var dx = Math.abs(mouse.x - overlayWin.x1)
+                        var dy = Math.abs(mouse.y - overlayWin.y1)
+                        if (dx > dy) {
+                            overlayWin.x2 = mouse.x
+                            overlayWin.y2 = overlayWin.y1
+                        } else {
+                            overlayWin.x2 = overlayWin.x1
+                            overlayWin.y2 = mouse.y
+                        }
+                    } else {
+                        overlayWin.x2 = mouse.x
+                        overlayWin.y2 = mouse.y
+                    }
                     overlayWin.measuring = false
                     var dist = Math.sqrt(
                         Math.pow(overlayWin.x2 - overlayWin.x1, 2) +
