@@ -52,7 +52,7 @@ Item {
                 root.pluginApi.mainInstance.copy(text) // Copy text
             }
             else if (action === "open") {
-                Logger.d("Arch Updater", "open")
+                Logger.d("Arch Updater", "Open URL")
                 root.pluginApi.mainInstance.openURL(source, packageID) // Open link
             }
         }
