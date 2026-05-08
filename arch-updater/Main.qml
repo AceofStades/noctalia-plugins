@@ -66,8 +66,8 @@ Item {
         // Opens the page for the package
         switch (source) {
             case "system":
-                checkRepo.run(["sh", "-c", "pacman -Qi " + id + " | awk 'FNR <= 1 {print $4}'"], output => {
-                    var repo = output
+                checkRepo.run(["sh", "-c", "pacman -Si " + id + " 2>/dev/null | awk '/^Repository/{print $3; exit}'"], output => {
+                    var repo = output.trim()
                     switch (repo) {
                         case "cachyos-znver4":
                             var url = "https://packages.cachyos.org/package/cachyos-znver4/x86_64_v4/" + id
@@ -236,11 +236,12 @@ Item {
     }
 
     // Single process for all flatpak update data
+    // Refreshes metadata using --no-deploy first so that the new version numbers get fetched
     // Joins remote (new) versions with installed (old) versions by application ID
     // Output format: application\tname\tnewver\toldver
     Process {
         id: getFlatpakUpdates
-        command: ["sh", "-c", "join -t'\t' -j1 <(flatpak remote-ls --updates --columns=application,name,version 2>/dev/null | sort -t'\t' -k1,1) <(flatpak list --columns=application,version 2>/dev/null | sort -t'\t' -k1,1)"]
+        command: ["sh", "-c", "flatpak update --no-deploy --noninteractive >/dev/null 2>&1; join -t'\t' -j1 <(flatpak remote-ls --updates --columns=application,name,version 2>/dev/null | sort -t'\t' -k1,1) <(flatpak list --columns=application,version 2>/dev/null | sort -t'\t' -k1,1)"]
         onExited: (exitCode, exitStatus) => {
             if (exitCode !== 0) {
                 Logger.w("Arch Updater", "Flatpak check exited with code " + exitCode)
@@ -265,7 +266,7 @@ Item {
                     // Expected format: application\tname\tnewver\toldver
                     if (parts.length >= 4) {
                         names.push(parts[1])
-                        rows.push({id: parts[0], name: parts[1], oldVer: parts[2], newVer: parts[3], source: "flatpak" })
+                        rows.push({id: parts[0], name: parts[1], oldVer: parts[3], newVer: parts[2], source: "flatpak" })
                     }
                 }
 
