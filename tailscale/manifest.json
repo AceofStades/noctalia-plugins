@@ -29,6 +29,7 @@
       "showPeerCount": true,
       "hideDisconnected": false,
       "hideMullvadExitNodes": true,
+      "showSearchBar": false,
       "terminalCommand": "",
       "sshUsername": "",
       "pingCount": 5,
