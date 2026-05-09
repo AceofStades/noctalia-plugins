@@ -22,19 +22,19 @@
     "addVpn": "Добавить VPN",
     "addWireguard": "Добавить WireGuard",
     "disableToastNotifications": "Отключить уведомления",
-    "disableToastNotificationsDescription": "Не показывать уведомления о подлюченом и отключеном VPN"
+    "disableToastNotificationsDescription": "Не показывать уведомления о статусе VPN соединения"
   },
   "common": {
     "vpn": "VPN",
-    "refresh": "Refresh",
-    "connected": "Connected",
-    "disconnected": "Disconnected",
-    "connect": "Connect",
-    "disconnect": "Disconnect",
-    "close": "Close",
-    "settings": "Settings",
-    "edit": "Edit",
-    "delete": "Delete",
-    "cancel": "Cancel"
+    "refresh": "Обновить",
+    "connected": "Подключено",
+    "disconnected": "Отключено",
+    "connect": "Подключить",
+    "disconnect": "Отключить",
+    "close": "Закрыть",
+    "settings": "Настройка",
+    "edit": "Редоктировать",
+    "delete": "Удалить",
+    "cancel": "Отмена"
   }
 }
