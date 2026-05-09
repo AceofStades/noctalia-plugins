@@ -1,22 +1,22 @@
 {
   "panel": {
     "emptyTitle": "VPN не найден",
-    "emptyDescription": "Используй Менеджер Подключений для VPN"
+    "emptyDescription": "Используй Менеджер Подключений для добовления VPN"
   },
   "toast": {
-    "connectedTo": "Connected to {name}",
-    "disconnectedFrom": "Disconnected from {name}",
-    "connectionError": "Failed to connect {name}",
-    "disconnectionError": "Failed to disconnect {name}",
-    "vpnRemoved": "VPN \"{name}\" removed",
-    "vpnRemoveError": "Failed to remove VPN \"{name}\""
+    "connectedTo": "Подключиться к {name}",
+    "disconnectedFrom": "Отсоединиться от {name}",
+    "connectionError": "Ошибка подключения к {name}",
+    "disconnectionError": "Ошибка отсоединения от {name}",
+    "vpnRemoved": "VPN \"{name}\" удалён",
+    "vpnRemoveError": "Ошибка удаления VPN \"{name}\""
   },
   "settings": {
-    "pluginSettings": "Plugin settings",
-    "connectedColor": "Connected color",
-    "connectedColorDescription": "Chose the color to use for icon and text when connected",
-    "disconnectedColor": "Disconnected color",
-    "disconnectedColorDescription": "Chose the color to use for icon and text when disconnected",
+    "pluginSettings": "Настройка плагина",
+    "connectedColor": "Цвет подключения",
+    "connectedColorDescription": "Выберите цвет значка и текста для активного подключения",
+    "disconnectedColor": "Цвет отсоединения",
+    "disconnectedColorDescription": "Выберите цвет значка и текста для неактивного подключения",
     "vpnConnections": "VPN Connections",
     "noVpnConnections": "No VPN connections configured.",
     "addVpn": "Add VPN",
