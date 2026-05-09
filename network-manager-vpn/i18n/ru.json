@@ -1,7 +1,7 @@
 {
   "panel": {
-    "emptyTitle": "No VPN found",
-    "emptyDescription": "Use Network Manager to add a VPN"
+    "emptyTitle": "VPN не найден",
+    "emptyDescription": "Используй Менеджер Подключений для VPN"
   },
   "toast": {
     "connectedTo": "Connected to {name}",
