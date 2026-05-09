@@ -21,8 +21,8 @@
     "noVpnConnections": "VPN-подключения не настроены.",
     "addVpn": "Добавить VPN",
     "addWireguard": "Добавить WireGuard",
-    "disableToastNotifications": "Disable toast notifications",
-    "disableToastNotificationsDescription": "Do not show toast notifications when a VPN connects or disconnects"
+    "disableToastNotifications": "Отключить уведомления",
+    "disableToastNotificationsDescription": "Не показывать уведомления о подлюченом и отключеном VPN"
   },
   "common": {
     "vpn": "VPN",
