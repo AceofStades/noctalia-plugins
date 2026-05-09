@@ -1100,7 +1100,7 @@
     {
       "id": "noctalia-calculator",
       "name": "Calculator",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "official": false,
       "author": "pir0c0pter0",
       "description": "Theme-aware calculator plugin for Noctalia on Niri with bar widget, floating panel and keyboard support",
@@ -1112,7 +1112,7 @@
         "Panel",
         "Utility"
       ],
-      "lastUpdated": "2026-03-23T15:27:58-03:00"
+      "lastUpdated": "2026-04-30T16:56:05+02:00"
     },
     {
       "id": "noctalia-supergfxctl",
