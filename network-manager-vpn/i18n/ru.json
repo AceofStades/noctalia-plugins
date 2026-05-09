@@ -17,12 +17,12 @@
     "connectedColorDescription": "Выберите цвет значка и текста при активном подключении",
     "disconnectedColor": "Цвет отсутствия подключения",
     "disconnectedColorDescription": "Выберите цвет значка и текста при отсутствии подключения",
-    "vpnConnections": "VPN-Соединения",
+    "vpnConnections": "VPN-соединения",
     "noVpnConnections": "VPN-подключения не настроены.",
     "addVpn": "Добавить VPN",
     "addWireguard": "Добавить WireGuard",
     "disableToastNotifications": "Отключить уведомления",
-    "disableToastNotificationsDescription": "Не показывать уведомления о статусе VPN соединения"
+    "disableToastNotificationsDescription": "Не показывать уведомления о статусе VPN-соединения"
   },
   "common": {
     "vpn": "VPN",
@@ -32,7 +32,7 @@
     "connect": "Подключить",
     "disconnect": "Отключить",
     "close": "Закрыть",
-    "settings": "Настройка",
+    "settings": "Настройки",
     "edit": "Редактировать",
     "delete": "Удалить",
     "cancel": "Отмена"
