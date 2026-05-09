@@ -1615,7 +1615,7 @@
     {
       "id": "sticky-notes",
       "name": "Sticky Notes",
-      "version": "0.0.5",
+      "version": "0.0.6",
       "official": false,
       "author": "sapjax",
       "description": "A local quick notes plugin with Markdown support.",
@@ -1627,7 +1627,7 @@
         "Panel",
         "Productivity"
       ],
-      "lastUpdated": "2026-04-18T19:09:12+02:00"
+      "lastUpdated": "2026-05-05T20:30:14+03:00"
     },
     {
       "id": "syncthing-status",
@@ -1798,7 +1798,7 @@
     {
       "id": "valent-connect",
       "name": "Valent Connect",
-      "version": "1.2.1",
+      "version": "1.2.2",
       "official": false,
       "author": "Suyash",
       "description": "A plugin integrating your mobile devices into a panel using Valent",
@@ -1811,7 +1811,7 @@
         "Utility",
         "System"
       ],
-      "lastUpdated": "2026-03-29T19:05:12-04:00"
+      "lastUpdated": "2026-05-05T20:13:58+03:00"
     },
     {
       "id": "video-wallpaper",
@@ -1881,7 +1881,7 @@
     {
       "id": "web-search",
       "name": "Web Search",
-      "version": "1.1.2",
+      "version": "1.1.3",
       "official": false,
       "author": "Rigelyon",
       "description": "Search the Internet from the Launcher.",
@@ -1892,7 +1892,7 @@
         "Launcher",
         "Utility"
       ],
-      "lastUpdated": "2026-04-25T15:30:40+03:00"
+      "lastUpdated": "2026-05-05T20:15:18+03:00"
     },
     {
       "id": "weekly-calendar",
@@ -1945,7 +1945,7 @@
     {
       "id": "zed-provider",
       "name": "Zed Provider",
-      "version": "1.0.4",
+      "version": "1.0.5",
       "official": false,
       "author": "justKevv",
       "description": "A zed provider for opening project easier using zed code editor",
@@ -1956,7 +1956,7 @@
         "Launcher",
         "Developer"
       ],
-      "lastUpdated": "2026-04-08T22:19:02+02:00"
+      "lastUpdated": "2026-05-05T20:15:18+03:00"
     }
   ]
 }
