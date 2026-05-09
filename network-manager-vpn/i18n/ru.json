@@ -1,7 +1,7 @@
 {
   "panel": {
     "emptyTitle": "VPN не найден",
-    "emptyDescription": "Используй Менеджер Подключений для добовления VPN"
+    "emptyDescription": "Используйте Менеджер Подключений для добавления VPN"
   },
   "toast": {
     "connectedTo": "Подключиться к {name}",
@@ -13,10 +13,10 @@
   },
   "settings": {
     "pluginSettings": "Настройка плагина",
-    "connectedColor": "Цвет подключения",
-    "connectedColorDescription": "Выберите цвет значка и текста при подключении",
-    "disconnectedColor": "Цвет отключения",
-    "disconnectedColorDescription": "Выберите цвет значка и текста при отключении",
+    "connectedColor": "Цвет активного подключения",
+    "connectedColorDescription": "Выберите цвет значка и текста при активном подключении",
+    "disconnectedColor": "Цвет отсутствия подключения",
+    "disconnectedColorDescription": "Выберите цвет значка и текста при отсутствии подключения",
     "vpnConnections": "VPN-Соединения",
     "noVpnConnections": "VPN-подключения не настроены.",
     "addVpn": "Добавить VPN",
@@ -33,7 +33,7 @@
     "disconnect": "Отключить",
     "close": "Закрыть",
     "settings": "Настройка",
-    "edit": "Редоктировать",
+    "edit": "Редактировать",
     "delete": "Удалить",
     "cancel": "Отмена"
   }
