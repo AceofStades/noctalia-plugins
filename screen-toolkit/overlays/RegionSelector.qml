@@ -5,7 +5,6 @@ import Quickshell.Wayland
 import qs.Commons
 import qs.Widgets
 import qs.Services.UI
-
 Item {
     id: root
     signal regionSelected(real x, real y, real w, real h, var screen)
@@ -13,9 +12,10 @@ Item {
     property bool isVisible: false
     property var activeScreen: null
     property var windowRegions: []
+    property var pluginApi: null
     property bool windowRegionsFetched: false
     property bool isNiri: false
-
+    property bool _isNiriChecked: false
     function show(screen) {
         var target = screen || null
         if (!target && Quickshell.screens.length > 0)
@@ -24,11 +24,14 @@ Item {
         root.windowRegions = []
         root.windowRegionsFetched = false
         root.isVisible = true
-        _envCheckProc.exec({
-            command: ["bash", "-c",
-                "[ -n \"$NIRI_SOCKET\" ] && echo 1 || echo 0"
-            ]
-        })
+        if (!root._isNiriChecked) {
+            root._isNiriChecked = true
+            _envCheckProc.exec({
+                command: ["bash", "-c",
+                    "[ -n \"$NIRI_SOCKET\" ] && echo 1 || echo 0"
+                ]
+            })
+        }
         _winFetchProc.exec({
             command: ["bash", "-c",
                 "if [ -n \"$HYPRLAND_INSTANCE_SIGNATURE\" ]; then" +
@@ -49,12 +52,10 @@ Item {
             ]
         })
     }
-
     function hide() {
         root.isVisible = false
         root.activeScreen = null
     }
-
     Process {
         id: _envCheckProc
         stdout: StdioCollector {}
@@ -62,7 +63,6 @@ Item {
             root.isNiri = _envCheckProc.stdout.text.trim() === "1"
         }
     }
-
     Process {
         id: _winFetchProc
         stdout: StdioCollector {}
@@ -88,7 +88,6 @@ Item {
             root.windowRegionsFetched = true
         }
     }
-
     Variants {
         model: Quickshell.screens
         delegate: PanelWindow {
@@ -111,6 +110,8 @@ Item {
             property point startPos
             property bool dragging: false
             property real fadeOpacity: 0.0
+            property real _lastPaintMouseX: -1
+            property real _lastPaintMouseY: -1
             NumberAnimation {
                 id: fadeIn
                 target: win
@@ -124,6 +125,7 @@ Item {
                     fadeOpacity = 0.0
                     dragging = false
                     selX = 0; selY = 0; selW = 0; selH = 0
+                    _lastPaintMouseX = -1; _lastPaintMouseY = -1
                     fadeIn.restart()
                 } else {
                     fadeIn.stop()
@@ -159,7 +161,10 @@ Item {
                 property vector4d selectionRect: Qt.vector4d(win.selX, win.selY, win.selW, win.selH)
                 property real dimOpacity: 0.72
                 property vector2d screenSize: Qt.vector2d(win.width, win.height)
-                fragmentShader: Qt.resolvedUrl("dimming.frag.qsb")
+                property real borderRadius: 8.0
+                property real outlineThickness: 1.5
+                property vector4d outlineColor: Qt.vector4d(1.0, 1.0, 1.0, 1.0)
+                fragmentShader: Qt.resolvedUrl("../shaders/dimming.frag.qsb")
             }
             Canvas {
                 id: guides
@@ -168,6 +173,8 @@ Item {
                 opacity: win.fadeOpacity
                 onPaint: {
                     var ctx = getContext("2d")
+                    win._lastPaintMouseX = win.mouseX
+                    win._lastPaintMouseY = win.mouseY
                     ctx.clearRect(0, 0, width, height)
                     var hasSel = win.selW > 4 && win.selH > 4
                     var mx = win.mouseX, my = win.mouseY
@@ -247,7 +254,8 @@ Item {
                 height: Style.controlHeightS
                 radius: Style.controlHeightS / 2
                 color: Qt.rgba(0, 0, 0, 0.85)
-                border.color: Qt.rgba(1, 1, 1, 0.2); border.width: 1
+                border.color: Qt.rgba(1, 1, 1, 0.2)
+                border.width: Style.borderS
                 x: Math.max(4, Math.min(win.selX + win.selW/2 - width/2, win.width - width - 4))
                 y: win.selY > 48 ? win.selY - height - Style.marginS : win.selY + win.selH + Style.marginS
                 NText {
@@ -285,7 +293,8 @@ Item {
                 height: Style.controlHeightS
                 radius: Style.controlHeightS / 2
                 color: Qt.rgba(0, 0, 0, 0.75)
-                border.color: Qt.rgba(1,1,1,0.1); border.width: 1
+                border.color: Qt.rgba(1,1,1,0.1)
+                border.width: Style.borderS
                 Row {
                     id: _hintRow
                     anchors.centerIn: parent
@@ -293,12 +302,12 @@ Item {
                     NText { text: pluginApi?.tr("regionSelector.drag");        color: Qt.rgba(1,1,1,0.7); pointSize: Style.fontSizeXS; font.weight: Font.Bold }
                     NText { text: pluginApi?.tr("regionSelector.toSelect");    color: Qt.rgba(1,1,1,0.4); pointSize: Style.fontSizeXS }
                     Item { width: Style.marginL; height: 1; visible: !root.isNiri }
-                    Rectangle { width: 1; height: 14; color: Qt.rgba(1,1,1,0.25); anchors.verticalCenter: parent.verticalCenter; visible: !root.isNiri }
+                    Rectangle { width: Style.borderS; height: 14; color: Qt.rgba(1,1,1,0.25); anchors.verticalCenter: parent.verticalCenter; visible: !root.isNiri }
                     Item { width: Style.marginL; height: 1; visible: !root.isNiri }
                     NText { text: pluginApi?.tr("regionSelector.clickWindow"); color: Qt.rgba(1,1,1,0.7); pointSize: Style.fontSizeXS; font.weight: Font.Bold; visible: !root.isNiri }
                     NText { text: pluginApi?.tr("regionSelector.toSnap");      color: Qt.rgba(1,1,1,0.4); pointSize: Style.fontSizeXS; visible: !root.isNiri }
                     Item { width: Style.marginL; height: 1 }
-                    Rectangle { width: 1; height: 14; color: Qt.rgba(1,1,1,0.25); anchors.verticalCenter: parent.verticalCenter }
+                    Rectangle { width: Style.borderS; height: 14; color: Qt.rgba(1,1,1,0.25); anchors.verticalCenter: parent.verticalCenter }
                     Item { width: Style.marginL; height: 1 }
                     NText { text: pluginApi?.tr("regionSelector.esc");         color: Qt.rgba(1,1,1,0.7); pointSize: Style.fontSizeXS; font.weight: Font.Bold }
                     NText { text: pluginApi?.tr("regionSelector.toCancel");    color: Qt.rgba(1,1,1,0.4); pointSize: Style.fontSizeXS }
@@ -322,7 +331,11 @@ Item {
                 }
                 onPositionChanged: (mouse) => {
                     win.mouseX = mouse.x; win.mouseY = mouse.y
-                    guides.requestPaint()
+                    var dx = mouse.x - win._lastPaintMouseX
+                    var dy = mouse.y - win._lastPaintMouseY
+                    if (win._lastPaintMouseX === -1 || Math.abs(dx) > 1 || Math.abs(dy) > 1) {
+                        guides.requestPaint()
+                    }
                     if (win.dragging) {
                         win.selX = Math.min(win.startPos.x, mouse.x)
                         win.selY = Math.min(win.startPos.y, mouse.y)
@@ -334,7 +347,7 @@ Item {
                     if (mouse.button === Qt.RightButton) return
                     win.dragging = false
                     if (win.selW < 5 && win.selH < 5) {
-                        if (!root.isNiri) {
+                        if (!root.isNiri && root.windowRegionsFetched) {
                             var hi = win._winAt(mouse.x, mouse.y)
                             if (hi >= 0) {
                                 var region = root.windowRegions[hi]
