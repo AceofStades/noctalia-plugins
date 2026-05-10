@@ -1447,10 +1447,10 @@
     {
       "id": "screen-toolkit",
       "name": "Screen Toolkit",
-      "version": "1.1.4",
+      "version": "1.3.0",
       "official": false,
       "author": "ycf-anon",
-      "description": "A set of screen tools: color picker, annotate, record, pin, OCR, QR scanner, palette, measure, and webcam mirror.",
+      "description": "A set of screen tools: color picker, annotate, record, pin, OCR, QR scanner, palette, measure, and webcam mirror (deps: README).",
       "repository": "https://github.com/noctalia-dev/noctalia-plugins",
       "minNoctaliaVersion": "4.5.0",
       "license": "MIT",
@@ -1460,7 +1460,7 @@
         "Utility",
         "System"
       ],
-      "lastUpdated": "2026-04-23T15:15:46+02:00"
+      "lastUpdated": "2026-05-04T02:24:00+01:00"
     },
     {
       "id": "screenshot",
