@@ -487,7 +487,7 @@
     {
       "id": "hassio",
       "name": "Home Assistant",
-      "version": "1.0.1",
+      "version": "1.1.0",
       "official": false,
       "author": "Pozzoo",
       "description": "Monitor and control Home Assistant entities from the bar. Requires qt6-websockets.",
@@ -499,7 +499,7 @@
         "Panel",
         "Utility"
       ],
-      "lastUpdated": "2026-04-23T15:13:24+02:00"
+      "lastUpdated": "2026-05-10T15:26:46+03:00"
     },
     {
       "id": "hello-world",
