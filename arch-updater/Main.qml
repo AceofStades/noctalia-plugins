@@ -96,7 +96,7 @@ Item {
         var url = ""
         switch (source) {
             case "system":
-                checkRepo.run(["sh", "-c", "pacman -Si " + id + " 2>/dev/null | awk '/^Repository/  {print $3; exit}'"], output => {
+                checkRepo.run(["sh", "-c", "LC_ALL=C pacman -Si " + id + " 2>/dev/null | awk '/^Repository/  {print $3; exit}'"], output => {
                     var repo = output.trim()
                     switch (repo) {
                         case "cachyos-znver4":
