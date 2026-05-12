@@ -60,7 +60,7 @@ Item {
         }
       }
 
-      NSeparator { Layout.fillWidth: true }
+      NDivider { Layout.fillWidth: true }
 
       // Task List
       ListView {

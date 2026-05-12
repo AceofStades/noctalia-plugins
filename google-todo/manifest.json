@@ -12,8 +12,8 @@
         "main": "Main.qml",
         "barWidget": "BarWidget.qml",
         "desktopWidget": "DesktopWidget.qml",
-        "panel": "Panel.qml",
-        "settings": "Settings.qml"
+        "desktopWidgetSettings": "DesktopWidgetSettings.qml",
+        "panel": "Panel.qml",        "settings": "Settings.qml"
     },
     "dependencies": {
         "plugins": []

@@ -57,7 +57,7 @@ ColumnLayout {
     }
   }
 
-  NSeparator { Layout.fillWidth: true }
+  NDivider { Layout.fillWidth: true }
 
   NSpinBox {
     Layout.fillWidth: true

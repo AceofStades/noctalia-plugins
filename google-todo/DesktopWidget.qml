@@ -41,7 +41,7 @@ Item {
         }
       }
 
-      NSeparator { Layout.fillWidth: true }
+      NDivider { Layout.fillWidth: true }
 
       ListView {
         id: taskListView

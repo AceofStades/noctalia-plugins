@@ -144,6 +144,44 @@ Item {
   }
 
   Component.onCompleted: {
+    // Auto-add to the bar on first load
+    if (pluginApi && pluginApi.pluginSettings && !pluginApi.pluginSettings.addedToBar) {
+      try {
+        pluginApi.withCurrentScreen(screen => {
+          if (screen && screen.name) {
+            var screenName = screen.name;
+            var widgetId = "plugin:" + pluginApi.pluginId;
+            var currentWidgets = Settings.getBarWidgetsForScreen(screenName) || {};
+            var widgets = {
+              "left": JSON.parse(JSON.stringify(currentWidgets.left || [])),
+              "center": JSON.parse(JSON.stringify(currentWidgets.center || [])),
+              "right": JSON.parse(JSON.stringify(currentWidgets.right || []))
+            };
+            
+            var found = false;
+            var sections = ["left", "center", "right"];
+            for (var s = 0; s < sections.length; s++) {
+              var arr = widgets[sections[s]];
+              for (var i = 0; i < arr.length; i++) {
+                if (arr[i] && arr[i].id === widgetId) found = true;
+              }
+            }
+
+            if (!found) {
+              widgets["right"].push({ "id": widgetId });
+              Settings.setScreenOverride(screenName, "widgets", widgets);
+              BarService.widgetsRevision++;
+            }
+          }
+        });
+      } catch (e) {
+        Logger.w("GoogleTodo", "Failed to auto-add widget to bar:", e);
+      }
+      
+      pluginApi.pluginSettings.addedToBar = true;
+      pluginApi.saveSettings();
+    }
+
     // Initial fetch to check login status and get lists
     fetchLists();
   }
