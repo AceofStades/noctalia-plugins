@@ -36,12 +36,12 @@ Item {
                 "icon": "copy"
             },
             {
-                "label": pluginApi.tr("panel.context.open") + ' "' + packageID + '"',
+                "label": pluginApi.tr("panel.context.open") + " " + packageID,
                 "action": "open",
                 "icon": "external-link"
             },
             {
-                "label": pluginApi.tr("panel.context.open") + ' "' + name + '" ' + pluginApi.tr("panel.context.homepage"),
+                "label": pluginApi.tr("panel.context.open") + " " + name + " " + pluginApi.tr("panel.context.homepage"),
                 "action": "homepage",
                 "icon": "home"
             }
