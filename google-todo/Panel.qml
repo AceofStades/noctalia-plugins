@@ -73,13 +73,16 @@ Item {
         spacing: Style.marginS
         model: root.currentTasks
 
-        delegate: NBox {
+        delegate: Rectangle {
           width: taskListView.width
-          padding: Style.marginM
+          implicitHeight: taskLayout.implicitHeight + (Style.marginM * 2)
           color: Color.mSurfaceContainer
+          radius: Style.radiusL
           
           ColumnLayout {
+            id: taskLayout
             anchors.fill: parent
+            anchors.margins: Style.marginM
             spacing: Style.marginS
 
             RowLayout {

@@ -17,12 +17,16 @@ ColumnLayout {
 
   spacing: Style.marginL
 
-  NBox {
+  Rectangle {
     Layout.fillWidth: true
-    padding: Style.marginL
+    implicitHeight: accountLayout.implicitHeight + (Style.marginL * 2)
+    color: Color.mSurfaceContainer
+    radius: Style.radiusL
 
     ColumnLayout {
+      id: accountLayout
       anchors.fill: parent
+      anchors.margins: Style.marginL
       spacing: Style.marginM
 
       NText {

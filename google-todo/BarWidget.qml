@@ -21,6 +21,9 @@ Item {
   readonly property bool isVertical: barPosition === "left" || barPosition === "right"
   readonly property real capsuleHeight: Style.getCapsuleHeightForScreen(screen?.name)
 
+  readonly property real contentWidth: contentRow.implicitWidth + (Style.marginM * 2)
+  readonly property real contentHeight: capsuleHeight
+
   implicitWidth: isVertical ? capsuleHeight : contentWidth
   implicitHeight: isVertical ? contentHeight : capsuleHeight
 
@@ -47,7 +50,7 @@ Item {
     spacing: Style.marginS
 
     NIcon {
-      icon: "check-all"
+      icon: "check"
       color: root.taskCount > 0 ? Color.mPrimary : Color.mOnSurfaceVariant
     }
 

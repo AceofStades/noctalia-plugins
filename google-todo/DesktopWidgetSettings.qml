@@ -10,12 +10,16 @@ ColumnLayout {
 
   spacing: Style.marginL
 
-  NBox {
+  Rectangle {
     Layout.fillWidth: true
-    padding: Style.marginL
+    color: Color.mSurface
+    radius: Style.radiusL
+    implicitHeight: layout.implicitHeight + (Style.marginL * 2)
 
     ColumnLayout {
+      id: layout
       anchors.fill: parent
+      anchors.margins: Style.marginL
       spacing: Style.marginM
 
       NText {

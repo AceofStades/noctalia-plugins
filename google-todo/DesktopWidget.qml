@@ -12,20 +12,23 @@ Item {
 
   property var currentTasks: pluginApi?.mainInstance?.currentTasks || []
 
-  NBox {
+  Rectangle {
     anchors.fill: parent
-    padding: Style.marginM
     color: Color.mSurface
+    radius: Style.radiusL
+    border.color: Style.capsuleBorderColor
+    border.width: Style.capsuleBorderWidth
 
     ColumnLayout {
       anchors.fill: parent
+      anchors.margins: Style.marginM
       spacing: Style.marginM
 
       RowLayout {
         Layout.fillWidth: true
         
         NIcon {
-          icon: "check-all"
+          icon: "check"
           color: Color.mPrimary
         }
         
