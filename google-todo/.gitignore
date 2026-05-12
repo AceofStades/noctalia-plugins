@@ -1,0 +1,5 @@
+# Ignore the compiled Rust binary
+google-todo-sync
+
+# Ignore the Cargo build directory
+backend/target/
