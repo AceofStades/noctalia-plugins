@@ -29,13 +29,13 @@ Item {
           color: Color.mPrimary
         }
         
-        NLabel {
+        NText {
           text: pluginApi?.tr("widget.tasks_today") || "Tasks"
           font.bold: true
           Layout.fillWidth: true
         }
 
-        NLabel {
+        NText {
           text: root.currentTasks.length.toString()
           color: Color.mOnSurfaceVariant
         }
@@ -62,7 +62,7 @@ Item {
             Layout.preferredHeight: Style.iconSizeS
           }
 
-          NLabel {
+          NText {
             Layout.fillWidth: true
             text: modelData.title || ""
             color: modelData.status === "completed" ? Color.mOnSurfaceVariant : Color.mOnSurface

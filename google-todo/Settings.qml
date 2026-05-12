@@ -25,12 +25,12 @@ ColumnLayout {
       anchors.fill: parent
       spacing: Style.marginM
 
-      NLabel {
+      NText {
         text: pluginApi?.tr("settings.account") || "Account"
         font.bold: true
       }
 
-      NLabel {
+      NText {
         text: pluginApi?.mainInstance?.isLoggedIn ? (pluginApi?.tr("settings.logged_in") || "Logged in to Google Tasks") : (pluginApi?.tr("settings.not_logged_in") || "Not logged in")
         color: pluginApi?.mainInstance?.isLoggedIn ? Color.mSuccess : Color.mError
       }
@@ -87,13 +87,16 @@ ColumnLayout {
   // Process to run login
   Process {
     id: loginProcess
+    property string buffer: ""
     command: pluginApi ? [pluginApi.pluginDir + "/google-todo-sync", "login"] : []
     running: false
-    stdout: Process.Buffer
+    onStdout: function(data) {
+      if (data) buffer += data;
+    }
     onExited: function(code) {
-      if (code === 0 && stdoutData.length > 0) {
+      if (code === 0 && buffer.length > 0) {
         try {
-          var response = JSON.parse(stdoutData);
+          var response = JSON.parse(buffer);
           if (response.success) {
             if (pluginApi && pluginApi.mainInstance) {
                pluginApi.mainInstance.fetchLists();
@@ -105,6 +108,7 @@ ColumnLayout {
           Logger.e("Google Todo Login Parse Error: " + e);
         }
       }
+      buffer = "";
     }
   }
 

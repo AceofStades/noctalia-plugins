@@ -27,28 +27,63 @@ Item {
     running: cfg.autoStartSync ?? defaults.autoStartSync ?? false
     onTriggered: {
       if (isLoggedIn && currentListId !== "") {
+        fetchTasksProcess.buffer = "";
         fetchTasksProcess.listId = currentListId;
         fetchTasksProcess.running = true;
       }
     }
   }
 
-  // Helper to run commands
-  function runCommand(commandArgs) {
-    if (!pluginApi) return;
+  function runCommand() {
+    if (!pluginApi) return "";
     return pluginApi.pluginDir + "/google-todo-sync";
+  }
+
+  // Check if binary exists
+  Process {
+    id: checkBinaryProcess
+    command: ["test", "-f", root.runCommand()]
+    running: false
+    onExited: function(code) {
+      if (code === 0) {
+        fetchListsProcess.buffer = "";
+        fetchListsProcess.running = true;
+      } else {
+        Logger.i("GoogleTodo", "Rust binary not found, building...");
+        buildProcess.running = true;
+      }
+    }
+  }
+
+  // Build the rust binary
+  Process {
+    id: buildProcess
+    command: ["bash", pluginApi ? pluginApi.pluginDir + "/build.sh" : ""]
+    running: false
+    onExited: function(code) {
+      if (code === 0) {
+        Logger.i("GoogleTodo", "Rust binary built successfully.");
+        fetchListsProcess.buffer = "";
+        fetchListsProcess.running = true;
+      } else {
+        Logger.e("GoogleTodo", "Failed to build rust binary. Ensure cargo is installed.");
+      }
+    }
   }
 
   // Fetch lists
   Process {
     id: fetchListsProcess
+    property string buffer: ""
     command: [root.runCommand(), "get-lists"]
     running: false
-    stdout: Process.Buffer
+    onStdout: function(data) {
+      if (data) buffer += data;
+    }
     onExited: function(code) {
-      if (code === 0 && stdoutData.length > 0) {
+      if (code === 0 && buffer.length > 0) {
         try {
-          var response = JSON.parse(stdoutData);
+          var response = JSON.parse(buffer);
           if (response.error) {
             if (response.error === "Not logged in") {
               isLoggedIn = false;
@@ -60,6 +95,7 @@ Item {
             taskLists = response.items;
             if (taskLists.length > 0 && currentListId === "") {
               currentListId = taskLists[0].id;
+              fetchTasksProcess.buffer = "";
               fetchTasksProcess.listId = currentListId;
               fetchTasksProcess.running = true;
             }
@@ -68,20 +104,24 @@ Item {
           Logger.e("Google Todo: Parse error lists: " + e);
         }
       }
+      buffer = "";
     }
   }
 
   // Fetch tasks
   Process {
     id: fetchTasksProcess
+    property string buffer: ""
     property string listId: ""
     command: [root.runCommand(), "get-tasks", "--list-id", listId]
     running: false
-    stdout: Process.Buffer
+    onStdout: function(data) {
+      if (data) buffer += data;
+    }
     onExited: function(code) {
-      if (code === 0 && stdoutData.length > 0) {
+      if (code === 0 && buffer.length > 0) {
         try {
-          var response = JSON.parse(stdoutData);
+          var response = JSON.parse(buffer);
           if (!response.error) {
             if (response.items) {
               currentTasks = response.items;
@@ -93,6 +133,7 @@ Item {
           Logger.e("Google Todo: Parse error tasks: " + e);
         }
       }
+      buffer = "";
     }
   }
 
@@ -105,6 +146,7 @@ Item {
     running: false
     onExited: function(code) {
       if (code === 0) {
+        fetchTasksProcess.buffer = "";
         fetchTasksProcess.running = true; // refresh after completion
       }
     }
@@ -132,19 +174,20 @@ Item {
   }
 
   function fetchLists() {
+    fetchListsProcess.buffer = "";
     fetchListsProcess.running = true;
   }
 
   function fetchTasks(listId) {
     if (listId !== "") {
       currentListId = listId;
+      fetchTasksProcess.buffer = "";
       fetchTasksProcess.listId = listId;
       fetchTasksProcess.running = true;
     }
   }
 
   Component.onCompleted: {
-    // Auto-add to the bar on first load
     if (pluginApi && pluginApi.pluginSettings && !pluginApi.pluginSettings.addedToBar) {
       try {
         pluginApi.withCurrentScreen(screen => {
@@ -182,7 +225,7 @@ Item {
       pluginApi.saveSettings();
     }
 
-    // Initial fetch to check login status and get lists
-    fetchLists();
+    // Initial check: if binary exists -> fetchLists, else -> build
+    checkBinaryProcess.running = true;
   }
 }

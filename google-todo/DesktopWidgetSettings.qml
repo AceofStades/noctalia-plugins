@@ -18,7 +18,7 @@ ColumnLayout {
       anchors.fill: parent
       spacing: Style.marginM
 
-      NLabel {
+      NText {
         text: pluginApi?.tr("widget.desktop_settings_desc") || "Desktop widget settings. For more settings, right-click the bar widget or open plugin settings."
         wrapMode: Text.Wrap
         Layout.fillWidth: true
