@@ -487,11 +487,11 @@
     {
       "id": "google-todo",
       "name": "Google Todo List",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "official": false,
       "author": "AceofStades",
       "description": "A robust Google Tasks client that syncs your tasks.",
-      "repository": "https://github.com/noctalia-dev/noctalia-plugins",
+      "repository": "https://github.com/AceofStades/noctalia-plugins",
       "minNoctaliaVersion": "4.4.1",
       "license": "MIT",
       "tags": [
