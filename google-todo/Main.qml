@@ -18,6 +18,7 @@ Item {
   property var cfg: pluginApi?.pluginSettings || ({})
   property var defaults: pluginApi?.manifest?.metadata?.defaultSettings || ({})
   property int syncInterval: cfg.syncInterval ?? defaults.syncInterval ?? 300
+  property bool _initialized: false
 
   // Timer for periodic sync
   Timer {
@@ -44,7 +45,7 @@ Item {
     id: checkBinaryProcess
     stdout: StdioCollector {}
     stderr: StdioCollector {}
-    command: ["test", "-f", root.runCommand()]
+    command: ["/usr/bin/test", "-f", root.runCommand()]
     running: false
     onExited: function(code) {
       if (code === 0) {
@@ -193,45 +194,52 @@ Item {
     }
   }
 
-  Component.onCompleted: {
-    if (pluginApi && pluginApi.pluginSettings && !pluginApi.pluginSettings.addedToBar) {
-      try {
-        pluginApi.withCurrentScreen(screen => {
-          if (screen && screen.name) {
-            var screenName = screen.name;
-            var widgetId = "plugin:" + pluginApi.pluginId;
-            var currentWidgets = Settings.getBarWidgetsForScreen(screenName) || {};
-            var widgets = {
-              "left": JSON.parse(JSON.stringify(currentWidgets.left || [])),
-              "center": JSON.parse(JSON.stringify(currentWidgets.center || [])),
-              "right": JSON.parse(JSON.stringify(currentWidgets.right || []))
-            };
-            
-            var found = false;
-            var sections = ["left", "center", "right"];
-            for (var s = 0; s < sections.length; s++) {
-              var arr = widgets[sections[s]];
-              for (var i = 0; i < arr.length; i++) {
-                if (arr[i] && arr[i].id === widgetId) found = true;
+  onPluginApiChanged: {
+    if (pluginApi && !_initialized) {
+      _initialized = true;
+      if (pluginApi.pluginSettings && !pluginApi.pluginSettings.addedToBar) {
+        try {
+          pluginApi.withCurrentScreen(screen => {
+            if (screen && screen.name) {
+              var screenName = screen.name;
+              var widgetId = "plugin:" + pluginApi.pluginId;
+              var currentWidgets = Settings.getBarWidgetsForScreen(screenName) || {};
+              var widgets = {
+                "left": JSON.parse(JSON.stringify(currentWidgets.left || [])),
+                "center": JSON.parse(JSON.stringify(currentWidgets.center || [])),
+                "right": JSON.parse(JSON.stringify(currentWidgets.right || []))
+              };
+              
+              var found = false;
+              var sections = ["left", "center", "right"];
+              for (var s = 0; s < sections.length; s++) {
+                var arr = widgets[sections[s]];
+                for (var i = 0; i < arr.length; i++) {
+                  if (arr[i] && arr[i].id === widgetId) found = true;
+                }
+              }
+
+              if (!found) {
+                widgets["right"].push({ "id": widgetId });
+                Settings.setScreenOverride(screenName, "widgets", widgets);
+                BarService.widgetsRevision++;
               }
             }
-
-            if (!found) {
-              widgets["right"].push({ "id": widgetId });
-              Settings.setScreenOverride(screenName, "widgets", widgets);
-              BarService.widgetsRevision++;
-            }
-          }
-        });
-      } catch (e) {
-        Logger.w("GoogleTodo", "Failed to auto-add widget to bar:", e);
+          });
+        } catch (e) {
+          Logger.w("GoogleTodo", "Failed to auto-add widget to bar:", e);
+        }
+        
+        pluginApi.pluginSettings.addedToBar = true;
+        pluginApi.saveSettings();
       }
-      
-      pluginApi.pluginSettings.addedToBar = true;
-      pluginApi.saveSettings();
-    }
 
-    // Initial check: if binary exists -> fetchLists, else -> build
-    checkBinaryProcess.running = true;
+      // Initial check: if binary exists -> fetchLists, else -> build
+      checkBinaryProcess.running = true;
+    }
+  }
+
+  Component.onCompleted: {
+    // Moved logic to onPluginApiChanged since pluginApi is null during onCompleted
   }
 }
