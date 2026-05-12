@@ -1,29 +1,29 @@
 {
-  "id": "google-todo",
-  "name": "Google Todo List",
-  "version": "1.0.0",
-  "minNoctaliaVersion": "4.4.1",
-  "author": "Google Todo Contributor",
-  "license": "MIT",
-  "repository": "https://github.com/noctalia-dev/noctalia-plugins",
-  "description": "A robust Google Tasks client that syncs your tasks.",
-  "tags": ["Bar", "Panel", "Productivity"],
-  "entryPoints": {
-    "main": "Main.qml",
-    "barWidget": "BarWidget.qml",
-    "desktopWidget": "DesktopWidget.qml",
-    "panel": "Panel.qml",
-    "settings": "Settings.qml"
-  },
-  "dependencies": {
-    "plugins": []
-  },
-  "metadata": {
-    "defaultSettings": {
-      "syncInterval": 300,
-      "showCompleted": true,
-      "autoStartSync": false,
-      "exportFormat": "markdown"
+    "id": "google-todo",
+    "name": "Google Todo List",
+    "version": "1.0.0",
+    "minNoctaliaVersion": "4.4.1",
+    "author": "AceofStades",
+    "license": "MIT",
+    "repository": "https://github.com/noctalia-dev/noctalia-plugins",
+    "description": "A robust Google Tasks client that syncs your tasks.",
+    "tags": ["Bar", "Panel", "Productivity"],
+    "entryPoints": {
+        "main": "Main.qml",
+        "barWidget": "BarWidget.qml",
+        "desktopWidget": "DesktopWidget.qml",
+        "panel": "Panel.qml",
+        "settings": "Settings.qml"
+    },
+    "dependencies": {
+        "plugins": []
+    },
+    "metadata": {
+        "defaultSettings": {
+            "syncInterval": 300,
+            "showCompleted": true,
+            "autoStartSync": false,
+            "exportFormat": "markdown"
+        }
     }
-  }
 }
