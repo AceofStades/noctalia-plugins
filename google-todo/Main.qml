@@ -42,6 +42,8 @@ Item {
   // Check if binary exists
   Process {
     id: checkBinaryProcess
+    stdout: StdioCollector {}
+    stderr: StdioCollector {}
     command: ["test", "-f", root.runCommand()]
     running: false
     onExited: function(code) {
@@ -58,6 +60,8 @@ Item {
   // Build the rust binary
   Process {
     id: buildProcess
+    stdout: StdioCollector {}
+    stderr: StdioCollector {}
     command: ["bash", pluginApi ? pluginApi.pluginDir + "/build.sh" : ""]
     running: false
     onExited: function(code) {
@@ -74,6 +78,8 @@ Item {
   // Fetch lists
   Process {
     id: fetchListsProcess
+    stdout: StdioCollector {}
+    stderr: StdioCollector {}
     property string buffer: ""
     command: [root.runCommand(), "get-lists"]
     running: false
@@ -109,6 +115,8 @@ Item {
   // Fetch tasks
   Process {
     id: fetchTasksProcess
+    stdout: StdioCollector {}
+    stderr: StdioCollector {}
     property string buffer: ""
     property string listId: ""
     command: [root.runCommand(), "get-tasks", "--list-id", listId]
@@ -136,6 +144,8 @@ Item {
   // Complete a task
   Process {
     id: completeTaskProcess
+    stdout: StdioCollector {}
+    stderr: StdioCollector {}
     property string listId: ""
     property string taskId: ""
     command: [root.runCommand(), "complete-task", "--list-id", listId, "--task-id", taskId]

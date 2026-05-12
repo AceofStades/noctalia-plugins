@@ -36,7 +36,7 @@ Item {
         Layout.fillWidth: true
         spacing: Style.marginM
 
-        NLabel {
+        NText {
           text: pluginApi?.tr("panel.title") || "Google Tasks"
           font.pointSize: Style.fontL
           font.bold: true
@@ -95,7 +95,7 @@ Item {
                 }
               }
 
-              NLabel {
+              NText {
                 Layout.fillWidth: true
                 text: modelData.title || ""
                 color: modelData.status === "completed" ? Color.mOnSurfaceVariant : Color.mOnSurface
@@ -112,7 +112,7 @@ Item {
               }
             }
 
-            NLabel {
+            NText {
               Layout.fillWidth: true
               Layout.leftMargin: Style.iconSizeM + Style.marginM
               text: modelData.notes || ""
