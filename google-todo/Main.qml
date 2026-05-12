@@ -77,10 +77,8 @@ Item {
     property string buffer: ""
     command: [root.runCommand(), "get-lists"]
     running: false
-    onStdout: function(data) {
-      if (data) buffer += data;
-    }
     onExited: function(code) {
+      buffer = String(fetchListsProcess.stdout.text || "").trim();
       if (code === 0 && buffer.length > 0) {
         try {
           var response = JSON.parse(buffer);
@@ -115,10 +113,8 @@ Item {
     property string listId: ""
     command: [root.runCommand(), "get-tasks", "--list-id", listId]
     running: false
-    onStdout: function(data) {
-      if (data) buffer += data;
-    }
     onExited: function(code) {
+      buffer = String(fetchTasksProcess.stdout.text || "").trim();
       if (code === 0 && buffer.length > 0) {
         try {
           var response = JSON.parse(buffer);

@@ -25,12 +25,12 @@ ColumnLayout {
       anchors.fill: parent
       spacing: Style.marginM
 
-      NText {
+      NLabel {
         text: pluginApi?.tr("settings.account") || "Account"
         font.bold: true
       }
 
-      NText {
+      NLabel {
         text: pluginApi?.mainInstance?.isLoggedIn ? (pluginApi?.tr("settings.logged_in") || "Logged in to Google Tasks") : (pluginApi?.tr("settings.not_logged_in") || "Not logged in")
         color: pluginApi?.mainInstance?.isLoggedIn ? Color.mSuccess : Color.mError
       }
@@ -90,10 +90,8 @@ ColumnLayout {
     property string buffer: ""
     command: pluginApi ? [pluginApi.pluginDir + "/google-todo-sync", "login"] : []
     running: false
-    onStdout: function(data) {
-      if (data) buffer += data;
-    }
     onExited: function(code) {
+      buffer = String(loginProcess.stdout.text || "").trim();
       if (code === 0 && buffer.length > 0) {
         try {
           var response = JSON.parse(buffer);

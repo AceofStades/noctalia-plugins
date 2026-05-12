@@ -51,7 +51,7 @@ Item {
       color: root.taskCount > 0 ? Color.mPrimary : Color.mOnSurfaceVariant
     }
 
-    NText {
+    NLabel {
       text: root.taskCount.toString()
       visible: !root.isVertical
     }

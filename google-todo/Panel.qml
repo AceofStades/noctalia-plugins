@@ -36,9 +36,11 @@ Item {
         Layout.fillWidth: true
         spacing: Style.marginM
 
-        NText {
-          text: pluginApi?.tr("panel.lists") || "Lists:"
+        NLabel {
+          text: pluginApi?.tr("panel.title") || "Google Tasks"
+          font.pointSize: Style.fontL
           font.bold: true
+          Layout.fillWidth: true
         }
 
         NComboBox {
@@ -93,7 +95,7 @@ Item {
                 }
               }
 
-              NText {
+              NLabel {
                 Layout.fillWidth: true
                 text: modelData.title || ""
                 color: modelData.status === "completed" ? Color.mOnSurfaceVariant : Color.mOnSurface
@@ -110,7 +112,7 @@ Item {
               }
             }
 
-            NText {
+            NLabel {
               Layout.fillWidth: true
               Layout.leftMargin: Style.iconSizeM + Style.marginM
               text: modelData.notes || ""
