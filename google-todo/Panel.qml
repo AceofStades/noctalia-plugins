@@ -18,6 +18,7 @@ Item {
   property var taskLists: pluginApi?.mainInstance?.taskLists || []
   property var currentTasks: pluginApi?.mainInstance?.currentTasks || []
   property string currentListId: pluginApi?.mainInstance?.currentListId || ""
+  property bool isLoggedIn: pluginApi?.mainInstance?.isLoggedIn ?? false
 
   anchors.fill: parent
 
@@ -30,6 +31,7 @@ Item {
       anchors.fill: parent
       anchors.margins: Style.marginL
       spacing: Style.marginL
+      visible: root.isLoggedIn
 
       // Header: List Selection
       RowLayout {
@@ -38,7 +40,7 @@ Item {
 
         NText {
           text: pluginApi?.tr("panel.title") || "Google Tasks"
-          font.pointSize: Style.fontL
+          font.pointSize: Style.fontSizeL
           font.bold: true
           Layout.fillWidth: true
         }
