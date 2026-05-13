@@ -45,18 +45,11 @@ Item {
 
         NComboBox {
           Layout.fillWidth: true
-          model: root.taskLists.map(list => list.title)
-          currentIndex: {
-            for (var i = 0; i < root.taskLists.length; i++) {
-              if (root.taskLists[i].id === root.currentListId) return i;
-            }
-            return -1;
-          }
-          onActivated: index => {
-            if (index >= 0 && index < root.taskLists.length) {
-              if (pluginApi && pluginApi.mainInstance) {
-                pluginApi.mainInstance.fetchTasks(root.taskLists[index].id);
-              }
+          model: root.taskLists.map(list => ({ name: list.title, value: list.id }))
+          currentKey: root.currentListId
+          onSelected: key => {
+            if (pluginApi && pluginApi.mainInstance) {
+              pluginApi.mainInstance.fetchTasks(key);
             }
           }
         }

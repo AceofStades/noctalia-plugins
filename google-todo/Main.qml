@@ -40,42 +40,6 @@ Item {
     return pluginApi.pluginDir + "/google-todo-sync";
   }
 
-  // Check if binary exists
-  Process {
-    id: checkBinaryProcess
-    stdout: StdioCollector {}
-    stderr: StdioCollector {}
-    command: ["/usr/bin/test", "-f", root.runCommand()]
-    running: false
-    onExited: function(code) {
-      if (code === 0) {
-        fetchListsProcess.buffer = "";
-        fetchListsProcess.running = true;
-      } else {
-        Logger.i("GoogleTodo", "Rust binary not found, building...");
-        buildProcess.running = true;
-      }
-    }
-  }
-
-  // Build the rust binary
-  Process {
-    id: buildProcess
-    stdout: StdioCollector {}
-    stderr: StdioCollector {}
-    command: ["bash", pluginApi ? pluginApi.pluginDir + "/build.sh" : ""]
-    running: false
-    onExited: function(code) {
-      if (code === 0) {
-        Logger.i("GoogleTodo", "Rust binary built successfully.");
-        fetchListsProcess.buffer = "";
-        fetchListsProcess.running = true;
-      } else {
-        Logger.e("GoogleTodo", "Failed to build rust binary. Ensure cargo is installed.");
-      }
-    }
-  }
-
   // Fetch lists
   Process {
     id: fetchListsProcess
@@ -236,6 +200,38 @@ Item {
 
       // Initial check: if binary exists -> fetchLists, else -> build
       checkBinaryProcess.running = true;
+    }
+  }
+
+  Component.onCompleted: {
+    // Moved logic to onPluginApiChanged since pluginApi is null during onCompleted
+  }
+}
+        var sections = ["left", "center", "right"];
+              for (var s = 0; s < sections.length; s++) {
+                var arr = widgets[sections[s]];
+                for (var i = 0; i < arr.length; i++) {
+                  if (arr[i] && arr[i].id === widgetId) found = true;
+                }
+              }
+
+              if (!found) {
+                widgets["right"].push({ "id": widgetId });
+                Settings.setScreenOverride(screenName, "widgets", widgets);
+                BarService.widgetsRevision++;
+              }
+            }
+          });
+        } catch (e) {
+          Logger.w("GoogleTodo", "Failed to auto-add widget to bar:", e);
+        }
+        
+        pluginApi.pluginSettings.addedToBar = true;
+        pluginApi.saveSettings();
+      }
+
+      // Initial check: if binary exists -> fetchLists, else -> build
+      fetchListsProcess.running = true;
     }
   }
 
