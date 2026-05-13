@@ -198,39 +198,7 @@ Item {
         pluginApi.saveSettings();
       }
 
-      // Initial check: if binary exists -> fetchLists, else -> build
-      checkBinaryProcess.running = true;
-    }
-  }
-
-  Component.onCompleted: {
-    // Moved logic to onPluginApiChanged since pluginApi is null during onCompleted
-  }
-}
-        var sections = ["left", "center", "right"];
-              for (var s = 0; s < sections.length; s++) {
-                var arr = widgets[sections[s]];
-                for (var i = 0; i < arr.length; i++) {
-                  if (arr[i] && arr[i].id === widgetId) found = true;
-                }
-              }
-
-              if (!found) {
-                widgets["right"].push({ "id": widgetId });
-                Settings.setScreenOverride(screenName, "widgets", widgets);
-                BarService.widgetsRevision++;
-              }
-            }
-          });
-        } catch (e) {
-          Logger.w("GoogleTodo", "Failed to auto-add widget to bar:", e);
-        }
-        
-        pluginApi.pluginSettings.addedToBar = true;
-        pluginApi.saveSettings();
-      }
-
-      // Initial check: if binary exists -> fetchLists, else -> build
+      // Initial fetch to check login status and get lists
       fetchListsProcess.running = true;
     }
   }
