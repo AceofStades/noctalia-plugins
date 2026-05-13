@@ -144,13 +144,12 @@ Item {
       }
 
       NButton {
-        text: pluginApi?.tr("menu.settings") || "Open Settings to Login"
-        icon: "settings"
+        text: pluginApi?.tr("settings.login_button") || "Login with Google"
+        icon: "google"
         Layout.alignment: Qt.AlignHCenter
         onClicked: {
-          if (pluginApi && pluginApi.panelOpenScreen) {
-             BarService.openPluginSettings(pluginApi.panelOpenScreen, pluginApi.manifest);
-             pluginApi.togglePanel(pluginApi.panelOpenScreen); // Close panel
+          if (pluginApi && pluginApi.mainInstance) {
+             pluginApi.mainInstance.triggerLogin();
           }
         }
       }

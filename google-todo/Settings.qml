@@ -44,7 +44,9 @@ ColumnLayout {
         icon: "google"
         visible: !pluginApi?.mainInstance?.isLoggedIn
         onClicked: {
-          loginProcess.running = true;
+          if (pluginApi && pluginApi.mainInstance) {
+            pluginApi.mainInstance.triggerLogin();
+          }
         }
       }
       
@@ -86,34 +88,6 @@ ColumnLayout {
     label: pluginApi?.tr("settings.show_completed.label") || "Show Completed Tasks"
     checked: root.editShowCompleted
     onCheckedChanged: root.editShowCompleted = checked
-  }
-
-  // Process to run login
-  Process {
-    id: loginProcess
-    stdout: StdioCollector {}
-    stderr: StdioCollector {}
-    property string buffer: ""
-    command: pluginApi ? [pluginApi.pluginDir + "/google-todo-sync", "login"] : []
-    running: false
-    onExited: function(code) {
-      buffer = String(loginProcess.stdout.text || "").trim();
-      if (code === 0 && buffer.length > 0) {
-        try {
-          var response = JSON.parse(buffer);
-          if (response.success) {
-            if (pluginApi && pluginApi.mainInstance) {
-               pluginApi.mainInstance.fetchLists();
-            }
-          } else if (response.error) {
-            Logger.e("Google Todo Login Error: " + response.error);
-          }
-        } catch(e) {
-          Logger.e("Google Todo Login Parse Error: " + e);
-        }
-      }
-      buffer = "";
-    }
   }
 
   function saveSettings() {
