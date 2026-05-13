@@ -59,7 +59,7 @@ Item {
           spacing: Style.marginS
 
           NIcon {
-            icon: modelData.status === "completed" ? "check-circle" : "circle-outline"
+            icon: modelData.status === "completed" ? "clipboard-check" : "circle-outline"
             color: modelData.status === "completed" ? Color.mSuccess : Color.mOnSurfaceVariant
             Layout.preferredWidth: Style.iconSizeS
             Layout.preferredHeight: Style.iconSizeS

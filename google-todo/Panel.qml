@@ -84,7 +84,7 @@ Item {
               Layout.fillWidth: true
               
               NIconButton {
-                icon: modelData.status === "completed" ? "check-circle" : "circle-outline"
+                icon: modelData.status === "completed" ? "clipboard-check" : "circle-outline"
                 color: modelData.status === "completed" ? Color.mSuccess : Color.mOnSurfaceVariant
                 onClicked: {
                    if (modelData.status !== "completed" && pluginApi && pluginApi.mainInstance) {

@@ -69,7 +69,7 @@ Item {
 
       NIcon {
         anchors.verticalCenter: parent.verticalCenter
-        icon: "check-circle"
+        icon: "clipboard-check"
         applyUiScale: false
         color: root.taskCount > 0 ? Color.mPrimary : root.contentColor
         visible: root.isLoggedIn
@@ -92,7 +92,7 @@ Item {
 
       NIcon {
         anchors.horizontalCenter: parent.horizontalCenter
-        icon: "check-circle"
+        icon: "clipboard-check"
         applyUiScale: false
         color: root.taskCount > 0 ? Color.mPrimary : root.contentColor
         visible: root.isLoggedIn
