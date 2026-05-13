@@ -5,13 +5,13 @@ use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::PathBuf;
 use std::sync::Arc;
+use tiny_http::{Response, Server};
 use tokio::sync::Mutex;
-use tiny_http::{Server, Response};
 use url::Url;
 
-// Replace these with your actual OAuth2 client credentials
-const CLIENT_ID: &str = "YOUR_CLIENT_ID";
-const CLIENT_SECRET: &str = "YOUR_CLIENT_SECRET";
+// Baked in at compile-time via .env
+const CLIENT_ID: &str = env!("CLIENT_ID", "You must set CLIENT_ID in .env before compiling");
+const CLIENT_SECRET: &str = env!("CLIENT_SECRET", "You must set CLIENT_SECRET in .env before compiling");
 const REDIRECT_URI: &str = "http://127.0.0.1:8080";
 const AUTH_URL: &str = "https://accounts.google.com/o/oauth2/v2/auth";
 const TOKEN_URL: &str = "https://oauth2.googleapis.com/token";
@@ -127,7 +127,7 @@ async fn handle_login(state: &AppState) {
         "{}?client_id={}&redirect_uri={}&response_type=code&scope=https://www.googleapis.com/auth/tasks",
         AUTH_URL, CLIENT_ID, REDIRECT_URI
     );
-    
+
     if webbrowser::open(&auth_url).is_err() {
         println!("{{\"error\": \"Failed to open browser\"}}");
         return;
@@ -137,10 +137,15 @@ async fn handle_login(state: &AppState) {
     for request in server.incoming_requests() {
         let url = format!("http://127.0.0.1:8080{}", request.url());
         let parsed = Url::parse(&url).unwrap();
-        let code = parsed.query_pairs().find(|(k, _)| k == "code").map(|(_, v)| v.into_owned());
-        
+        let code = parsed
+            .query_pairs()
+            .find(|(k, _)| k == "code")
+            .map(|(_, v)| v.into_owned());
+
         if let Some(code) = code {
-            let _ = request.respond(Response::from_string("Login successful! You can close this tab."));
+            let _ = request.respond(Response::from_string(
+                "Login successful! You can close this tab.",
+            ));
             if let Some(token) = function_to_get_token_from_auth_code(&state.client, &code).await {
                 state.save_token(&token);
                 println!("{{\"success\": true}}");
@@ -171,7 +176,12 @@ async fn handle_get_lists(state: &AppState) {
     };
 
     let url = format!("{}/users/@me/lists", TASKS_API_BASE);
-    let res = state.client.get(&url).bearer_auth(access_token).send().await;
+    let res = state
+        .client
+        .get(&url)
+        .bearer_auth(access_token)
+        .send()
+        .await;
     match res {
         Ok(response) => {
             let text = response.text().await.unwrap_or_default();
@@ -190,8 +200,16 @@ async fn handle_get_tasks(state: &AppState, list_id: &str) {
         }
     };
 
-    let url = format!("{}/lists/{}/tasks?showCompleted=true&showHidden=true", TASKS_API_BASE, list_id);
-    let res = state.client.get(&url).bearer_auth(access_token).send().await;
+    let url = format!(
+        "{}/lists/{}/tasks?showCompleted=true&showHidden=true",
+        TASKS_API_BASE, list_id
+    );
+    let res = state
+        .client
+        .get(&url)
+        .bearer_auth(access_token)
+        .send()
+        .await;
     match res {
         Ok(response) => {
             let text = response.text().await.unwrap_or_default();
@@ -201,7 +219,13 @@ async fn handle_get_tasks(state: &AppState, list_id: &str) {
     }
 }
 
-async fn handle_add_task(state: &AppState, list_id: &str, title: &str, notes: Option<String>, due: Option<String>) {
+async fn handle_add_task(
+    state: &AppState,
+    list_id: &str,
+    title: &str,
+    notes: Option<String>,
+    due: Option<String>,
+) {
     let access_token = match get_valid_token(state).await {
         Some(t) => t,
         None => {
@@ -211,7 +235,10 @@ async fn handle_add_task(state: &AppState, list_id: &str, title: &str, notes: Op
     };
 
     let mut body = serde_json::Map::new();
-    body.insert("title".to_string(), serde_json::Value::String(title.to_string()));
+    body.insert(
+        "title".to_string(),
+        serde_json::Value::String(title.to_string()),
+    );
     if let Some(n) = notes {
         body.insert("notes".to_string(), serde_json::Value::String(n));
     }
@@ -220,7 +247,13 @@ async fn handle_add_task(state: &AppState, list_id: &str, title: &str, notes: Op
     }
 
     let url = format!("{}/lists/{}/tasks", TASKS_API_BASE, list_id);
-    let res = state.client.post(&url).bearer_auth(access_token).json(&body).send().await;
+    let res = state
+        .client
+        .post(&url)
+        .bearer_auth(access_token)
+        .json(&body)
+        .send()
+        .await;
     match res {
         Ok(response) => {
             let text = response.text().await.unwrap_or_default();
@@ -240,11 +273,20 @@ async fn handle_complete_task(state: &AppState, list_id: &str, task_id: &str) {
     };
 
     let mut body = serde_json::Map::new();
-    body.insert("status".to_string(), serde_json::Value::String("completed".to_string()));
+    body.insert(
+        "status".to_string(),
+        serde_json::Value::String("completed".to_string()),
+    );
 
     let url = format!("{}/lists/{}/tasks/{}", TASKS_API_BASE, list_id, task_id);
     // Google Tasks API uses PUT or PATCH to update. We will use PATCH.
-    let res = state.client.patch(&url).bearer_auth(access_token).json(&body).send().await;
+    let res = state
+        .client
+        .patch(&url)
+        .bearer_auth(access_token)
+        .json(&body)
+        .send()
+        .await;
     match res {
         Ok(response) => {
             let text = response.text().await.unwrap_or_default();
@@ -263,7 +305,14 @@ async fn main() {
         Commands::Login => handle_login(&state).await,
         Commands::GetLists => handle_get_lists(&state).await,
         Commands::GetTasks { list_id } => handle_get_tasks(&state, list_id).await,
-        Commands::AddTask { list_id, title, notes, due } => handle_add_task(&state, list_id, title, notes.clone(), due.clone()).await,
-        Commands::CompleteTask { list_id, task_id } => handle_complete_task(&state, list_id, task_id).await,
+        Commands::AddTask {
+            list_id,
+            title,
+            notes,
+            due,
+        } => handle_add_task(&state, list_id, title, notes.clone(), due.clone()).await,
+        Commands::CompleteTask { list_id, task_id } => {
+            handle_complete_task(&state, list_id, task_id).await
+        }
     }
 }

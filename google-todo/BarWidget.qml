@@ -17,18 +17,24 @@ Item {
   property var cfg: pluginApi?.pluginSettings || ({})
   property var defaults: pluginApi?.manifest?.metadata?.defaultSettings || ({})
 
-  readonly property string barPosition: Settings.getBarPositionForScreen(screen?.name)
+  readonly property string screenName: screen ? screen.name : ""
+  readonly property string barPosition: Settings.getBarPositionForScreen(screenName)
   readonly property bool isVertical: barPosition === "left" || barPosition === "right"
-  readonly property real capsuleHeight: Style.getCapsuleHeightForScreen(screen?.name)
+  readonly property real barHeight: Style.getBarHeightForScreen(screenName)
+  readonly property real capsuleHeight: Style.getCapsuleHeightForScreen(screenName)
+  readonly property real barFontSize: Style.getBarFontSizeForScreen(screenName)
 
-  readonly property real contentWidth: contentRow.implicitWidth + (Style.marginM * 2)
-  readonly property real contentHeight: capsuleHeight
+  readonly property real contentWidth: root.isVertical ? root.capsuleHeight : (horizontalRow.implicitWidth + (Style.marginM * 2))
+  readonly property real contentHeight: root.isVertical ? root.capsuleHeight : root.capsuleHeight
 
-  implicitWidth: isVertical ? capsuleHeight : contentWidth
-  implicitHeight: isVertical ? contentHeight : capsuleHeight
+  implicitWidth: contentWidth
+  implicitHeight: contentHeight
 
+  property bool isLoggedIn: pluginApi?.mainInstance?.isLoggedIn ?? false
   property var currentTasks: pluginApi?.mainInstance?.currentTasks || []
   property int taskCount: currentTasks.length
+  
+  readonly property color contentColor: mouseArea.containsMouse ? Color.mOnHover : Color.mOnSurface
 
   NPopupContextMenu {
     id: contextMenu
@@ -44,24 +50,59 @@ Item {
     }
   }
 
-  Row {
-    id: contentRow
-    anchors.centerIn: parent
-    spacing: Style.marginS
+  Rectangle {
+    id: visualCapsule
+    x: Style.pixelAlignCenter(parent.width, width)
+    y: Style.pixelAlignCenter(parent.height, height)
+    width: root.contentWidth
+    height: root.contentHeight
+    radius: Style.radiusL
+    color: mouseArea.containsMouse ? Color.mHover : Style.capsuleColor
+    border.color: Style.capsuleBorderColor
+    border.width: Style.capsuleBorderWidth
 
-    NIcon {
-      icon: "check"
-      color: root.taskCount > 0 ? Color.mPrimary : Color.mOnSurfaceVariant
+    Row {
+      id: horizontalRow
+      anchors.centerIn: parent
+      spacing: Style.marginS
+      visible: !root.isVertical
+
+      NIcon {
+        anchors.verticalCenter: parent.verticalCenter
+        icon: root.isLoggedIn ? "check-all" : "google"
+        applyUiScale: false
+        color: (root.isLoggedIn && root.taskCount > 0) ? Color.mPrimary : root.contentColor
+      }
+
+      NText {
+        anchors.verticalCenter: parent.verticalCenter
+        text: root.isLoggedIn ? root.taskCount.toString() : "G"
+        color: root.contentColor
+        pointSize: root.barFontSize
+        applyUiScale: false
+      }
     }
 
-    NText {
-      text: root.taskCount.toString()
-      visible: !root.isVertical
+    Column {
+      id: verticalColumn
+      anchors.centerIn: parent
+      spacing: Style.marginS
+      visible: root.isVertical
+
+      NIcon {
+        anchors.horizontalCenter: parent.horizontalCenter
+        icon: root.isLoggedIn ? "check-all" : "google"
+        applyUiScale: false
+        color: (root.isLoggedIn && root.taskCount > 0) ? Color.mPrimary : root.contentColor
+      }
     }
   }
 
   MouseArea {
+    id: mouseArea
     anchors.fill: parent
+    hoverEnabled: true
+    cursorShape: Qt.PointingHandCursor
     acceptedButtons: Qt.LeftButton | Qt.RightButton
     onClicked: mouse => {
       if (mouse.button === Qt.LeftButton) {

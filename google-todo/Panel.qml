@@ -121,5 +121,38 @@ Item {
         }
       }
     }
+
+    ColumnLayout {
+      anchors.centerIn: parent
+      spacing: Style.marginM
+      visible: !root.isLoggedIn
+
+      NIcon {
+        icon: "google"
+        color: Color.mOnSurfaceVariant
+        Layout.alignment: Qt.AlignHCenter
+        Layout.preferredWidth: Style.iconSizeXXL
+        Layout.preferredHeight: Style.iconSizeXXL
+        applyUiScale: false
+      }
+
+      NText {
+        text: pluginApi?.tr("settings.not_logged_in") || "Not logged in to Google Tasks"
+        color: Color.mOnSurfaceVariant
+        Layout.alignment: Qt.AlignHCenter
+      }
+
+      NButton {
+        text: pluginApi?.tr("menu.settings") || "Open Settings to Login"
+        icon: "settings"
+        Layout.alignment: Qt.AlignHCenter
+        onClicked: {
+          if (pluginApi && pluginApi.panelOpenScreen) {
+             qs.Services.UI.BarService.openPluginSettings(pluginApi.panelOpenScreen, pluginApi.manifest);
+             pluginApi.togglePanel(pluginApi.panelOpenScreen); // Close panel
+          }
+        }
+      }
+    }
   }
 }
