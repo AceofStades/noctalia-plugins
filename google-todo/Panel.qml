@@ -155,10 +155,3 @@ Item {
     }
   }
 }
-(pluginApi.panelOpenScreen); // Close panel
-          }
-        }
-      }
-    }
-  }
-}
