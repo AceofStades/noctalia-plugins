@@ -21,6 +21,7 @@
     "settings": "Widget settings"
   },
   "panel": {
+    "title": "Google Tasks",
     "lists": "Lists:"
   },
   "widget": {

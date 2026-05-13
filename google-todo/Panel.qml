@@ -127,13 +127,12 @@ Item {
       spacing: Style.marginM
       visible: !root.isLoggedIn
 
-      NIcon {
-        icon: "google"
+      NText {
+        text: "G"
         color: Color.mOnSurfaceVariant
         Layout.alignment: Qt.AlignHCenter
-        Layout.preferredWidth: Style.iconSizeXXL
-        Layout.preferredHeight: Style.iconSizeXXL
-        applyUiScale: false
+        font.pointSize: Style.fontSizeXL
+        font.bold: true
       }
 
       NText {
@@ -148,8 +147,15 @@ Item {
         Layout.alignment: Qt.AlignHCenter
         onClicked: {
           if (pluginApi && pluginApi.panelOpenScreen) {
-             qs.Services.UI.BarService.openPluginSettings(pluginApi.panelOpenScreen, pluginApi.manifest);
+             BarService.openPluginSettings(pluginApi.panelOpenScreen, pluginApi.manifest);
              pluginApi.togglePanel(pluginApi.panelOpenScreen); // Close panel
+          }
+        }
+      }
+    }
+  }
+}
+(pluginApi.panelOpenScreen); // Close panel
           }
         }
       }

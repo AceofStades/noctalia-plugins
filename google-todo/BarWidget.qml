@@ -69,9 +69,10 @@ Item {
 
       NIcon {
         anchors.verticalCenter: parent.verticalCenter
-        icon: root.isLoggedIn ? "check-all" : "google"
+        icon: "check-all"
         applyUiScale: false
-        color: (root.isLoggedIn && root.taskCount > 0) ? Color.mPrimary : root.contentColor
+        color: root.taskCount > 0 ? Color.mPrimary : root.contentColor
+        visible: root.isLoggedIn
       }
 
       NText {
@@ -91,9 +92,19 @@ Item {
 
       NIcon {
         anchors.horizontalCenter: parent.horizontalCenter
-        icon: root.isLoggedIn ? "check-all" : "google"
+        icon: "check-all"
         applyUiScale: false
-        color: (root.isLoggedIn && root.taskCount > 0) ? Color.mPrimary : root.contentColor
+        color: root.taskCount > 0 ? Color.mPrimary : root.contentColor
+        visible: root.isLoggedIn
+      }
+      
+      NText {
+        anchors.horizontalCenter: parent.horizontalCenter
+        text: "G"
+        color: root.contentColor
+        pointSize: root.barFontSize
+        applyUiScale: false
+        visible: !root.isLoggedIn
       }
     }
   }
