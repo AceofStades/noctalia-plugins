@@ -109,17 +109,17 @@ Item {
   // Process to run login
   Process {
     id: loginProcess
-    property string buffer: ""
     command: [root.runCommand(), "login"]
     running: false
-    onStdout: function(data) {
-      if (data) {
-        var lines = String(data).trim().split('\n');
+    stdout: StdioCollector {
+      onTextChanged: {
+        var strData = String(text).trim();
+        var lines = strData.split('\n');
         for (var i = 0; i < lines.length; i++) {
-          var strData = lines[i].trim();
-          if (strData.startsWith('{')) {
+          var line = lines[i].trim();
+          if (line.startsWith('{')) {
             try {
-              var response = JSON.parse(strData);
+              var response = JSON.parse(line);
               if (response.url) {
                 Qt.openUrlExternally(response.url);
               } else if (response.success) {
@@ -128,7 +128,7 @@ Item {
                 Logger.e("Google Todo Login Error: " + response.error);
               }
             } catch(e) {
-              Logger.e("Google Todo Login Parse Error: " + e);
+              // Ignore partial JSON parses while streaming
             }
           }
         }
@@ -195,7 +195,6 @@ Item {
   }
 
   function triggerLogin() {
-    loginProcess.buffer = "";
     loginProcess.running = true;
   }
 
