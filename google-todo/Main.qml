@@ -106,6 +106,32 @@ Item {
     }
   }
 
+  // Process to run login
+  Process {
+    id: loginProcess
+    stdout: StdioCollector {}
+    stderr: StdioCollector {}
+    property string buffer: ""
+    command: [root.runCommand(), "login"]
+    running: false
+    onExited: function(code) {
+      buffer = String(loginProcess.stdout.text || "").trim();
+      if (code === 0 && buffer.length > 0) {
+        try {
+          var response = JSON.parse(buffer);
+          if (response.success) {
+            root.fetchLists();
+          } else if (response.error) {
+            Logger.e("Google Todo Login Error: " + response.error);
+          }
+        } catch(e) {
+          Logger.e("Google Todo Login Parse Error: " + e);
+        }
+      }
+      buffer = "";
+    }
+  }
+
   // Complete a task
   Process {
     id: completeTaskProcess
