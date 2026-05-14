@@ -129,8 +129,8 @@ async fn handle_login(state: &AppState) {
     );
 
     if webbrowser::open(&auth_url).is_err() {
-        println!("{{\"error\": \"Failed to open browser\"}}");
-        return;
+        // Send the URL back to QML so the native UI can open it
+        println!("{{\"url\": \"{}\"}}", auth_url);
     }
 
     let server = Server::http("127.0.0.1:8080").unwrap();
