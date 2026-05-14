@@ -39,6 +39,8 @@ Item {
   NPopupContextMenu {
     id: contextMenu
     model: [
+      { "label": pluginApi?.tr("menu.create_task") || "Create Task", "action": "create_task", "icon": "plus" },
+      { "label": pluginApi?.tr("menu.logout") || "Logout", "action": "logout", "icon": "x-circle" },
       { "label": pluginApi?.tr("menu.settings") || "Settings", "action": "settings", "icon": "settings" }
     ]
     onTriggered: action => {
@@ -46,6 +48,10 @@ Item {
       PanelService.closeContextMenu(screen);
       if (action === "settings") {
         BarService.openPluginSettings(screen, pluginApi.manifest);
+      } else if (action === "create_task") {
+        if (pluginApi) pluginApi.togglePanel(screen);
+      } else if (action === "logout") {
+        if (pluginApi && pluginApi.mainInstance) pluginApi.mainInstance.logout();
       }
     }
   }

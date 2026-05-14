@@ -198,6 +198,21 @@ Item {
     loginProcess.running = true;
   }
 
+  // Logout process to delete token
+  Process {
+    id: logoutProcess
+    command: ["sh", "-c", "rm -f ~/.config/noctalia/google-todo/token.json ~/.config/google-todo/token.json"]
+    running: false
+  }
+
+  function logout() {
+    isLoggedIn = false;
+    currentListId = "";
+    taskLists = [];
+    currentTasks = [];
+    logoutProcess.running = true;
+  }
+
   function addTask(title, due) {
     if (currentListId !== "" && title.trim() !== "") {
       addTaskProcess.listId = currentListId;
