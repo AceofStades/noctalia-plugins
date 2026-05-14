@@ -212,26 +212,3 @@ Item {
     // Moved logic to onPluginApiChanged since pluginApi is null during onCompleted
   }
 }
-{ "id": widgetId });
-                Settings.setScreenOverride(screenName, "widgets", widgets);
-                BarService.widgetsRevision++;
-              }
-            }
-          });
-        } catch (e) {
-          Logger.w("GoogleTodo", "Failed to auto-add widget to bar:", e);
-        }
-        
-        pluginApi.pluginSettings.addedToBar = true;
-        pluginApi.saveSettings();
-      }
-
-      // Initial fetch to check login status and get lists
-      fetchListsProcess.running = true;
-    }
-  }
-
-  Component.onCompleted: {
-    // Moved logic to onPluginApiChanged since pluginApi is null during onCompleted
-  }
-}
