@@ -117,15 +117,25 @@ Item {
     onExited: function(code) {
       buffer = String(loginProcess.stdout.text || "").trim();
       if (code === 0 && buffer.length > 0) {
-        try {
-          var response = JSON.parse(buffer);
-          if (response.success) {
-            root.fetchLists();
-          } else if (response.error) {
-            Logger.e("Google Todo Login Error: " + response.error);
-          }
-        } catch(e) {
-          Logger.e("Google Todo Login Parse Error: " + e);
+        // Rust outputs multiple lines occasionally if it prints the URL then blocks.
+        // We only care about the JSON objects.
+        var lines = buffer.split('\n');
+        for (var i = 0; i < lines.length; i++) {
+            var line = lines[i].trim();
+            if (line.startsWith('{')) {
+                try {
+                  var response = JSON.parse(line);
+                  if (response.url) {
+                    Qt.openUrlExternally(response.url);
+                  } else if (response.success) {
+                    root.fetchLists();
+                  } else if (response.error) {
+                    Logger.e("Google Todo Login Error: " + response.error);
+                  }
+                } catch(e) {
+                  Logger.e("Google Todo Login Parse Error: " + e + " on line: " + line);
+                }
+            }
         }
       }
       buffer = "";
@@ -232,9 +242,5 @@ Item {
       // Initial fetch to check login status and get lists
       fetchListsProcess.running = true;
     }
-  }
-
-  Component.onCompleted: {
-    // Moved logic to onPluginApiChanged since pluginApi is null during onCompleted
   }
 }

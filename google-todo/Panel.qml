@@ -145,7 +145,6 @@ Item {
 
       NButton {
         text: pluginApi?.tr("settings.login_button") || "Login with Google"
-        icon: "google"
         Layout.alignment: Qt.AlignHCenter
         onClicked: {
           if (pluginApi && pluginApi.mainInstance) {
