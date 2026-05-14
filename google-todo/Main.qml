@@ -109,26 +109,30 @@ Item {
   // Process to run login
   Process {
     id: loginProcess
-    stdout: StdioCollector {}
-    stderr: StdioCollector {}
     property string buffer: ""
     command: [root.runCommand(), "login"]
     running: false
-    onExited: function(code) {
-      buffer = String(loginProcess.stdout.text || "").trim();
-      if (code === 0 && buffer.length > 0) {
-        try {
-          var response = JSON.parse(buffer);
-          if (response.success) {
-            root.fetchLists();
-          } else if (response.error) {
-            Logger.e("Google Todo Login Error: " + response.error);
+    onStdout: function(data) {
+      if (data) {
+        var lines = String(data).trim().split('\n');
+        for (var i = 0; i < lines.length; i++) {
+          var strData = lines[i].trim();
+          if (strData.startsWith('{')) {
+            try {
+              var response = JSON.parse(strData);
+              if (response.url) {
+                Qt.openUrlExternally(response.url);
+              } else if (response.success) {
+                root.fetchLists();
+              } else if (response.error) {
+                Logger.e("Google Todo Login Error: " + response.error);
+              }
+            } catch(e) {
+              Logger.e("Google Todo Login Parse Error: " + e);
+            }
           }
-        } catch(e) {
-          Logger.e("Google Todo Login Parse Error: " + e);
         }
       }
-      buffer = "";
     }
   }
 
@@ -157,16 +161,6 @@ Item {
         fetchTasksProcess.buffer = "";
         fetchTasksProcess.running = true; // refresh
       }
-    }
-  }
-
-  function addTask(title, due) {
-    if (currentListId !== "" && title.trim() !== "") {
-      addTaskProcess.listId = currentListId;
-      addTaskProcess.title = title;
-      addTaskProcess.due = due || "";
-      addTaskProcess.buffer = "";
-      addTaskProcess.running = true;
     }
   }
 
@@ -203,6 +197,16 @@ Item {
   function triggerLogin() {
     loginProcess.buffer = "";
     loginProcess.running = true;
+  }
+
+  function addTask(title, due) {
+    if (currentListId !== "" && title.trim() !== "") {
+      addTaskProcess.listId = currentListId;
+      addTaskProcess.title = title;
+      addTaskProcess.due = due || "";
+      addTaskProcess.buffer = "";
+      addTaskProcess.running = true;
+    }
   }
 
   function completeTask(taskId) {
@@ -245,34 +249,6 @@ Item {
               
               var found = false;
               var sections = ["left", "center", "right"];
-              for (var s = 0; s < sections.length; s++) {
-                var arr = widgets[sections[s]];
-                for (var i = 0; i < arr.length; i++) {
-                  if (arr[i] && arr[i].id === widgetId) found = true;
-                }
-              }
-
-              if (!found) {
-                widgets["right"].push({ "id": widgetId });
-                Settings.setScreenOverride(screenName, "widgets", widgets);
-                BarService.widgetsRevision++;
-              }
-            }
-          });
-        } catch (e) {
-          Logger.w("GoogleTodo", "Failed to auto-add widget to bar:", e);
-        }
-        
-        pluginApi.pluginSettings.addedToBar = true;
-        pluginApi.saveSettings();
-      }
-
-      // Initial fetch to check login status and get lists
-      fetchListsProcess.running = true;
-    }
-  }
-}
-   var sections = ["left", "center", "right"];
               for (var s = 0; s < sections.length; s++) {
                 var arr = widgets[sections[s]];
                 for (var i = 0; i < arr.length; i++) {
