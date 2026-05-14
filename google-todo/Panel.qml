@@ -10,8 +10,8 @@ Item {
 
   readonly property var geometryPlaceholder: panelContainer
 
-  property real contentPreferredWidth: 400 * Style.uiScaleRatio
-  property real contentPreferredHeight: 500 * Style.uiScaleRatio
+  property real contentPreferredWidth: 450 * Style.uiScaleRatio
+  property real contentPreferredHeight: 600 * Style.uiScaleRatio
 
   readonly property bool allowAttach: true
 
@@ -19,6 +19,14 @@ Item {
   property var currentTasks: pluginApi?.mainInstance?.currentTasks || []
   property string currentListId: pluginApi?.mainInstance?.currentListId || ""
   property bool isLoggedIn: pluginApi?.mainInstance?.isLoggedIn ?? false
+
+  property int currentTabIndex: 0 // 0 = Pending, 1 = Completed
+
+  // Filter tasks based on tab
+  property var filteredTasks: {
+    if (!currentTasks) return [];
+    return currentTasks.filter(t => currentTabIndex === 0 ? (t.status !== "completed") : (t.status === "completed"));
+  }
 
   anchors.fill: parent
 
@@ -57,7 +65,20 @@ Item {
         }
       }
 
-      NDivider { Layout.fillWidth: true }
+      // Tabs
+      NTabBar {
+        Layout.fillWidth: true
+        currentIndex: root.currentTabIndex
+        
+        NTabButton {
+          text: pluginApi?.tr("panel.tab_pending") || "Pending"
+          onClicked: root.currentTabIndex = 0
+        }
+        NTabButton {
+          text: pluginApi?.tr("panel.tab_completed") || "Completed"
+          onClicked: root.currentTabIndex = 1
+        }
+      }
 
       // Task List
       ListView {
@@ -66,13 +87,16 @@ Item {
         Layout.fillHeight: true
         clip: true
         spacing: Style.marginS
-        model: root.currentTasks
+        model: root.filteredTasks
 
         delegate: Rectangle {
-          width: taskListView.width
+          width: taskListView.width - (modelData.parent ? (Style.marginL * 2) : 0)
+          anchors.right: parent.right
           implicitHeight: taskLayout.implicitHeight + (Style.marginM * 2)
-          color: Color.mSurfaceContainer
-          radius: Style.radiusL
+          color: Color.mSurface // Fixes dark/light mode issue
+          radius: Style.radiusM
+          border.color: Color.mOutlineVariant
+          border.width: 1
           
           ColumnLayout {
             id: taskLayout
@@ -84,8 +108,8 @@ Item {
               Layout.fillWidth: true
               
               NIconButton {
-                icon: modelData.status === "completed" ? "clipboard-check" : "circle-outline"
-                color: modelData.status === "completed" ? Color.mSuccess : Color.mOnSurfaceVariant
+                icon: modelData.status === "completed" ? "clipboard-check" : "circle"
+                color: modelData.status === "completed" ? Color.mPrimary : Color.mOnSurfaceVariant
                 onClicked: {
                    if (modelData.status !== "completed" && pluginApi && pluginApi.mainInstance) {
                      pluginApi.mainInstance.completeTask(modelData.id);
@@ -101,12 +125,11 @@ Item {
                 wrapMode: Text.Wrap
               }
 
-              NIcon {
-                icon: "calendar"
+              NText {
+                text: modelData.due ? modelData.due.substring(0, 10) : ""
                 visible: modelData.due !== undefined && modelData.due !== null && modelData.due !== ""
                 color: Color.mPrimary
-                Layout.preferredWidth: Style.iconSizeS
-                Layout.preferredHeight: Style.iconSizeS
+                font.pixelSize: Style.fontSizeS
               }
             }
 
@@ -118,6 +141,44 @@ Item {
               color: Color.mOnSurfaceVariant
               font.pixelSize: Style.fontSizeS
               wrapMode: Text.Wrap
+            }
+          }
+        }
+      }
+
+      NDivider { Layout.fillWidth: true }
+
+      // Add Task Area
+      RowLayout {
+        Layout.fillWidth: true
+        spacing: Style.marginS
+
+        NTextInput {
+          id: newTaskInput
+          Layout.fillWidth: true
+          placeholderText: pluginApi?.tr("panel.add_task_placeholder") || "Add a new task..."
+          onAccepted: {
+            if (text.trim() !== "" && pluginApi && pluginApi.mainInstance) {
+              pluginApi.mainInstance.addTask(text.trim(), newTaskDueInput.text.trim() ? (newTaskDueInput.text.trim() + "T00:00:00.000Z") : "");
+              text = "";
+              newTaskDueInput.text = "";
+            }
+          }
+        }
+
+        NTextInput {
+          id: newTaskDueInput
+          Layout.preferredWidth: 120 * Style.uiScaleRatio
+          placeholderText: "YYYY-MM-DD"
+        }
+
+        NButton {
+          icon: "plus"
+          onClicked: {
+            if (newTaskInput.text.trim() !== "" && pluginApi && pluginApi.mainInstance) {
+              pluginApi.mainInstance.addTask(newTaskInput.text.trim(), newTaskDueInput.text.trim() ? (newTaskDueInput.text.trim() + "T00:00:00.000Z") : "");
+              newTaskInput.text = "";
+              newTaskDueInput.text = "";
             }
           }
         }

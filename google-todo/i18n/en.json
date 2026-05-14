@@ -22,7 +22,10 @@
   },
   "panel": {
     "title": "Google Tasks",
-    "lists": "Lists:"
+    "lists": "Lists:",
+    "tab_pending": "Pending",
+    "tab_completed": "Completed",
+    "add_task_placeholder": "Add a new task..."
   },
   "widget": {
     "tasks_today": "Tasks"
