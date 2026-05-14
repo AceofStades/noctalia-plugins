@@ -1,7 +1,7 @@
 {
     "id": "google-todo",
     "name": "Google Todo List",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "minNoctaliaVersion": "4.4.1",
     "author": "AceofStades",
     "license": "MIT",

@@ -147,14 +147,14 @@ Item {
     property string due: ""
     
     // Using a dynamic command array to safely pass empty args if needed
-    command: {
+    command: (function() {
       var args = [root.runCommand(), "add-task", "--list-id", listId, "--title", title];
       if (due !== "") {
         args.push("--due");
         args.push(due);
       }
       return args;
-    }
+    })()
     running: false
     onExited: function(code) {
       if (code === 0) {
