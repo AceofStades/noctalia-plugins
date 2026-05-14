@@ -112,23 +112,24 @@ Item {
     command: [root.runCommand(), "login"]
     running: false
     stdout: StdioCollector {
-      onTextChanged: {
-        var strData = String(text).trim();
+      id: loginStdout
+    }
+    onExited: function(code) {
+      if (code === 0) {
+        var strData = String(loginStdout.text || "").trim();
         var lines = strData.split('\n');
         for (var i = 0; i < lines.length; i++) {
           var line = lines[i].trim();
           if (line.startsWith('{')) {
             try {
               var response = JSON.parse(line);
-              if (response.url) {
-                Qt.openUrlExternally(response.url);
-              } else if (response.success) {
+              if (response.success) {
                 root.fetchLists();
               } else if (response.error) {
                 Logger.e("Google Todo Login Error: " + response.error);
               }
             } catch(e) {
-              // Ignore partial JSON parses while streaming
+              // Ignore partial JSON parses
             }
           }
         }
@@ -195,6 +196,14 @@ Item {
   }
 
   function triggerLogin() {
+    var clientId = "393145303655-qg81bpk1rl814rqc2cl584kp12eogc3f.apps.googleusercontent.com";
+    var redirectUri = "http://127.0.0.1:8080";
+    var url = "https://accounts.google.com/o/oauth2/v2/auth?client_id=" + clientId + "&redirect_uri=" + redirectUri + "&response_type=code&scope=https://www.googleapis.com/auth/tasks";
+    
+    // 1. Open the URL natively in QML to bypass all stdout buffering issues
+    Qt.openUrlExternally(url);
+
+    // 2. Start the Rust binary to spin up the local server and catch the token
     loginProcess.running = true;
   }
 
