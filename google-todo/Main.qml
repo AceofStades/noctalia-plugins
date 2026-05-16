@@ -146,6 +146,7 @@ Item {
     property string listId: ""
     property string title: ""
     property string due: ""
+    property string parent: ""
     
     // Using a dynamic command array to safely pass empty args if needed
     command: (function() {
@@ -154,6 +155,10 @@ Item {
         args.push("--due");
         args.push(due);
       }
+      if (parent !== "") {
+        args.push("--parent");
+        args.push(parent);
+      }
       return args;
     })()
     running: false
@@ -161,6 +166,41 @@ Item {
       if (code === 0) {
         fetchTasksProcess.buffer = "";
         fetchTasksProcess.running = true; // refresh
+      }
+    }
+  }
+
+  // Delete a task
+  Process {
+    id: deleteTaskProcess
+    stdout: StdioCollector {}
+    stderr: StdioCollector {}
+    property string listId: ""
+    property string taskId: ""
+    command: [root.runCommand(), "delete-task", "--list-id", listId, "--task-id", taskId]
+    running: false
+    onExited: function(code) {
+      if (code === 0) {
+        fetchTasksProcess.buffer = "";
+        fetchTasksProcess.running = true; // refresh after deletion
+      }
+    }
+  }
+
+  // Update a task (deadline)
+  Process {
+    id: updateTaskProcess
+    stdout: StdioCollector {}
+    stderr: StdioCollector {}
+    property string listId: ""
+    property string taskId: ""
+    property string due: ""
+    command: [root.runCommand(), "update-task", "--list-id", listId, "--task-id", taskId, "--due", due]
+    running: false
+    onExited: function(code) {
+      if (code === 0) {
+        fetchTasksProcess.buffer = "";
+        fetchTasksProcess.running = true; // refresh after update
       }
     }
   }
@@ -222,13 +262,31 @@ Item {
     logoutProcess.running = true;
   }
 
-  function addTask(title, due) {
+  function addTask(title, due, parent) {
     if (currentListId !== "" && title.trim() !== "") {
       addTaskProcess.listId = currentListId;
       addTaskProcess.title = title;
       addTaskProcess.due = due || "";
+      addTaskProcess.parent = parent || "";
       addTaskProcess.buffer = "";
       addTaskProcess.running = true;
+    }
+  }
+
+  function deleteTask(taskId) {
+    if (currentListId !== "") {
+      deleteTaskProcess.listId = currentListId;
+      deleteTaskProcess.taskId = taskId;
+      deleteTaskProcess.running = true;
+    }
+  }
+
+  function updateTaskDue(taskId, due) {
+    if (currentListId !== "") {
+      updateTaskProcess.listId = currentListId;
+      updateTaskProcess.taskId = taskId;
+      updateTaskProcess.due = due;
+      updateTaskProcess.running = true;
     }
   }
 

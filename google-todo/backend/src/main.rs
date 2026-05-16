@@ -42,12 +42,28 @@ enum Commands {
         notes: Option<String>,
         #[arg(long)]
         due: Option<String>,
+        #[arg(long)]
+        parent: Option<String>,
     },
     CompleteTask {
         #[arg(long)]
         list_id: String,
         #[arg(long)]
         task_id: String,
+    },
+    DeleteTask {
+        #[arg(long)]
+        list_id: String,
+        #[arg(long)]
+        task_id: String,
+    },
+    UpdateTask {
+        #[arg(long)]
+        list_id: String,
+        #[arg(long)]
+        task_id: String,
+        #[arg(long)]
+        due: String,
     },
 }
 
@@ -226,6 +242,7 @@ async fn handle_add_task(
     title: &str,
     notes: Option<String>,
     due: Option<String>,
+    parent: Option<String>,
 ) {
     let access_token = match get_valid_token(state).await {
         Some(t) => t,
@@ -236,10 +253,7 @@ async fn handle_add_task(
     };
 
     let mut body = serde_json::Map::new();
-    body.insert(
-        "title".to_string(),
-        serde_json::Value::String(title.to_string()),
-    );
+    body.insert("title".to_string(), serde_json::Value::String(title.to_string()));
     if let Some(n) = notes {
         body.insert("notes".to_string(), serde_json::Value::String(n));
     }
@@ -247,7 +261,11 @@ async fn handle_add_task(
         body.insert("due".to_string(), serde_json::Value::String(d));
     }
 
-    let url = format!("{}/lists/{}/tasks", TASKS_API_BASE, list_id);
+    let mut url = format!("{}/lists/{}/tasks", TASKS_API_BASE, list_id);
+    if let Some(p) = parent {
+        url = format!("{}?parent={}", url, p);
+    }
+    
     let res = state
         .client
         .post(&url)
@@ -255,6 +273,53 @@ async fn handle_add_task(
         .json(&body)
         .send()
         .await;
+    match res {
+        Ok(response) => {
+            let text = response.text().await.unwrap_or_default();
+            println!("{}", text);
+        }
+        Err(e) => println!("{{\"error\": \"{}\"}}", e),
+    }
+}
+
+async fn handle_delete_task(state: &AppState, list_id: &str, task_id: &str) {
+    let access_token = match get_valid_token(state).await {
+        Some(t) => t,
+        None => {
+            println!("{{\"error\": \"Not logged in\"}}");
+            return;
+        }
+    };
+
+    let url = format!("{}/lists/{}/tasks/{}", TASKS_API_BASE, list_id, task_id);
+    let res = state.client.delete(&url).bearer_auth(access_token).send().await;
+    match res {
+        Ok(response) => {
+            if response.status().is_success() {
+                println!("{{\"success\": true}}");
+            } else {
+                let text = response.text().await.unwrap_or_default();
+                println!("{}", text);
+            }
+        }
+        Err(e) => println!("{{\"error\": \"{}\"}}", e),
+    }
+}
+
+async fn handle_update_task(state: &AppState, list_id: &str, task_id: &str, due: &str) {
+    let access_token = match get_valid_token(state).await {
+        Some(t) => t,
+        None => {
+            println!("{{\"error\": \"Not logged in\"}}");
+            return;
+        }
+    };
+
+    let mut body = serde_json::Map::new();
+    body.insert("due".to_string(), serde_json::Value::String(due.to_string()));
+
+    let url = format!("{}/lists/{}/tasks/{}", TASKS_API_BASE, list_id, task_id);
+    let res = state.client.patch(&url).bearer_auth(access_token).json(&body).send().await;
     match res {
         Ok(response) => {
             let text = response.text().await.unwrap_or_default();
@@ -311,9 +376,16 @@ async fn main() {
             title,
             notes,
             due,
-        } => handle_add_task(&state, list_id, title, notes.clone(), due.clone()).await,
+            parent,
+        } => handle_add_task(&state, list_id, title, notes.clone(), due.clone(), parent.clone()).await,
         Commands::CompleteTask { list_id, task_id } => {
             handle_complete_task(&state, list_id, task_id).await
+        }
+        Commands::DeleteTask { list_id, task_id } => {
+            handle_delete_task(&state, list_id, task_id).await
+        }
+        Commands::UpdateTask { list_id, task_id, due } => {
+            handle_update_task(&state, list_id, task_id, due).await
         }
     }
 }

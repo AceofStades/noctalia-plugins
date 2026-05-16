@@ -130,8 +130,17 @@ Item {
               NTextInput {
                 id: newTaskInput
                 Layout.fillWidth: true
-                placeholderText: pluginApi?.tr("panel.add_task_placeholder") || "Add a new task..."
-                Keys.onReturnPressed: addTask()
+                placeholderText: root.activeParentTaskId !== "" ? "Add a subtask..." : (pluginApi?.tr("panel.add_task_placeholder") || "Add a new task...")
+                onAccepted: addTask()
+                Keys.onEscapePressed: {
+                   root.activeParentTaskId = "";
+                }
+              }
+
+              NTextInput {
+                id: newTaskDueInput
+                Layout.preferredWidth: 120 * Style.uiScaleRatio
+                placeholderText: "YYYY-MM-DD"
               }
 
               NIconButton {
@@ -270,8 +279,8 @@ Item {
                           baseSize: Style.baseWidgetSize * 0.8
                           colorFg: Color.mOnSurfaceVariant
                           onClicked: {
-                             // Will be implemented via detail dialog or input
-                             ToastService.showNotice("Add Deadline clicked");
+                            deadlinePopup.taskId = modelData.id;
+                            deadlinePopup.open();
                           }
                         }
 
@@ -281,7 +290,8 @@ Item {
                           baseSize: Style.baseWidgetSize * 0.8
                           colorFg: Color.mOnSurfaceVariant
                           onClicked: {
-                             ToastService.showNotice("Add Subtask clicked");
+                            root.activeParentTaskId = modelData.id;
+                            newTaskInput.forceActiveFocus();
                           }
                         }
 
@@ -291,7 +301,9 @@ Item {
                           baseSize: Style.baseWidgetSize * 0.8
                           colorFg: Color.mError
                           onClicked: {
-                             ToastService.showNotice("Delete clicked (Requires backend implementation)");
+                             if (pluginApi && pluginApi.mainInstance) {
+                               pluginApi.mainInstance.deleteTask(modelData.id);
+                             }
                           }
                         }
                       }
@@ -364,8 +376,57 @@ Item {
 
   function addTask() {
     if (newTaskInput.text.trim() !== "" && pluginApi && pluginApi.mainInstance) {
-      pluginApi.mainInstance.addTask(newTaskInput.text.trim(), "");
+      pluginApi.mainInstance.addTask(newTaskInput.text.trim(), "", root.activeParentTaskId);
       newTaskInput.text = "";
+      root.activeParentTaskId = "";
+    }
+  }
+}
+rue
+        }
+
+        NTextInput {
+          id: deadlineInput
+          Layout.fillWidth: true
+          placeholderText: "YYYY-MM-DD"
+          onAccepted: {
+             if (deadlinePopup.taskId !== "" && pluginApi && pluginApi.mainInstance) {
+                var due = text.trim() ? (text.trim() + "T00:00:00.000Z") : "";
+                pluginApi.mainInstance.updateTaskDue(deadlinePopup.taskId, due);
+             }
+             deadlinePopup.close();
+          }
+        }
+
+        RowLayout {
+          Layout.alignment: Qt.AlignRight
+          NButton {
+             text: "Cancel"
+             onClicked: deadlinePopup.close()
+          }
+          NButton {
+             text: "Save"
+             backgroundColor: Color.mPrimary
+             textColor: Color.mOnPrimary
+             onClicked: {
+                 if (deadlinePopup.taskId !== "" && pluginApi && pluginApi.mainInstance) {
+                    var due = deadlineInput.text.trim() ? (deadlineInput.text.trim() + "T00:00:00.000Z") : "";
+                    pluginApi.mainInstance.updateTaskDue(deadlinePopup.taskId, due);
+                 }
+                 deadlinePopup.close();
+             }
+          }
+        }
+      }
+    }
+  }
+
+  function addTask() {
+    if (newTaskInput.text.trim() !== "" && pluginApi && pluginApi.mainInstance) {
+      pluginApi.mainInstance.addTask(newTaskInput.text.trim(), newTaskDueInput.text.trim() ? (newTaskDueInput.text.trim() + "T00:00:00.000Z") : "", root.activeParentTaskId);
+      newTaskInput.text = "";
+      newTaskDueInput.text = "";
+      root.activeParentTaskId = "";
     }
   }
 }
