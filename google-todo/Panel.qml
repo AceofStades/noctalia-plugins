@@ -45,7 +45,7 @@ Item {
       Rectangle {
         Layout.fillWidth: true
         Layout.fillHeight: true
-        color: Color.mSurfaceVariant
+        color: Qt.rgba(Color.mSurfaceVariant.r, Color.mSurfaceVariant.g, Color.mSurfaceVariant.b, 0.5)
         radius: Style.radiusL
 
         ColumnLayout {

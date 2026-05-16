@@ -17,16 +17,12 @@ ColumnLayout {
 
   spacing: Style.marginL
 
-  Rectangle {
+  NBox {
     Layout.fillWidth: true
-    implicitHeight: accountLayout.implicitHeight + (Style.marginL * 2)
-    color: Color.mSurfaceContainer
-    radius: Style.radiusL
+    padding: Style.marginL
 
     ColumnLayout {
-      id: accountLayout
       anchors.fill: parent
-      anchors.margins: Style.marginL
       spacing: Style.marginM
 
       NText {
@@ -39,24 +35,36 @@ ColumnLayout {
         color: pluginApi?.mainInstance?.isLoggedIn ? Color.mSuccess : Color.mError
       }
 
-      NButton {
-        text: pluginApi?.tr("settings.login_button") || "Login with Google"
-        icon: "google"
-        visible: !pluginApi?.mainInstance?.isLoggedIn
-        onClicked: {
-          if (pluginApi && pluginApi.mainInstance) {
-            pluginApi.mainInstance.triggerLogin();
+      RowLayout {
+        spacing: Style.marginM
+        NButton {
+          text: pluginApi?.tr("settings.login_button") || "Login with Google"
+          visible: !pluginApi?.mainInstance?.isLoggedIn
+          onClicked: {
+            if (pluginApi && pluginApi.mainInstance) {
+              pluginApi.mainInstance.triggerLogin();
+            }
           }
         }
-      }
-      
-      NButton {
-        text: pluginApi?.tr("settings.refresh_lists") || "Refresh Lists"
-        icon: "refresh"
-        visible: pluginApi?.mainInstance?.isLoggedIn
-        onClicked: {
-          if (pluginApi && pluginApi.mainInstance) {
-            pluginApi.mainInstance.fetchLists();
+        
+        NButton {
+          text: pluginApi?.tr("menu.logout") || "Logout"
+          visible: pluginApi?.mainInstance?.isLoggedIn
+          onClicked: {
+            if (pluginApi && pluginApi.mainInstance) {
+              pluginApi.mainInstance.logout();
+            }
+          }
+        }
+        
+        NButton {
+          text: pluginApi?.tr("settings.refresh_lists") || "Refresh Lists"
+          icon: "refresh"
+          visible: pluginApi?.mainInstance?.isLoggedIn
+          onClicked: {
+            if (pluginApi && pluginApi.mainInstance) {
+              pluginApi.mainInstance.fetchLists();
+            }
           }
         }
       }
