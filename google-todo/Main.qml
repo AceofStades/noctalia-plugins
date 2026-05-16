@@ -201,7 +201,7 @@ Item {
     var url = "https://accounts.google.com/o/oauth2/v2/auth?client_id=" + clientId + "&redirect_uri=" + redirectUri + "&response_type=code&scope=https://www.googleapis.com/auth/tasks";
     
     // 1. Open the URL natively in QML to bypass all stdout buffering issues
-    Qt.openUrlExternally(url);
+    Quickshell.execDetached(["xdg-open", url]);
 
     // 2. Start the Rust binary to spin up the local server and catch the token
     loginProcess.running = true;
