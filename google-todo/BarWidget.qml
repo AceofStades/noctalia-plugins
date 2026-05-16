@@ -32,7 +32,14 @@ Item {
 
   property bool isLoggedIn: pluginApi?.mainInstance?.isLoggedIn ?? false
   property var currentTasks: pluginApi?.mainInstance?.currentTasks || []
-  property int taskCount: currentTasks.length
+  property string barDisplayMode: cfg.barDisplayMode ?? defaults.barDisplayMode ?? "pending"
+  
+  property int taskCount: {
+    if (!currentTasks) return 0;
+    if (barDisplayMode === "both") return currentTasks.length;
+    if (barDisplayMode === "completed") return currentTasks.filter(t => t.status === "completed").length;
+    return currentTasks.filter(t => t.status !== "completed").length;
+  }
   
   readonly property color contentColor: mouseArea.containsMouse ? Color.mOnHover : Color.mOnSurface
 

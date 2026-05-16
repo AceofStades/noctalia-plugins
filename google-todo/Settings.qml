@@ -103,6 +103,26 @@ ColumnLayout {
     pluginApi.pluginSettings.syncInterval = root.editSyncInterval;
     pluginApi.pluginSettings.showCompleted = root.editShowCompleted;
     pluginApi.pluginSettings.autoStartSync = root.editAutoStartSync;
+    pluginApi.pluginSettings.barDisplayMode = root.editBarDisplayMode;
+    pluginApi.saveSettings();
+  }
+}
+ checked: root.editAutoStartSync
+    onCheckedChanged: root.editAutoStartSync = checked
+  }
+
+  NSwitch {
+    Layout.fillWidth: true
+    label: pluginApi?.tr("settings.show_completed.label") || "Show Completed Tasks"
+    checked: root.editShowCompleted
+    onCheckedChanged: root.editShowCompleted = checked
+  }
+
+  function saveSettings() {
+    if (!pluginApi) return;
+    pluginApi.pluginSettings.syncInterval = root.editSyncInterval;
+    pluginApi.pluginSettings.showCompleted = root.editShowCompleted;
+    pluginApi.pluginSettings.autoStartSync = root.editAutoStartSync;
     pluginApi.saveSettings();
   }
 }

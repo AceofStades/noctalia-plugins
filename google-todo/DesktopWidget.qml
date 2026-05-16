@@ -12,9 +12,47 @@ Item {
 
   property var currentTasks: pluginApi?.mainInstance?.currentTasks || []
 
+  NPopupContextMenu {
+    id: contextMenu
+    model: [
+      { "label": pluginApi?.tr("menu.create_task") || "Create Task", "action": "create_task", "icon": "plus" },
+      { "label": pluginApi?.tr("menu.logout") || "Logout", "action": "logout", "icon": "x-circle" },
+      { "label": pluginApi?.tr("menu.settings") || "Settings", "action": "settings", "icon": "settings" }
+    ]
+    onTriggered: action => {
+      contextMenu.close();
+      if (pluginApi && pluginApi.withCurrentScreen) {
+        pluginApi.withCurrentScreen(screen => {
+          qs.Services.UI.PanelService.closeContextMenu(screen);
+          if (action === "settings") {
+            qs.Services.UI.BarService.openPluginSettings(screen, pluginApi.manifest);
+          } else if (action === "create_task") {
+            pluginApi.togglePanel(screen);
+          } else if (action === "logout") {
+            if (pluginApi.mainInstance) pluginApi.mainInstance.logout();
+          }
+        });
+      }
+    }
+  }
+
+  MouseArea {
+    anchors.fill: parent
+    acceptedButtons: Qt.RightButton
+    onClicked: mouse => {
+      if (mouse.button === Qt.RightButton) {
+        if (pluginApi && pluginApi.withCurrentScreen) {
+          pluginApi.withCurrentScreen(screen => {
+            qs.Services.UI.PanelService.showContextMenu(contextMenu, root, screen);
+          });
+        }
+      }
+    }
+  }
+
   Rectangle {
     anchors.fill: parent
-    color: Color.mSurface
+    color: Qt.rgba(Color.mSurfaceVariant.r, Color.mSurfaceVariant.g, Color.mSurfaceVariant.b, 0.5)
     radius: Style.radiusL
     border.color: Style.capsuleBorderColor
     border.width: Style.capsuleBorderWidth

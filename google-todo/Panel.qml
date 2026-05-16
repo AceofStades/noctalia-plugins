@@ -22,6 +22,7 @@ Item {
   property bool isLoggedIn: pluginApi?.mainInstance?.isLoggedIn ?? false
 
   property int currentTabIndex: 0 // 0 = Pending, 1 = Completed
+  property string activeParentTaskId: "" // For adding subtasks
 
   // Filter tasks based on tab
   property var filteredTasks: {
@@ -60,7 +61,7 @@ Item {
 
             NIcon {
               icon: "clipboard-check"
-              pointSize: Style.fontSizeXL
+              baseSize: Style.fontSizeXL
             }
 
             NText {
@@ -130,11 +131,8 @@ Item {
               NTextInput {
                 id: newTaskInput
                 Layout.fillWidth: true
-                placeholderText: root.activeParentTaskId !== "" ? "Add a subtask..." : (pluginApi?.tr("panel.add_task_placeholder") || "Add a new task...")
+                placeholderText: pluginApi?.tr("panel.add_task_placeholder") || "Add a new task..."
                 onAccepted: addTask()
-                Keys.onEscapePressed: {
-                   root.activeParentTaskId = "";
-                }
               }
 
               NTextInput {
@@ -205,7 +203,7 @@ Item {
                           anchors.horizontalCenterOffset: -1
                           icon: "check"
                           color: Color.mOnPrimary
-                          pointSize: Math.max(Style.fontSizeXS, Style.baseWidgetSize * 0.7 * 0.5)
+                          baseSize: Math.max(Style.fontSizeXS, Style.baseWidgetSize * 0.7 * 0.5)
                         }
 
                         MouseArea {
@@ -247,8 +245,7 @@ Item {
                         NIcon {
                           icon: "calendar"
                           color: Color.mPrimary
-                          Layout.preferredWidth: Style.iconSizeS
-                          Layout.preferredHeight: Style.iconSizeS
+                          baseSize: Style.iconSizeS
                         }
                         NText {
                           text: modelData.due ? modelData.due.substring(0, 10) : ""
@@ -290,8 +287,8 @@ Item {
                           baseSize: Style.baseWidgetSize * 0.8
                           colorFg: Color.mOnSurfaceVariant
                           onClicked: {
-                            root.activeParentTaskId = modelData.id;
-                            newTaskInput.forceActiveFocus();
+                            subtaskPopup.parentTaskId = modelData.id;
+                            subtaskPopup.open();
                           }
                         }
 
@@ -343,46 +340,93 @@ Item {
       }
     }
 
-    ColumnLayout {
-      anchors.centerIn: parent
-      spacing: Style.marginM
-      visible: !root.isLoggedIn
+    Popup {
+      id: subtaskPopup
+      property string parentTaskId: ""
+      x: (parent.width - width) / 2
+      y: (parent.height - height) / 2
+      width: 300 * Style.uiScaleRatio
+      height: 150 * Style.uiScaleRatio
+      modal: true
+      focus: true
+      padding: Style.marginM
 
-      NText {
-        text: "G"
-        color: Color.mOnSurfaceVariant
-        Layout.alignment: Qt.AlignHCenter
-        font.pointSize: Style.fontSizeXL
-        font.bold: true
+      background: Rectangle {
+        color: Color.mSurface
+        radius: Style.radiusM
+        border.color: Color.mOutline
+        border.width: 1
       }
 
-      NText {
-        text: pluginApi?.tr("settings.not_logged_in") || "Not logged in to Google Tasks"
-        color: Color.mOnSurfaceVariant
-        Layout.alignment: Qt.AlignHCenter
-      }
+      contentItem: ColumnLayout {
+        spacing: Style.marginM
 
-      NButton {
-        text: pluginApi?.tr("settings.login_button") || "Login with Google"
-        Layout.alignment: Qt.AlignHCenter
-        onClicked: {
-          if (pluginApi && pluginApi.mainInstance) {
-             pluginApi.mainInstance.triggerLogin();
+        NText {
+          text: "Add Subtask"
+          font.pointSize: Style.fontSizeM
+          font.bold: true
+        }
+
+        NTextInput {
+          id: subtaskInput
+          Layout.fillWidth: true
+          placeholderText: "Subtask title..."
+          onAccepted: {
+             if (subtaskPopup.parentTaskId !== "" && text.trim() !== "" && pluginApi && pluginApi.mainInstance) {
+                pluginApi.mainInstance.addTask(text.trim(), "", subtaskPopup.parentTaskId);
+                text = "";
+             }
+             subtaskPopup.close();
+          }
+        }
+
+        RowLayout {
+          Layout.alignment: Qt.AlignRight
+          NButton {
+             text: "Cancel"
+             onClicked: subtaskPopup.close()
+          }
+          NButton {
+             text: "Add"
+             backgroundColor: Color.mPrimary
+             textColor: Color.mOnPrimary
+             onClicked: {
+                 if (subtaskPopup.parentTaskId !== "" && subtaskInput.text.trim() !== "" && pluginApi && pluginApi.mainInstance) {
+                    pluginApi.mainInstance.addTask(subtaskInput.text.trim(), "", subtaskPopup.parentTaskId);
+                    subtaskInput.text = "";
+                 }
+                 subtaskPopup.close();
+             }
           }
         }
       }
     }
-  }
 
-  function addTask() {
-    if (newTaskInput.text.trim() !== "" && pluginApi && pluginApi.mainInstance) {
-      pluginApi.mainInstance.addTask(newTaskInput.text.trim(), "", root.activeParentTaskId);
-      newTaskInput.text = "";
-      root.activeParentTaskId = "";
-    }
-  }
-}
-rue
+    Popup {
+      id: deadlinePopup
+      property string taskId: ""
+      x: (parent.width - width) / 2
+      y: (parent.height - height) / 2
+      width: 300 * Style.uiScaleRatio
+      height: 150 * Style.uiScaleRatio
+      modal: true
+      focus: true
+      padding: Style.marginM
+
+      background: Rectangle {
+        color: Color.mSurface
+        radius: Style.radiusM
+        border.color: Color.mOutline
+        border.width: 1
+      }
+
+      contentItem: ColumnLayout {
+        spacing: Style.marginM
+
+        NText {
+          text: "Set Deadline"
+          font.pointSize: Style.fontSizeM
+          font.bold: true
         }
 
         NTextInput {
@@ -419,14 +463,43 @@ rue
         }
       }
     }
+
+    ColumnLayout {
+      anchors.centerIn: parent
+      spacing: Style.marginM
+      visible: !root.isLoggedIn
+
+      NText {
+        text: "G"
+        color: Color.mOnSurfaceVariant
+        Layout.alignment: Qt.AlignHCenter
+        font.pointSize: Style.fontSizeXL
+        font.bold: true
+      }
+
+      NText {
+        text: pluginApi?.tr("settings.not_logged_in") || "Not logged in to Google Tasks"
+        color: Color.mOnSurfaceVariant
+        Layout.alignment: Qt.AlignHCenter
+      }
+
+      NButton {
+        text: pluginApi?.tr("settings.login_button") || "Login with Google"
+        Layout.alignment: Qt.AlignHCenter
+        onClicked: {
+          if (pluginApi && pluginApi.mainInstance) {
+             pluginApi.mainInstance.triggerLogin();
+          }
+        }
+      }
+    }
   }
 
   function addTask() {
     if (newTaskInput.text.trim() !== "" && pluginApi && pluginApi.mainInstance) {
-      pluginApi.mainInstance.addTask(newTaskInput.text.trim(), newTaskDueInput.text.trim() ? (newTaskDueInput.text.trim() + "T00:00:00.000Z") : "", root.activeParentTaskId);
+      pluginApi.mainInstance.addTask(newTaskInput.text.trim(), newTaskDueInput.text.trim() ? (newTaskDueInput.text.trim() + "T00:00:00.000Z") : "", "");
       newTaskInput.text = "";
       newTaskDueInput.text = "";
-      root.activeParentTaskId = "";
     }
   }
 }
